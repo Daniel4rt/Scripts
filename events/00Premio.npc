@@ -1,0 +1,23 @@
+/**********************
+ * Función de Premios
+ **********************/
+function	script	F_Event	{
+	if( callfunc("F_CheckMac") ) {
+		dispbottom "Lo sentimos, pero no puedes recibir premios de eventos durante double-login.",0x000000;
+		return;
+	}
+	switch (getarg(0)) {
+		case 1:
+			#CASHPOINTS += rand(1,2);
+			.@z = (rand(3000,10000) * getarg(1));
+			F_LogItem 1,getcharid(0),strcharinfo(0),7711,1,"(Evento NPC)";
+			rodex getcharid(0),"Poring RO","Premio de Evento","¡Felicidades!, aquí tienes tu premio.",.@z,7711,1,Bound_None;
+			message strcharinfo(0),"Haz recibido tus premios en RODEX.";
+			return;
+		case 2:
+			getitem 7711,getarg(1);
+			F_LogItem 1,getcharid(0),strcharinfo(0),7711,getarg(1),"(Evento NPC)";
+			return;
+	}
+return 0;
+}

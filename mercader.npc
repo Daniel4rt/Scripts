@@ -1,0 +1,151 @@
+-	shop	ERRANTE_A	-1,12211:10000,8509:1500,13200:2,1773:-1,7940:-1,504:-1,610:-1
+prontera,159,175,4	script	Mercader Errante#01::errante	900,{
+	disable_items;
+	getmapxy .@mapa$, .@cx, .@cy, 0;
+	specialeffect 44;
+	setcell @mapa$,@cx,@cy,0,0,cell_basilica,1;
+	mes "[^8A4B08Mercader Errante^000000]";
+	mes "¡Hey "+(Sex ? "Joven":"Señorita")+"!","Traigo una gran variedad de objetos de utilidad","^0404B4¿Te interesan?^000000:","^8904B1¡Compra ya que se acaba!^000000";
+	next;
+	while(1) {
+		switch(select("- Ver tienda de '^0000FFUtilidades^000000':- ¿Quien eres tú?:- ^DF0101Salir^000000")) {
+			case 1:
+				close2;
+				callshop "ERRANTE_A",1;
+				end;
+			case 2:
+				mes "[^8A4B08Mercader Errante^000000]";
+				mes "¿Como?, acaso tú no sabes ¿quien soy yo?","Soy el más viejo de todos los vendedores de Midgard vivos hasta la fecha.";
+				next;
+				mes "[^8A4B08Mercader Errante^000000]";
+				mes "Viajo por todo el mundo conocido, ofreciendo mis productos para viajeros que lo requieran.","Por que en mis tiempos de juventud de grandes victorias también necesite de ayuda.";
+				next;
+				mes "[^8A4B08Mercader Errante^000000]";
+				mes "La verdad... es que me gusta caminar y recorrer el mundo, es uno de mis sueños que me propuse cuando me jubile de las batallas... Sí, yo fui un guerrero cuando tenía tu edad...ja ja...","En fin...debo seguir trabajando...";
+				next;
+				break;
+			case 3:
+				mes "[^8A4B08Mercader Errante^000000]";
+				mes "Vuelve cuando busques algo que comprar.";
+				emotion ET_BEST;
+				close;
+		}
+	}
+	end;
+OnInit:
+	setarray .md$,"Mercader Errante : ¡Hey amigo mira mi tienda, tengo buenos precios!",
+				"Mercader Errante : ¡Las mejores utilidades en cualquier lugar y a buenos precios!",
+				"Mercader Errante : ¡Barato viajero, barato tengo de todo, consulte no más!",
+				"Mercader Errante : ¡Se vende!, ¡Se vende!",
+				"Mercader Errante : ¡Que calor hace hoy!",
+				"** tose **",
+				"Mercader Errante : Llevo todo el día trabajando con este calor, ¿me compras un helado?",
+				"Mercader Errante : ¡Traigo utilidades! ¡Las mejores de Midgard!",
+				"Mercader Errante : ¡Que calor hace hoy!",
+				"** fuma su puro **",
+				"Mercader Errante : ¡Yo soy un amigo en tu camino!",
+				"Mercader Errante : Es un bello día para una Aventura.",
+				"** tose **",
+				"Mercader Errante : Me encanta fumar este puro, ¡Pura calidad!",
+				"Mercader Errante : ¡Utilidades de ayer y hoy! ¡Compre su poción!",
+				"Mercader Errante : Niños, no fumen que hace mal a los pulmones, no sigan mi ejemplo.",
+				"Mercader Errante : ¡Hey aventurero, mira mi tienda! ¿Quiéres un precio?";
+
+	setarray .mn$,"Mercader Errante : ¡Que bella noche ideal para ir a Payon Dungeon!",
+				"Mercader Errante : Hoy es una fría noche, podría vender un té caliente o café...",
+				"Mercader Errante : Tanto humo arroja este puro, ¡pero me encanta señores!",
+				"** tose **",
+				"Mercader Errante : ¡Lleve sus utilidades!, ¡Barato, baratooo!",
+				"** fuma su puro **",
+				"Mercader Errante : ¡Lleve sus infaltables 'Fly Wings'!, no viajes sin ellas!",
+				"Mercader Errante : ¡Seee veeende!, ¡See vendeee! *tose*",
+				"** fuma su puro **",
+				"Mercader Errante : ¡Yo soy un amigo en tu camino!",
+				"** tose **",
+				"Mercader Errante : Me encanta el anochecer... es romantico jajaja *tose*",
+				"Mercader Errante : ¡Se venden utilidades! Consultar aquí";
+	npcspeed 100;
+	while ( true ) {
+		getmapxy .@map$, .@x, .@y, 1;
+		while ( checkcell( .@map$, .@x2 = .@x + rand(-10,10), .@y2 = .@y + rand(-10,10), cell_chknopass ) );
+		npcwalkto .@x2, .@y2;
+		sleep rand(15500,40000);
+		specialeffect 44;// Humo de Pipa
+		if (isday())
+			npctalk .md$[ rand( getarraysize( .md$ ) ) ];
+		if (isnight())
+			npctalk .mn$[ rand( getarraysize( .mn$ ) ) ];
+		sleep rand(6000,12000);
+	}
+}
+			
+morocc,168,85,1	duplicate(errante)	Mercader Errante#2	900
+geffen,124,70,2	duplicate(errante)	Mercader Errante#3	900
+payon,162,226,2	duplicate(errante)	Mercader Errante#4	900
+alberta,109,59,6	duplicate(errante)	Mercader Errante#5	900
+izlude,126,148,4	duplicate(errante)	Mercader Errante#6	900
+aldebaran,147,119,2	duplicate(errante)	Mercader Errante#7	900
+xmas,144,122,4	duplicate(errante)	Mercader Errante#8	900
+comodo,186,163,5	duplicate(errante)	Mercader Errante#9	900
+yuno,166,170,3	duplicate(errante)	Mercader Errante#10	900
+amatsu,106,156,5	duplicate(errante)	Mercader Errante#11	900
+gonryun,154,120,5	duplicate(errante)	Mercader Errante#12	900
+umbala,126,135,3	duplicate(errante)	Mercader Errante#13	900
+niflheim,201,182,2	duplicate(errante)	Mercader Errante#14	900
+louyang,213,120,5	duplicate(errante)	Mercader Errante#15	900
+jawaii,198,294,5	duplicate(errante)	Mercader Errante#16	900
+ayothaya,202,265,5	duplicate(errante)	Mercader Errante#17	900
+einbroch,226,191,5	duplicate(errante)	Mercader Errante#18	900
+lighthalzen,163,123,3	duplicate(errante)	Mercader Errante#19	900
+einbech,192,125,5	duplicate(errante)	Mercader Errante#20	900
+hugel,88,151,5	duplicate(errante)	Mercader Errante#21	900
+rachel,124,116,5	duplicate(errante)	Mercader Errante#22	900
+veins,209,132,6	duplicate(errante)	Mercader Errante#23	900
+moscovia,219,196,6	duplicate(errante)	Mercader Errante#24	900
+dewata,194,187,5	duplicate(errante)	Mercader Errante#25	900
+mora,102,71,5	duplicate(errante)	Mercader Errante#26	900
+brasilis,200,210,3	duplicate(errante)	Mercader Errante#27	900
+dicastes01,191,190,5	duplicate(errante)	Mercader Errante#28	900
+malaya,278,58,4	duplicate(errante)	Mercader Errante#29	900
+malangdo,213,86,5	duplicate(errante)	Mercader Errante#30	900
+splendide,190,145,6	duplicate(errante)	Mercader Errante#31	900
+ecl_fild01,100,311,5	duplicate(errante)	Mercader Errante#32	900
+mid_camp,210,242,5	duplicate(errante)	Mercader Errante#33	900
+einbech,134,248,5	duplicate(errante)	Mercader Errante#34	900
+// Libre hasta el 50 (Inclusive)					
+
+ama_dun01,233,9,4	duplicate(errante)	Mercader Errante#51	900
+moc_fild04,207,331,4	duplicate(errante)	Mercader Errante#52	900
+ayo_fild02,279,154,4	duplicate(errante)	Mercader Errante#53	900
+izlu2dun,102,89,6	duplicate(errante)	Mercader Errante#54	900
+prt_sewb1,125,253,4	duplicate(errante)	Mercader Errante#55	900
+mjolnir_02,86,360,4	duplicate(errante)	Mercader Errante#56	900
+einbech,81,101,1	duplicate(errante)	Mercader Errante#57	900
+glast_01,370,308,4	duplicate(errante)	Mercader Errante#58	900
+yuno_fild03,37,135,6	duplicate(errante)	Mercader Errante#59	900
+niflheim,32,161,4	duplicate(errante)	Mercader Errante#60	900
+gef_fild10,71,339,4	duplicate(errante)	Mercader Errante#61	900
+pay_arche,42,126,4	duplicate(errante)	Mercader Errante#62	900
+moc_ruins,64,166,4	duplicate(errante)	Mercader Errante#63	900
+moc_fild19,106,97,4	duplicate(errante)	Mercader Errante#64	900
+alb2trea,73,101,4	duplicate(errante)	Mercader Errante#65	900
+tur_dun01,162,35,4	duplicate(errante)	Mercader Errante#66	900
+lhz_dun01,157,285,4	duplicate(errante)	Mercader Errante#67	900
+hu_fild05,186,210,4	duplicate(errante)	Mercader Errante#68	900
+yuno_fild07,221,173,4	duplicate(errante)	Mercader Errante#69	900
+tha_scene01,132,224,3	duplicate(errante)	Mercader Errante#70	900
+odin_tem01,96,149,4	duplicate(errante)	Mercader Errante#71	900
+cmd_fild08,323,360,4	duplicate(errante)	Mercader Errante#72	900
+einbech,134,248,5	duplicate(errante)	Mercader Errante#73	900
+glast_01,206,130,4	duplicate(errante)	Mercader Errante#74	900
+glast_01,204,289,4	duplicate(errante)	Mercader Errante#75	900
+glast_01,56,113,4	duplicate(errante)	Mercader Errante#76	900
+gonryun,153,197,4	duplicate(errante)	Mercader Errante#77	900
+xmas,139,309,4	duplicate(errante)	Mercader Errante#78	900
+gefenia01,58,173,4	duplicate(errante)	Mercader Errante#79	900
+nyd_dun01,71,131,4	duplicate(errante)	Mercader Errante#80	900
+nameless_n,166,188,4	duplicate(errante)	Mercader Errante#81	900
+ra_fild01,239,325,4	duplicate(errante)	Mercader Errante#82	900
+ra_san01,141,128,8	duplicate(errante)	Mercader Errante#83	900
+ve_fild03,175,239,4	duplicate(errante)	Mercader Errante#84	900
+//bat_room,184,139,4	duplicate(errante)	Mercader Errante#85	900//bg

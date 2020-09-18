@@ -1,0 +1,87 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---               Regalo de Cumpleaños              ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+prontera,169,182,4	script	Cumpleaños::BIRTHDAY_NPC	837,{
+	mes "[^CC6600Cumpleaños^000000]";
+	query_sql("SELECT `name` FROM `char_birth`",.@n$);
+	if(getarraysize(.@n$) < 1) {
+		mes "El día de hoy aún nadie ha sido felicitado por su cumpleaños.";
+		close2;
+		emotion ET_CRY;
+		end;
+	}
+	mes "Los cumpleañeros del día de hoy son:";
+	for(.@i = 0; .@i < getarraysize(.@n$); .@i++)
+		mes " ^FF0000*^5533FF "+.@n$[.@i]+"^000000";
+	close2;
+	emotion ET_BEST;
+	end;
+}
+
+-	script	BIRTHDAY_MAIN	-1,{
+OnClock0000:
+	query_sql("TRUNCATE TABLE `char_birth`");
+	if( gettime(DT_DAYOFYEAR) == 1 )
+		query_sql("TRUNCATE TABLE `char_birth_year`");
+	end;
+OnPCLoginEvent:
+	query_sql("SELECT `birthdate` FROM `autentication` WHERE `account_id`='"+getcharid(3)+"'",.@bd$);
+	.@a$ = charat(.@bd$,0) + charat(.@bd$,1) + charat(.@bd$,2) + charat(.@bd$,3);
+	.@m$ = charat(.@bd$,5) + charat(.@bd$,6);
+	.@d$ = charat(.@bd$,8) + charat(.@bd$,9);
+	.@y = atoi(.@a$);
+	.@m = atoi(.@m$);
+	.@d = atoi(.@d$);
+	.@a = atoi(.@a$);
+	if(.@a >= 2011) // 7 años (?)
+		end;
+	if(#C_BIRTH == gettime(DT_DAYOFYEAR)) {
+		dispbottom "¡Bienvenid"+(Sex?"o":"a")+" nuevamente, y feliz cumpleaños!",0xFF8800;
+		end;
+	} else
+		#C_BIRTH = 0;
+	if( gettime(DT_MONTH) == .@m && gettime(DT_DAYOFMONTH) == .@d) {
+		mes "[^CC6600 ¡Feliz cumpleaños! ^000000 ]";
+		mes "Bienvenid"+(Sex?"o ^0000ff":"a ^ff0000")+strcharinfo(0)+"^000000,";
+		mes "veo que hoy es tu cumpleaños."," ";
+		mes "^5533ff¡Muchas felicidades!^000000";
+		next;
+		if( F_CheckMacBirthday(strcharinfo(4)) ) {
+			mes "[^CC6600 ¡Feliz cumpleaños! ^000000 ]";
+			mes "O al menos eso me gustaría decirte, pero solo se permite entregar un regalo por computador.";
+			close2;
+			#C_BIRTH = gettime(DT_DAYOFYEAR);
+			end;
+		}
+		mes "[^CC6600 ¡Feliz cumpleaños! ^000000 ]";
+		mes "Ten algunos regalos por este día tan especial para tí, de parte del staff de ^5533ffPoring RO^000000.";
+		close2;
+		query_sql("INSERT INTO `char_birth` (`char_id`,`name`,`mac`) VALUES ('"+getcharid(0)+"','"+strcharinfo(0)+"','"+strcharinfo(4)+"')");
+		query_sql("INSERT INTO `char_birth_year` (`char_id`,`name`,`mac`) VALUES ('"+getcharid(0)+"','"+strcharinfo(0)+"','"+strcharinfo(4)+"')");
+		#C_BIRTH = gettime(DT_DAYOFYEAR);
+		for(.@i = 0; .@i < getarraysize(.BTHi); .@i++) {
+			getitembound .BTHi[.@i],.BTHc[.@i],Bound_Account;
+			F_LogItem 1,getcharid(0),strcharinfo(0),.BTHi[.@i],.BTHc[.@i],"(NPC) Birthday";
+		}
+		rentitem 8510,(60*60*24*30);
+		F_LogItem 1,getcharid(0),strcharinfo(0),8510,1,"(NPC) Birthday";
+		end;
+	}
+	end;
+OnInit:
+	query_sql("CREATE TABLE IF NOT EXISTS `char_birth` (`id` int(11) NOT NULL AUTO_INCREMENT,`char_id` int(11) NOT NULL,`name` varchar(26) NOT NULL,`mac` varchar(18) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+	query_sql("CREATE TABLE IF NOT EXISTS `char_birth_year` (`id` int(11) NOT NULL AUTO_INCREMENT,`char_id` int(11) NOT NULL,`name` varchar(26) NOT NULL,`mac` varchar(18) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+	setarray .BTHi,14549,8511;
+	setarray .BTHc,50,1;
+	end;
+}

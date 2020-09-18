@@ -1,0 +1,352 @@
+prontera,147,186,5	script	Batallas Gremiales::woe	837,{
+	function getcastlename3;
+	mes "[^cc6600Batallas Gremiales^000000]";
+	mes "En este letrero podrás observar los días, horario, tipo de batalla gremial y el castillo o territorio a combatir.";
+	mes " ","^777777Los castillos rotan cada semana.^000000";
+	next;
+	mes "[^cc6600War of Emperium^000000]";
+	mes "^777777Día:^000000 "+.days$[$MAINWOE[10]];
+	mes "^777777Horario:^000000 "+$MAINWOE[11]+":00 ~ "+$MAINWOE[12]+":00 hrs";
+	mes "^777777Tipo:^000000 Second Edition";
+	mes " ","^777777Castillo:^ff0000 "+getcastlename(getelementofarray(getvariableofnpc(.WOE_SE_C$, "WOE_CONFIG"),$MAINWOE[13]))+"^000000";
+	next;
+	if(select("Siguiente ^ff0000>^000000:^5533ffInformación^000000") == 2) {
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Las War of Emperium: SE, se diferencían a las FE, debido a que este tipo de castillo es continuo, es decir, no cruzarás ningun portal que presentará ventaja a tu gremio.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "En las WoE: SE tu objetivo será derribar primero las dos Piedras Guardianas del castillo, a continuación derribar todas las barricadas para lograr llegar al Emperium.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Quien logre destruir el Emperium se coronará con el castillo cada vez.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Para el gremio que esté defendiendo será de vital importancia la estrategia, donde existirán banderas que le servirán de portal por todo el castillo.";
+		next;
+		select("Continuar con el listado ^ff0000>^000000");
+	}
+	mes "[^cc6600War of Emperium^000000]";
+	mes "^777777Día:^000000 "+.days$[$MAINWOE[15]];
+	mes "^777777Horario:^000000 "+$MAINWOE[16]+":00 ~ "+$MAINWOE[17]+":00 hrs";
+	mes "^777777Tipo:^000000 Training Edition";
+	mes " ","^777777Castillo:^ff0000 "+getcastlename3($MAINWOE[18])+"^000000";
+	next;
+	if(select("Siguiente ^ff0000>^000000:^5533ffInformación^000000") == 2) {
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Las War of Emperium: TE, son iguales a las FE, pero únicamente las segundas clases trascendidas podrán participar en ellas.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Así como el equipo, sólo se permitirá aquel acorde a la existencia de las segundas clases, este tipo de batalla gremial está diseñada para practicar.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "O bien, para combatir sin el gran poder de las terceras clases.";
+		next;
+		select("Continuar con el listado ^ff0000>^000000");
+	}
+	mes "[^cc6600War of Emperium^000000]";
+	mes "^777777Día:^000000 "+.days$[$MAINWOE[0]];
+	mes "^777777Horario:^000000 "+$MAINWOE[1]+":00 ~ "+$MAINWOE[2]+":00 hrs";
+	mes "^777777Tipo:^000000 First Edition";
+	mes " ","^777777Castillo:^ff0000 "+getcastlename(getelementofarray(getvariableofnpc(.WOE_FE_C$, "WOE_CONFIG"),$MAINWOE[3]))+"^000000";
+	next;
+	if(select("Siguiente ^ff0000>^000000:^5533ffInformación^000000") == 2) {
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Las War of Emperium:FE, consisten simplemente en defender o atacar un castillo según el caso.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Deberás llegar junto a tu gremio a la sala del Emperium y destruirlo para hacerte del castillo.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Pero ten cuidado que la amenaza te puede esperar después de cada portal.";
+		next;
+		select("Continuar con el listado ^ff0000>^000000");
+	}
+	mes "[^cc6600Guerra de Territorios^000000]";
+	mes "^777777Día:^000000 "+.days$[$MAINWOE[5]];
+	mes "^777777Horario:^000000 "+$MAINWOE[6]+":00 ~ "+$MAINWOE[7]+":00 hrs";
+	mes "^777777Territorios:","^ff0000Alberta, Comodo, Einbroch, Geffen, Payon, Rachel^000000";
+	next;
+	if(select("^ff0000Fin del listado^000000:^5533ffInformación^000000") == 2) {
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Las Guerras de Territorio se tratan de acudir al territorio donde se encuentra el Emperium y destruirlo.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "El gremio que se haga de un territorio tendrá una bonificación de experiencia y drop para todos sus miembros en todos los mapas del territorio.";
+		next;
+		mes "[^cc6600Batallas Gremiales^000000]";
+		mes "Si deseas más información sobre esto, por favor consulta la Wiki de Poring RO en:";
+		mes "^5533ffhttps://wiki.poringro.net^000000";
+	}
+	close;
+
+OnAgitStart:
+OnAgitStar2:
+OnAgitStart3:
+OnWarStart:
+OnCheckEvent:
+	while(agitcheck() || agitcheck2() || agitcheck3() || warcheck()) {
+		misceffect 126;
+		sleep 5000;
+	}
+	end;
+OnInit:
+	setarray .days$,"Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado";
+	function woe_update;
+	donpcevent "woe::OnCheckEvent";
+	setarray $MAINWOE,
+		SATURDAY,19,20,$WOEC[1],1,
+		SUNDAY,19,20,99,4,
+		THURSDAY,19,20,$WOEC[2],2,
+		FRIDAY,19,20,$WOEC[3],3;
+
+	.@woe_len = getarraysize( $MAINWOE );
+	
+	if( .@woe_len ) {
+		for( .@i = 0; .@i < .@woe_len; .@i += 5 ) {
+			.woe_day[ getarraysize( .woe_day ) ] = $MAINWOE[.@i];
+			.woe_hour[ getarraysize( .woe_hour ) ] = $MAINWOE[.@i+1];
+		}
+	}
+
+	while ( 1 ) {
+		woe_update(); // Fix: Necesario aquí para que se refresque siempre, si no arrojará números negativos.
+		.@woe_tick = .woe_time[.current] - gettimetick(2);
+		.@day  = .@woe_tick / 86400;
+		.@hour = .@woe_tick % 86400 / 3600;
+		.@min  = .@woe_tick % 3600 / 60;
+		.@sec  = .@woe_tick % 60;
+		.@mes$ = ( .@day  ? .@day  +" días ":"Restan: ") +
+				 ( .@hour ? .@hour +":":"0:") +
+				 ( .@min  ? (.@min < 10 ? ("0"+.@min+":"):.@min+":"):"00:" ) +
+				 ( .@sec  ? (.@sec < 10 ? ("0"+.@sec):.@sec):"00" )+" hrs";
+		delwaitingroom;
+		if(warcheck()) // Verifica guerra de territorios
+			waitingroom "¡Guerra de Territorios!", 0;
+		else // Verifica WoE
+			waitingroom (agitcheck() || agitcheck2() || agitcheck3()) ? "¡WoE en progreso!" : .@mes$, 0;
+		sleep 1000;
+	}
+	end;
+	
+	OnAgitEnd:
+		woe_update();
+		end;
+
+// Función de refresh de los timers.
+	function woe_update {
+		.@woe_len = getarraysize( .woe_day );
+		for( .@a = 0; .@a < .@woe_len; .@a++ ) {
+			.@woe_day[.@a] = ( .woe_day[.@a] - gettime(4) + 7 ) % 7 * 86400;
+			.@woe_hour[.@a] = ( .woe_hour[.@a] * 3600 ) - gettimetick(1);
+			.woe_time[.@a] = gettimetick(2) + .@woe_day[.@a] + .@woe_hour[.@a];
+			if(gettimetick(2) > .woe_time[.@a])
+				.woe_time[.@a] = .woe_time[.@a] + 7 * 86400;
+			if( .woe_time[.@a] <= .woe_time[.current] )
+				.current = .@a;
+		}
+	}
+	
+	function	getcastlename3	{
+		setarray .@n$,"Glaris","Defolty","Sorin","Bennit","W","Gaebolg","Richard","Wigner","Heine","Nerious";
+		return .@n$[getarg(0)];
+	}
+}
+
+-	script	WOE_CONFIG	-1,{
+OnInit:
+	setarray .WOE_FE_C$,
+		"prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05",
+		"payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05",
+		"gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05",
+		"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05";
+	setarray .WOE_SE_C$,
+		"arug_cas01","arug_cas02","arug_cas03","arug_cas04","arug_cas05",
+		"schg_cas01","schg_cas02","schg_cas03","schg_cas04","schg_cas05";
+	setarray .WOE_SE_L$,
+		"ar01","ar02","ar03","ar04","ar05",
+		"sc01","sc02","sc03","sc04","sc05";
+	setarray .WOE_TE_C$,
+		"te_aldecas01","te_aldecas02","te_aldecas03","te_aldecas04","te_aldecas05",
+		"te_prtcas01","te_prtcas02","te_prtcas03","te_prtcas04","te_prtcas05";
+	setarray .ALL_CASTLE$,
+		"prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05",
+		"payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05",
+		"gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05",
+		"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05",
+		"arug_cas01","arug_cas02","arug_cas03","arug_cas04","arug_cas05",
+		"schg_cas01","schg_cas02","schg_cas03","schg_cas04","schg_cas05",
+		"te_aldecas01","te_aldecas02","te_aldecas03","te_aldecas04","te_aldecas05",
+		"te_prtcas01","te_prtcas02","te_prtcas03","te_prtcas04","te_prtcas05";
+	for(.i = 0; .i < getarraysize(.ALL_CASTLE$); .i++) {
+		setmapflag .ALL_CASTLE$[.i],mf_loadevent;
+		setd "."+.ALL_CASTLE$[.i],.i;
+	}
+	if (!agitcheck() && !agitcheck2() && !agitcheck3() && !warcheck())
+		sleep2 4000;
+
+	.Init = 1;
+	.size = getarraysize($MAINWOE);
+
+OnMinute00:
+	freeloop(1);
+	if(agitcheck() || agitcheck2() || agitcheck3() || warcheck()) {
+		for(.i = 0; .i < .size; .i += 5) {
+			if(gettime(DT_DAYOFWEEK) == $MAINWOE[.i] && gettime(DT_HOUR) == $MAINWOE[(.i+2)]){
+				.ctype = $MAINWOE[(.i+4)];
+				announce "[¡La <"+((.ctype == 4) ? "Guerra de Territorios" : "War Of Emperium: "+callsub(S_WOEName,.ctype))+"> ha finalizado!]",bc_all|bc_woe;
+				switch(.ctype) {
+					case 1:
+						if(agitcheck()) {
+							AgitEnd;
+							$MAINWOE[(.i+3)] = callsub(S_RotateCastle,getarraysize(.WOE_FE_C$),$MAINWOE[(.i+3)]);
+							$WOEC[1] = $MAINWOE[(.i+3)];
+						}
+						break;
+					case 2:
+						if(agitcheck2()) {
+							AgitEnd2;
+							$MAINWOE[(.i+3)] = callsub(S_RotateCastle,getarraysize(.WOE_SE_C$),$MAINWOE[(.i+3)]);
+							$WOEC[2] = $MAINWOE[(.i+3)];
+						}
+						break;
+					case 3:
+						if(agitcheck3()) {
+							AgitEnd3;
+							$MAINWOE[(.i+3)] = callsub(S_RotateCastle,getarraysize(.WOE_TE_C$),$MAINWOE[(.i+3)]);
+							$WOEC[3] = $MAINWOE[(.i+3)];
+						}
+						break;
+					case 4:
+						if(warcheck())
+							WarEnd;
+						break;
+				}
+				sleep 60000;
+				donpcevent "BG_Queue_Join::OnReloadMapServer";
+			}
+		}
+	}
+	if ((!agitcheck() && !agitcheck2() && !agitcheck3() && !warcheck()) || .Init) {
+		if((!agitcheck() && !agitcheck2() && !agitcheck3() && !warcheck()))
+			.Init = 0;
+		for(.i = 0; .i < .size; .i += 5) {
+			if (gettime(DT_DAYOFWEEK) == $MAINWOE[.i] && gettime(DT_HOUR) >= $MAINWOE[.i+1] && gettime(DT_HOUR) < $MAINWOE[.i+2]) {
+				if($MAINWOE[.i+3] == 99)
+					.isterritory = 1;
+				if(!.isterritory)
+					.ActiveCastle = $MAINWOE[(.i+3)];
+				.ctype = $MAINWOE[(.i+4)];
+				if(.Init) {
+					switch(.ctype) {
+						case 1: if(agitcheck()) AgitEnd; break;
+						case 2: if(agitcheck2()) AgitEnd2; break;
+						case 3: if(agitcheck3()) AgitEnd3; break;
+						case 4: if(warcheck()) WarEnd; break;
+						default: break;
+					}
+				} else
+					announce "[¡La <"+((.ctype == 4) ? "Guerra de Territorios" : "War Of Emperium: "+callsub(S_WOEName,.ctype))+"> ha dado inicio!]",bc_all|bc_woe;
+				sleep2 1000;
+				deletearray .TEMP_CAS$,getarraysize(.TEMP_CAS$);
+				switch(.ctype) {
+					case 1:
+						if(!agitcheck())
+							AgitStart;
+						copyarray .TEMP_CAS$[0],.WOE_FE_C$[0],getarraysize(.WOE_FE_C$);
+						break;
+					case 2:
+						if(!agitcheck2())
+							AgitStart2;
+						copyarray .TEMP_CAS$[0],.WOE_SE_C$[0],getarraysize(.WOE_SE_C$);
+						break;
+					case 3:
+						if(!agitcheck3())
+							AgitStart3;
+						copyarray .TEMP_CAS$[0],.WOE_TE_C$[0],getarraysize(.WOE_TE_C$);
+						break;
+					case 4:
+						if(!warcheck())
+							WarStart;
+						break;
+				}
+				if(!.isterritory) {
+					for(.@c = 0; .@c < getarraysize(.TEMP_CAS$); .@c++) {
+						if(.ActiveCastle == .@c) {
+							if(!.Init)
+								callsub(S_ShowOwner,.TEMP_CAS$[.@c],0);
+						} else {
+							switch(.ctype) {
+								case 1:
+									donpcevent "Agit#"+.TEMP_CAS$[.@c]+"::OnAgitEnd";
+									killmonster .TEMP_CAS$[.@c], "Agit#"+.TEMP_CAS$[.@c]+"::OnAgitBreak";
+									break;
+								case 2:
+									donpcevent "Manager#"+.TEMP_CAS$[.@c]+"::OnAgitEnd2";
+									killmonster .TEMP_CAS$[.@c], "Steward#"+.WOE_SE_L$[.@c]+"::OnStartArena";
+									break;
+								case 3:
+									gvgoff3 .TEMP_CAS$[.@c];
+									if (getcastledata(.TEMP_CAS$[.@c],1))
+										killmonster .TEMP_CAS$[.@c], strnpcinfo(0) +"::OnAgitBreak";
+									break;
+							}
+						}
+					}
+				}
+				if(bgcheck())
+					bgend();
+			}
+		}
+	}
+	end;
+
+S_RotateCastle:
+	.ncas = getarg(1);
+	.ncas++;
+	if(.ncas >= getarg(0))
+		.ncas = 0;
+	return .ncas;
+
+S_ShowOwner:
+	if (getcastledata(getarg(0),1))
+		announce "El castillo ["+getcastlename(getarg(0))+"] "+((getarg(1))?"ha sido conquistado por el":"pertenece actualmente al")+" gremio ["+getguildname(.@o)+"].",bc_all|bc_woe;
+	else
+		announce "El castillo ["+getcastlename(getarg(0))+"] está actualmente desocupado.",bc_all|bc_woe;
+	return;
+
+S_WOEName:
+	switch(getarg(0)) {
+		case 1: return "First Edition";
+		case 2: return "Second Edition";
+		case 3: return "Training Edition";
+		case 4: default: return "";
+	}
+	return "";
+S_GetActiveMap:
+	if(agitcheck())
+		return .WOE_FE_C$[getarg(0)];
+	if(agitcheck2())
+		return .WOE_SE_C$[getarg(0)];
+	if(agitcheck3())
+		return .WOE_TE_C$[getarg(0)];
+	return;
+
+OnPCLoadMapEvent:
+	if (compare(strcharinfo(3),"g_cas") || compare(strcharinfo(3),"te_prtcas") || compare(strcharinfo(3),"te_aldecas")) {
+		if(	(agitcheck() && strcharinfo(3) != .WOE_FE_C$[.ActiveCastle]) ||
+			(agitcheck2() && strcharinfo(3) != .WOE_SE_C$[.ActiveCastle]) ||
+			(agitcheck3() && strcharinfo(3) != .WOE_TE_C$[.ActiveCastle])
+		) {
+			if (getcharid(2) && getcastledata(strcharinfo(3),1) == getcharid(2))
+				end;
+			sleep2 1000;
+			message strcharinfo(0), getcastlename(strcharinfo(3))+" actualmente está inactivo.";
+			sleep2 1000;
+			dispbottom "El castillo activo es: "+callsub(S_GetActiveMap,.ActiveCastle)+".",0x000000;
+			sleep2 5000;
+			if (compare(strcharinfo(3),"g_cas") || compare(strcharinfo(3),"te_prtcas") || compare(strcharinfo(3),"te_aldecas"))
+				warp "SavePoint",0,0;
+		}
+	}
+	end;
+}

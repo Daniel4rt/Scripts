@@ -1,0 +1,1567 @@
+gon_test.gat,55,86,5	script	Ragnarok Soul Cards::RSCTurnoA	802,{
+
+if (@RSCplayer == 2){
+dispbottom "* Estado del Enemigo *";
+dispbottom "- Nivel RSC: "+$@RSCnivel1+"";
+dispbottom "- HP: "+$@RSChp1+"/"+$@RSCmhp1+" ";
+dispbottom "- SP: "+$@RSCsp1+"/"+$@RSCmsp1+" ";
+dispbottom "-----------------------------------";
+dispbottom "-  STR: "+$@RSCstr1+"";
+dispbottom "-  AGI: "+$@RSCagi1+"";
+dispbottom "-  VIT: "+$@RSCvit1+"";
+dispbottom "-  INT: "+$@RSCint1+"";
+dispbottom "-  DEX: "+$@RSCdex1+"";
+dispbottom "-  LUK: "+$@RSCluk1+"";
+dispbottom "-----------------------------------";
+dispbottom "- Ataque: "+$@RSCataque1+"";
+dispbottom "- Defensa: "+$@RSCdefensa1+"";
+dispbottom "- Defensa Mágica: "+$@RSCdefensamag1+"";
+dispbottom "- Precisión: "+$@RSCprecision1+"";
+dispbottom "- Evasión: "+$@RSCevasion1+"";
+dispbottom "- Golpes Críticos: "+$@RSCcritical1+"%";
+dispbottom "-----------------------------------";
+dispbottom "- Defensa a Fuego: "+$@RSCdeffue1+"";
+dispbottom "- Defensa a Agua: "+$@RSCdefagu1+"";
+dispbottom "- Defensa a Viento: "+$@RSCdefvie1+"";
+dispbottom "- Defensa a Tierra: "+$@RSCdeftie1+"";
+dispbottom "- Defensa a Sagrado: "+$@RSCdefsag1+"";
+dispbottom "- Defensa a Oscuro: "+$@RSCdefosc1+"";
+dispbottom "- Defensa a Veneno: "+$@RSCdefven1+"";
+dispbottom "- Defensa a Fantasma: "+$@RSCdeffan1+"";
+dispbottom "- Defensa a Armas de Rango: "+$@RSCdefran1+"";
+end;}
+
+if ($@RSCtur1blo == 1) {dispbottom "Todavia no es tu turno, debes esperar a que tu rival acabe."; end;}
+
+if ($@RSCenfermedad1 == 1) {set @RSCresstun,25; set @RSCresstun,$@RSCvit1+@RSCresstun; set @RSCdurstun,rand(1,100); if (@RSCdurstun <= @RSCresstun) {mapannounce "gon_test",""+strcharinfo(0)+" deja de estar aturdido.",bc_yellow; set $@RSCenfermedad1,0; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" está aturdido y no puede moverse.",bc_yellow; specialeffect2 194; set $@RSCtur1blo,1; set $@RSCtur2blo,0; end;}
+if ($@RSCenfermedad1 == 2) {set @RSCresfreeze,25; set @RSCresfreeze,$@RSCvit1+@RSCresfreeze; set @RSCdurfreeze,rand(1,100); if (@RSCdurfreeze <= @RSCresfreeze) {mapannounce "gon_test",""+strcharinfo(0)+" deja de estar helado.",bc_yellow; set $@RSCdefvie1,$@RSCdefvie1+1; set $@RSCdefhie1,$@RSCdefhie1-1; set $@RSCenfermedad1,0; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" está helado y no puede moverse.",bc_yellow; specialeffect2 133; set $@RSCtur1blo,1; set $@RSCtur2blo,0; end;}
+if ($@RSCenfermedad1 == 3) {set @RSCrespoison,25; set @RSCrespoison,$@RSCvit1+@RSCrespoison; set @RSCdurpoison,rand(1,100); if (@RSCdurpoison <= @RSCrespoison) {mapannounce "gon_test",""+strcharinfo(0)+" deja de estar envenenado.",bc_yellow; set $@RSCenfermedad1,0; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" siente los efectos del veneno.",bc_yellow; specialeffect2 20; set $@RSChp1,$@RSChp1-1;}
+if ($@RSCenfermedad1 == 4) {set @RSCresmute,25; set @RSCresmute,$@RSCvit1+@RSCresmute; set @RSCdurmute,rand(1,100); if (@RSCdurmute <= @RSCresmute) {mapannounce "gon_test",""+strcharinfo(0)+" deja de estar enmudecido.",bc_yellow; set $@RSCenfermedad1,0; set $@RSCmsp1,$@RSCmspG1; set $@RSCsp1,$@RSCspG1; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" está enmudecido.",bc_yellow; specialeffect2 87;}
+if ($@RSCenfermedad1 == 5) {set @RSCressleep,25; set @RSCressleep,$@RSCvit1+@RSCressleep; set @RSCdursleep,rand(1,100); if (@RSCdursleep <= @RSCressleep) {mapannounce "gon_test",""+strcharinfo(0)+" se ha despertado.",bc_yellow; set $@RSCdefensamag1,$@RSCdefensamag1+1; set $@RSCenfermedad1,0; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" está dormido y no puede moverse.",bc_yellow; specialeffect2 579; set $@RSCtur1blo,1; set $@RSCtur2blo,0; end;}
+if ($@RSCenfermedad1 == 6) {set @RSCresstone,25; set @RSCresstone,$@RSCvit1+@RSCresstone; set @RSCdurstone,rand(1,100); if (@RSCdurstone <= @RSCresstone) {mapannounce "gon_test",""+strcharinfo(0)+" deja de estar petrificado.",bc_yellow; set $@RSCdeffue1,$@RSCdeffue1-1; set $@RSCdeftie1,$@RSCdeftie1+1; set $@RSCenfermedad1,0; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" está petrificado y no puede moverse.",bc_yellow; specialeffect2 195; set $@RSCtur1blo,1; set $@RSCtur2blo,0; end;}
+if ($@RSCenfermedad1 == 7) {set @RSCresburn,25; set @RSCresburn,$@RSCvit1+@RSCresburn; set @RSCdurburn,rand(1,100); if (@RSCdurburn <= @RSCresburn) {mapannounce "gon_test",""+strcharinfo(0)+" ya no siente las quemaduras.",bc_yellow; set $@RSCenfermedad1,0; goto principio;} mapannounce "gon_test",""+strcharinfo(0)+" siente los efectos de las quemaduras.",bc_yellow; specialeffect2 255; set $@RSChp1,$@RSChp1-1;}
+principio:
+mapannounce "gon_test","* Turno de "+strcharinfo(0)+" *  [HP: "+$@RSChp1+"/"+$@RSCmhp1+"] ",bc_yellow;
+	if (@RSCMano1 == 0)set @RSCMano1,rand(1,68);
+	if (@RSCMano2 == 0)set @RSCMano2,rand(1,68);
+	if (@RSCMano3 == 0)set @RSCMano3,rand(1,68);
+	if (@RSCMano4 == 0)set @RSCMano4,rand(1,68);
+	repite:
+	mes "[^CC0000Cartas en tu mano^000000]";
+	repite2:
+	if (@CompCarMan == 0) set @RSCMUECARMAN,@RSCMano1;
+	if (@CompCarMan == 1) set @RSCMUECARMAN,@RSCMano2;
+	if (@CompCarMan == 2) set @RSCMUECARMAN,@RSCMano3;
+	if (@CompCarMan == 3) set @RSCMUECARMAN,@RSCMano4;
+	if (@RSCMUECARMAN == 1) mes "- Poring Soulcard";
+	if (@RSCMUECARMAN == 2) mes "- Picky Soulcard";
+	if (@RSCMUECARMAN == 3) mes "- Picky Egg Soulcard";
+	if (@RSCMUECARMAN == 4) mes "- Fabre Soulcard";
+	if (@RSCMUECARMAN == 5) mes "- Pupa Soulcard";
+	if (@RSCMUECARMAN == 6) mes "- Lunatic Soulcard";
+	if (@RSCMUECARMAN == 7) mes "- Peco Peco Egg Soulcard";
+	if (@RSCMUECARMAN == 8) mes "- Drops Soulcard";
+	if (@RSCMUECARMAN == 9) mes "- Thief Bug Egg Soulcard";
+	if (@RSCMUECARMAN == 10) mes "- Chonchon Soulcard";
+	if (@RSCMUECARMAN == 11) mes "- Willow Soulcard";
+	if (@RSCMUECARMAN == 12) mes "- Condor Soulcard";
+	if (@RSCMUECARMAN == 13) mes "- Roda Frog Soulcard";
+	if (@RSCMUECARMAN == 14) mes "- Thief Bug Soulcard";
+	if (@RSCMUECARMAN == 15) mes "- Savage Babe Soulcard";
+	if (@RSCMUECARMAN == 16) mes "- Hornet Soulcard";
+	if (@RSCMUECARMAN == 17) mes "- Rocker Soulcard";
+	if (@RSCMUECARMAN == 18) mes "- Ambernite Soulcard";
+	if (@RSCMUECARMAN == 19) mes "- Wormtail Soulcard";
+	if (@RSCMUECARMAN == 20) mes "- Snake Soulcard";
+	if (@RSCMUECARMAN == 21) mes "- Spore Soulcard";
+	if (@RSCMUECARMAN == 22) mes "- Stainer Soulcard";
+	if (@RSCMUECARMAN == 23) mes "- Creamy Soulcard";
+	if (@RSCMUECARMAN == 24) mes "- Steel Chonchon Soulcard";
+	if (@RSCMUECARMAN == 25) mes "- Coco Soulcard";
+	if (@RSCMUECARMAN == 26) mes "- Rafflesia Soulcard";
+	if (@RSCMUECARMAN == 27) mes "- Smokie Soulcard";
+	if (@RSCMUECARMAN == 28) mes "- Horn Soulcard";
+	if (@RSCMUECARMAN == 29) mes "- Peco Peco Soulcard";
+	if (@RSCMUECARMAN == 30) mes "- Elder Willow Soulcard";
+	if (@RSCMUECARMAN == 31) mes "- Caramel Soulcard";
+	if (@RSCMUECARMAN == 32) mes "- Golem Soulcard";
+	if (@RSCMUECARMAN == 33) mes "- Wolf Soulcard";
+	if (@RSCMUECARMAN == 34) mes "- Flora Soulcard";
+	if (@RSCMUECARMAN == 35) mes "- Savage Soulcard";
+	if (@RSCMUECARMAN == 36) mes "- Mastering Soulcard";
+	if (@RSCMUECARMAN == 37) mes "- Dragon Fly Soulcard";
+	if (@RSCMUECARMAN == 38) mes "- Knife Soulcard";
+	if (@RSCMUECARMAN == 39) mes "- Eclipse Soulcard";
+	if (@RSCMUECARMAN == 40) mes "- Toad Soulcard";
+	if (@RSCMUECARMAN == 41) mes "- Vocal Soulcard";
+	if (@RSCMUECARMAN == 42) mes "- Novice Soulcard";
+	if (@RSCMUECARMAN == 43) mes "- Familiar Soulcard";
+	if (@RSCMUECARMAN == 44) mes "- Drainliar Soulcard";
+	if (@RSCMUECARMAN == 45) mes "- Whisper Soulcard";
+	if (@RSCMUECARMAN == 46) mes "- Zombie Soulcard";
+	if (@RSCMUECARMAN == 47) mes "- Poporing Soulcard";
+	if (@RSCMUECARMAN == 48) mes "- Skeleton Soulcard";
+	if (@RSCMUECARMAN == 49) mes "- Archer Skeleton Soulcard";
+	if (@RSCMUECARMAN == 50) mes "- Soldier Skeleton Soulcard";
+	if (@RSCMUECARMAN == 51) mes "- Mandragora Soulcard";
+	if (@RSCMUECARMAN == 52) mes "- Hydra Soulcard";
+	if (@RSCMUECARMAN == 53) mes "- Eggyra Soulcard";
+	if (@RSCMUECARMAN == 54) mes "- Nine Tail Soulcard";
+	if (@RSCMUECARMAN == 55) mes "- Sohee Soulcard";
+	if (@RSCMUECARMAN == 56) mes "- Giant Whisper Soulcard";
+	if (@RSCMUECARMAN == 57) mes "- Skeleton General Soulcard";
+	if (@RSCMUECARMAN == 58) mes "- Bongun Soulcard";
+	if (@RSCMUECARMAN == 59) mes "- Payon Dungeon Soulcard";
+	if (@RSCMUECARMAN == 60) mes "- Mammonite Soulcard";
+	if (@RSCMUECARMAN == 61) mes "- Long Mace Soulcard";
+	if (@RSCMUECARMAN == 62) mes "- Am Mut Soulcard";
+	if (@RSCMUECARMAN == 63) mes "- Dokebi Soulcard";
+	if (@RSCMUECARMAN == 64) mes "- Munak Soulcard";
+	if (@RSCMUECARMAN == 65) mes "- Greatest General Soulcard";
+	if (@RSCMUECARMAN == 66) mes "- Cat o' Nine Tails Soulcard";
+	if (@RSCMUECARMAN == 67) mes "- Moonlight Flower Soulcard";
+	if (@RSCMUECARMAN == 68) mes "- Horong Soulcard";
+	if (@CompCarMan < 3) {set @CompCarMan,@CompCarMan+1; goto repite2;}
+	if (@CompCarMan >= 3) set @CompCarMan,0;
+	mes " ";
+	mes "[^CC0000Comandos^000000]";
+	mes "estados - Muestra todos tus estados.";
+	mes "c1,c2,c3,c4 - Comprueba la carta en el orden especificado.";
+	mes "u1,u2,u3,u4 - Usa la carta en el orden especificado.";
+	mes " ";
+	mes "[^CC0000Ayuda^000000]";
+	mes "Introduce c1 para comprobar la primera de tus cartas, si lo que quieres es usarla introduce u1.";
+	mes "(c2 y u2 para la segunda carta, etc...)";
+	next;
+	cutin "",255;
+	input @RSCComando$;
+	if (@RSCComando$ == "c1") {set @RSCManoNum,@RSCMano1; goto comprobar;}
+	if (@RSCComando$ == "c2") {set @RSCManoNum,@RSCMano2; goto comprobar;}
+	if (@RSCComando$ == "c3") {set @RSCManoNum,@RSCMano3; goto comprobar;}
+	if (@RSCComando$ == "c4") {set @RSCManoNum,@RSCMano4; goto comprobar;}
+	if (@RSCComando$ == "u1") {set @RSCManoNum,@RSCMano1; set @RSCMano1,0; goto usar;}
+	if (@RSCComando$ == "u2") {set @RSCManoNum,@RSCMano2; set @RSCMano2,0; goto usar;}
+	if (@RSCComando$ == "u3") {set @RSCManoNum,@RSCMano3; set @RSCMano3,0; goto usar;}
+	if (@RSCComando$ == "u4") {set @RSCManoNum,@RSCMano4; set @RSCMano4,0; goto usar;}
+	if (@RSCComando$ == "estados") {goto estados;}
+	goto repite;
+	end;
+
+comprobar:
+if (@RSCManoNum == 1) cutin "RSCPORING",4;
+if (@RSCManoNum == 2) cutin "RSCPICKY",4;
+if (@RSCManoNum == 3) cutin "RSCPICKYEGG",4;
+if (@RSCManoNum == 4) cutin "RSCFABRE",4;
+if (@RSCManoNum == 5) cutin "RSCPUPA",4;
+if (@RSCManoNum == 6) cutin "RSCLUNATIC",4;
+if (@RSCManoNum == 7) cutin "RSCPECOPECOEGG",4;
+if (@RSCManoNum == 8) cutin "RSCDROPS",4;
+if (@RSCManoNum == 9) cutin "RSCTHIEFBUGEGG",4;
+if (@RSCManoNum == 10) cutin "RSCCHONCHON",4;
+if (@RSCManoNum == 11) cutin "RSCWILLOW",4;
+if (@RSCManoNum == 12) cutin "RSCCONDOR",4;
+if (@RSCManoNum == 13) cutin "RSCRODAFROG",4;
+if (@RSCManoNum == 14) cutin "RSCTHIEFBUG",4;
+if (@RSCManoNum == 15) cutin "RSCSAVAGEBABE",4;
+if (@RSCManoNum == 16) cutin "RSCHORNET",4;
+if (@RSCManoNum == 17) cutin "RSCROCKER",4;
+if (@RSCManoNum == 18) cutin "RSCAMBERNITE",4;
+if (@RSCManoNum == 19) cutin "RSCWORMTAIL",4;
+if (@RSCManoNum == 20) cutin "RSCSNAKE",4;
+if (@RSCManoNum == 21) cutin "RSCSPORE",4;
+if (@RSCManoNum == 22) cutin "RSCSTAINER",4;
+if (@RSCManoNum == 23) cutin "RSCCREAMY",4;
+if (@RSCManoNum == 24) cutin "RSCSTEELCHONCHON",4;
+if (@RSCManoNum == 25) cutin "RSCCOCO",4;
+if (@RSCManoNum == 26) cutin "RSCRAFFLESIA",4;
+if (@RSCManoNum == 27) cutin "RSCSMOKIE",4;
+if (@RSCManoNum == 28) cutin "RSCHORN",4;
+if (@RSCManoNum == 29) cutin "RSCPECOPECO",4;
+if (@RSCManoNum == 30) cutin "RSCELDERWILLOW",4;
+if (@RSCManoNum == 31) cutin "RSCCARAMEL",4;
+if (@RSCManoNum == 32) cutin "RSCGOLEM",4;
+if (@RSCManoNum == 33) cutin "RSCWOLF",4;
+if (@RSCManoNum == 34) cutin "RSCFLORA",4;
+if (@RSCManoNum == 35) cutin "RSCSAVAGE",4;
+if (@RSCManoNum == 36) cutin "RSCMASTERING",4;
+if (@RSCManoNum == 37) cutin "RSCDRAGONFLY",4;
+if (@RSCManoNum == 38) cutin "RSCKNIFE",4;
+if (@RSCManoNum == 39) cutin "RSCECLIPSE",4;
+if (@RSCManoNum == 40) cutin "RSCTOAD",4;
+if (@RSCManoNum == 41) cutin "RSCVOCAL",4;
+if (@RSCManoNum == 42) cutin "RSCNOVICE",4;
+if (@RSCManoNum == 43) cutin "RSCFAMILIAR",4;
+if (@RSCManoNum == 44) cutin "RSCDRAINLIAR",4;
+if (@RSCManoNum == 45) cutin "RSCWHISPER",4;
+if (@RSCManoNum == 46) cutin "RSCZOMBIE",4;
+if (@RSCManoNum == 47) cutin "RSCPOPORING",4;
+if (@RSCManoNum == 48) cutin "RSCSKELETON",4;
+if (@RSCManoNum == 49) cutin "RSCARCHERSKELETON",4;
+if (@RSCManoNum == 50) cutin "RSCSOLDIERSKELETON",4;
+if (@RSCManoNum == 51) cutin "RSCMANDRAGORA",4;
+if (@RSCManoNum == 52) cutin "RSCHYDRA",4;
+if (@RSCManoNum == 53) cutin "RSCEGGYRA",4;
+if (@RSCManoNum == 54) cutin "RSCNINETAIL",4;
+if (@RSCManoNum == 55) cutin "RSCSOHEE",4;
+if (@RSCManoNum == 56) cutin "RSCGIANTWHISPER",4;
+if (@RSCManoNum == 57) cutin "RSCSKELETONGENERAL",4;
+if (@RSCManoNum == 58) cutin "RSCBONGUN",4;
+if (@RSCManoNum == 59) cutin "RSCPAYONDUNGEON",4;
+if (@RSCManoNum == 60) cutin "RSCMAMMONITE",4;
+if (@RSCManoNum == 61) cutin "RSCLONGMACE",4;
+if (@RSCManoNum == 62) cutin "RSCAMMUT",4;
+if (@RSCManoNum == 63) cutin "RSCDOKEBI",4;
+if (@RSCManoNum == 64) cutin "RSCMUNAK",4;
+if (@RSCManoNum == 65) cutin "RSCGREATESTGENERAL",4;
+if (@RSCManoNum == 66) cutin "RSCCATONINE",4;
+if (@RSCManoNum == 67) cutin "RSCMOONLIGHTFLOWER",4;
+if (@RSCManoNum == 68) cutin "RSCHORONG",4;
+goto repite;
+end;
+
+estados:
+mes "* Estado de "+strcharinfo(0)+" *";
+mes "---------------------------";
+mes "- Nivel RSC: "+$@RSCnivel1+"";
+mes "- HP:^B40404 "+$@RSChp1+"/"+$@RSCmhp1+" ^000000";
+mes "- SP:^0B0B61 "+$@RSCsp1+"/"+$@RSCmsp1+" ^000000";
+mes "- Estado: Normal";
+next;
+mes "* Atributos de "+strcharinfo(0)+" *";
+mes "---------------------------";
+mes "- ^DF0101 STR:^000000 "+$@RSCstr1+"";
+mes "- ^FF8000 AGI:^000000 "+$@RSCagi1+"";
+mes "- ^7401DF VIT:^000000 "+$@RSCvit1+"";
+mes "- ^0080FF INT:^000000 "+$@RSCint1+"";
+mes "- ^088A08 DEX:^000000 "+$@RSCdex1+"";
+mes "- ^B404AE LUK:^000000 "+$@RSCluk1+"";
+next;
+mes "* Bonos de "+strcharinfo(0)+" *";
+mes "---------------------------";
+mes "- ^B40404Ataque:^000000 "+$@RSCataque1+"";
+mes "- ^4B8A08Defensa:^000000 "+$@RSCdefensa1+"";
+mes "- ^0174DFDefensa Mágica:^000000 "+$@RSCdefensamag1+"";
+mes "- ^DF7401Precisión:^000000 "+$@RSCprecision1+"";
+mes "- ^AEB404Evasión:^000000 "+$@RSCevasion1+"";
+mes "- ^DF0174Golpes Críticos:^000000 "+$@RSCcritical1+"%";
+next;
+mes "* Defensas de "+strcharinfo(0)+" *";
+mes "---------------------------";
+mes "- Defensa a ^DF0101Fuego^000000: "+$@RSCdeffue1+"";
+mes "- Defensa a ^0080FFAgua^000000: "+$@RSCdefagu1+"";
+mes "- Defensa a ^04B45FViento^000000: "+$@RSCdefvie1+"";
+mes "- Defensa a ^8A4B08Tierra^000000: "+$@RSCdeftie1+"";
+mes "- Defensa a ^AEB404Sagrado^000000: "+$@RSCdefsag1+"";
+mes "- Defensa a ^380B61Oscuro^000000: "+$@RSCdefosc1+"";
+mes "- Defensa a ^9A2EFEVeneno^000000: "+$@RSCdefven1+"";
+mes "- Defensa a ^A4A4A4Fantasma^000000: "+$@RSCdeffan1+"";
+mes "- Defensa a ^6E6E6EArmas de Rango^000000: "+$@RSCdefran1+"";
+next;
+goto repite;
+
+usar:
+
+
+// ====================================================
+// -------------- Efectos de Ataque -------------------
+// ====================================================
+if (@RSCUpaydun ==1) set @RSCpoison,5;
+
+
+// ====================================================
+// ---------------- Poring Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 1) {cutin "RSCPORING",4; set $@RSCCUTIN,1; 
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Poring Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500; 
+specialeffect2 273;
+sleep2 3000; 
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCcritical1,$@RSCcritical1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Picky Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 2) {cutin "RSCPICKY",4; set $@RSCCUTIN,2;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Picky Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSChp1,$@RSChp1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Picky Egg Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 3) {cutin "RSCPICKYEGG",4; set $@RSCCUTIN,3;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Picky Egg Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,0;
+set @RSCataqelem,0;
+set $@RSCmhp1,$@RSCmhp1+1;
+set $@RSChp1,$@RSChp1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Fabre Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 4) {cutin "RSCFABRE",4; set $@RSCCUTIN,4;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Fabre Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSChp1,$@RSChp1+1;
+set $@RSCsp1,$@RSCsp1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Pupa Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 5) {cutin "RSCPUPA",4; set $@RSCCUTIN,5;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Pupa Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,0;
+set @RSCataqelem,0;
+set $@RSCmhp1,$@RSCmhp1+5;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Lunatic Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 6) {cutin "RSCLUNATIC",4; set $@RSCCUTIN,6; 
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Lunatic Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500; 
+specialeffect2 273;
+sleep2 3000; 
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCcritical1,$@RSCcritical1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------ Peco Peco Egg Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 7) {cutin "RSCPECOPECOEGG",4; set $@RSCCUTIN,7; 
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Peco Peco Egg Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500; 
+specialeffect2 273;
+sleep2 3000; 
+set @RSCdamage,0;
+set @RSCataqelem,0;
+set $@RSCvit1,$@RSCvit1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------------- Drops Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 8) {cutin "RSCDROPS",4; set $@RSCCUTIN,8; 
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Drops Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500; 
+specialeffect2 273;
+sleep2 3000; 
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdeffue1,$@RSCdeffue1+1;
+set $@RSCdefagu1,$@RSCdefagu1-1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------ Thief Bug Egg Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 9) {cutin "RSCTHIEFBUGEGG",4; set $@RSCCUTIN,9; 
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Thief Bug Egg Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500; 
+specialeffect2 273;
+sleep2 3000; 
+set @RSCdamage,0;
+set @RSCataqelem,0;
+set $@RSCevasion1,$@RSCevasion1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Chonchon Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 10) {cutin "RSCCHONCHON",4; set $@RSCCUTIN,10; 
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Chonchon Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500; 
+specialeffect2 273;
+sleep2 3000; 
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCevasion1,$@RSCevasion1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Willow Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 11) {cutin "RSCWILLOW",4; set $@RSCCUTIN,11;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Willow Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCmsp1,$@RSCmsp1+1;
+set $@RSCsp1,$@RSCsp1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Condor Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 12) {cutin "RSCCONDOR",4; set $@RSCCUTIN,12;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Condor Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCevasion1,$@RSCevasion1+1;
+set $@RSCsp1,$@RSCsp1-1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Roda Frog Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 13) {cutin "RSCRODAFROG",4; set $@RSCCUTIN,13;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Roda Frog Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSChp1,$@RSChp1+2;
+set $@RSCmsp1,$@RSCmsp1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Thief Bug Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 14) {cutin "RSCTHIEFBUG",4; set $@RSCCUTIN,14;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Thief Bug Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Savage Babe Soulcard --------------
+// ====================================================
+if (@RSCManoNum == 15) {cutin "RSCSAVAGEBABE",4; set $@RSCCUTIN,15;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Savage Babe Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set @RSCstun,5;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Hornet Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 16) {cutin "RSCHORNET",4; set $@RSCCUTIN,16;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Hornet Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCstr1,$@RSCstr1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Rocker Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 17) {cutin "RSCROCKER",4; set $@RSCCUTIN,17;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Rocker Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdex1,$@RSCdex1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Ambernite Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 18) {cutin "RSCAMBERNITE",4; set $@RSCCUTIN,18;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Ambernite Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdefagu1,$@RSCdefagu1+1;
+set $@RSCdefvie1,$@RSCdefvie1-1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Wormtail Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 19) {cutin "RSCWORMTAIL",4; set $@RSCCUTIN,19;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Wormtail Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdex1,$@RSCdex1+1;
+set $@RSCdeffue1,$@RSCdeffue1-1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Snake Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 20) {cutin "RSCSNAKE",4; set $@RSCCUTIN,20;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Snake Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set @RSCpoison,5;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Spore Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 21) {cutin "RSCSPORE",4; set $@RSCCUTIN,21;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Spore Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCvit1,$@RSCvit1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Stainer Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 22) {cutin "RSCSTAINER",4; set $@RSCCUTIN,22;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Stainer Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+1;
+set $@RSCdex1,$@RSCdex1-1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Creamy Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 23) {cutin "RSCCREAMY",4; set $@RSCCUTIN,23;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Creamy Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCint1,$@RSCint1+3;
+set $@RSCdex1,$@RSCdex1-2;
+set $@RSCstr1,$@RSCstr1-2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------ Steel Chonchon Soulcard ---------------
+// ====================================================
+if (@RSCManoNum == 24) {cutin "RSCSTEELCHONCHON",4; set $@RSCCUTIN,24;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Steel Chonchon Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+1;
+set $@RSCstr1,$@RSCstr1-1;
+set $@RSCdefvie1,$@RSCdefvie1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Coco Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 25) {cutin "RSCCOCO",4; set $@RSCCUTIN,25;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Coco Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdex1,$@RSCdex1+1;
+set $@RSCagi1,$@RSCagi1-1;
+set $@RSCdeftie1,$@RSCdeftie1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Rafflesia Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 26) {cutin "RSCRAFFLESIA",4; set $@RSCCUTIN,26;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Rafflesia Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+4;
+set $@RSCataque1,$@RSCataque1-1;
+set $@RSCdeftie1,$@RSCdeftie1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Smokie Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 27) {cutin "RSCSMOKIE",4; set $@RSCCUTIN,27;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Smokie Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdeftie1,$@RSCdeftie1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Horn Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 28) {cutin "RSCHORN",4; set $@RSCCUTIN,28;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Horn Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdefran1,$@RSCdefran1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------- Peco Peco Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 29) {cutin "RSCPECOPECO",4; set $@RSCCUTIN,29;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Peco Peco Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 3000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCvit1,$@RSCvit1+1;
+set $@RSCmhp1,$@RSCmhp1+5;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------- Elder Willow Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 30) {cutin "RSCELDERWILLOW",4; set $@RSCCUTIN,30;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Elder Willow Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,2;
+set $@RSCsp1,$@RSCsp1+1;
+set $@RSCint1,$@RSCint1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Caramel Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 31) {cutin "RSCCARAMEL",4; set $@RSCCUTIN,31;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Caramel Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+1;
+set $@RSCcritical1,$@RSCcritical1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------------ Golem Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 32) {cutin "RSCGOLEM",4; set $@RSCCUTIN,32;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Golem Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdefensa1,$@RSCdefensa1+1;
+set $@RSCmhp1,$@RSCmhp1-10;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------------- Wolf Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 33) {cutin "RSCWOLF",4; set $@RSCCUTIN,33;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Wolf Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCataque1,$@RSCataque1+1;
+set $@RSCmhp1,$@RSCmhp1-10;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------------ Flora Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 34) {cutin "RSCFLORA",4; set $@RSCCUTIN,34;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Flora Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1-2;
+set $@RSCmhp1,$@RSCmhp1+8;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------------ Savage Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 35) {cutin "RSCSAVAGE",4; set $@RSCCUTIN,35;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Savage Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCvit1,$@RSCvit1+3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ----------------- Mastering Soulcard ---------------
+// ====================================================
+if (@RSCManoNum == 36) {cutin "RSCMASTERING",4; set $@RSCCUTIN,36;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Mastering Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCluk1,$@RSCluk1+2;
+set $@RSCcritical1,$@RSCcritical1+3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Dragon Fly Soulcard ---------------
+// ====================================================
+if (@RSCManoNum == 37) {cutin "RSCDRAGONFLY",4; set $@RSCCUTIN,37;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Dragon Fly Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------------- Knife Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 38) {cutin "RSCKNIFE",4; set $@RSCCUTIN,38;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Knife Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+if ($@RSCstr1 < 5) set @RSCdamage,1;
+if ($@RSCstr1 >= 5) set @RSCdamage,2;
+set @RSCataqelem,0;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ---------------- Eclipse Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 39) {cutin "RSCECLIPSE",4; set $@RSCCUTIN,39;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Eclipse Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCluk1,$@RSCluk1+1;
+set @RSCsleep,25;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------------- Toad Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 40) {cutin "RSCTOAD",4; set $@RSCCUTIN,40;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Toad Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,3;
+set $@RSCvit1,$@RSCvit1+1;
+set @RSCpoison,25;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------------- Vocal Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 41) {cutin "RSCVOCAL",4; set $@RSCCUTIN,41;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Vocal Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdex1,$@RSCdex1+1;
+set @RSCsilence,25;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------------- Novice Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 42) {cutin "RSCNOVICE",4; set $@RSCCUTIN,42;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Novice Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSChp1,$@RSChp1+5;
+set $@RSCstr2,$@RSCstr2-2;
+set $@RSCagi2,$@RSCagi2-2;
+set $@RSCvit2,$@RSCvit2-2;
+set $@RSCint2,$@RSCint2-2;
+set $@RSCdex2,$@RSCdex2-2;
+set $@RSCluk2,$@RSCluk2-2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Familiar Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 43) {cutin "RSCFAMILIAR",4; set $@RSCCUTIN,43;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Familiar Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCprecision2,$@RSCprecision2-1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Drainliar Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 44) {cutin "RSCDRAINLIAR",4; set $@RSCCUTIN,44;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Drainliar Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,3;
+set $@RSChp1,$@RSChp1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Whisper Soulcard ------------------
+// ====================================================
+if (@RSCManoNum == 45) {cutin "RSCWHISPER",4; set $@RSCCUTIN,45;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Whisper Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,2;
+set @RSCataqelem,9;
+set $@RSCvit1,$@RSCvit1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Zombie Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 46) {cutin "RSCZOMBIE",4; set $@RSCCUTIN,46;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Zombie Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSChp1,$@RSChp1+2;
+set $@RSCdefven1,$@RSCdefven1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Poporing Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 47) {cutin "RSCPOPORING",4; set $@RSCCUTIN,47;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Poporing Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+if ($@RSCenfermedad1 == 3){mapannounce "gon_test",""+strcharinfo(0)+" deja de estar envenenado.",bc_yellow; set $@RSCenfermedad1,0;}
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Skeleton Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 48) {cutin "RSCSKELETON",4; set $@RSCCUTIN,48;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Skeleton Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set @RSCstun,5;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ----------- Archer Skeleton Soulcard ---------------
+// ====================================================
+if (@RSCManoNum == 49) {cutin "RSCARCHERSKELETON",4; set $@RSCCUTIN,49;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Archer Skeleton Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCdex1,$@RSCdex1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ----------- Soldier Skeleton Soulcard --------------
+// ====================================================
+if (@RSCManoNum == 50) {cutin "RSCSOLDIERSKELETON",4; set $@RSCCUTIN,50;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Soldier Skeleton Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCcritical1,$@RSCcritical1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// -------------- Mandragora Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 51) {cutin "RSCMANDRAGORA",4; set $@RSCCUTIN,51;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Mandragora Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,rand(1,3);
+set @RSCataqelem,0;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Hydra Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 52) {cutin "RSCHYDRA",4; set $@RSCCUTIN,52;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Hydra Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,rand(1,3);
+set @RSCataqelem,3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ---------------- Eggyra Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 53) {cutin "RSCEGGYRA",4; set $@RSCCUTIN,53;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Eggyra Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCvit1,$@RSCvit1+rand(1,4);
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ------------- Nine Tail Soulcard -------------------
+// ====================================================
+if (@RSCManoNum == 54) {cutin "RSCNINETAIL",4; set $@RSCCUTIN,54;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Nine Tail Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,2;
+set @RSCataqelem,2;
+set $@RSCagi1,$@RSCagi1+3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// --------------- Sohee Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 55) {cutin "RSCSOHEE",4; set $@RSCCUTIN,55;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Sohee Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,2;
+set @RSCataqelem,0;
+set $@RSCint1,$@RSCint1+3;
+set $@RSCsp1,$@RSCsp1+3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// ----------- Giant Whisper Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 56) {cutin "RSCGIANTWHISPER",4; set $@RSCCUTIN,56;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Giant Whisper Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,2;
+set @RSCataqelem,9;
+set $@RSCstr1,$@RSCstr1+1;
+set $@RSCint1,$@RSCint1+1;
+set $@RSCdex1,$@RSCdex1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+// ====================================================
+// --------- Skeleton General Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 57) {cutin "RSCSKELETONGENERAL",4; set $@RSCCUTIN,57;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Skeleton General Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,2;
+set @RSCataqelem,0;
+set $@RSCluk1,$@RSCluk1+1;
+set $@RSCcritical1,$@RSCcritical1+2;
+set $@RSCagi1,$@RSCagi1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// --------------- Bongun Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 58) {cutin "RSCBONGUN",4; set $@RSCCUTIN,58;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Bongun Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+if (@RSCUmunak == 0) set @RSCdamage,2;
+if (@RSCUmunak == 1) set @RSCdamage,3;
+set @RSCataqelem,0;
+if (@RSCUmunak == 0) set $@RSCstr1,$@RSCstr1+2;
+if (@RSCUmunak == 1) set $@RSCstr1,$@RSCstr1+3;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ----------- Payon Dungeon Soulcard -----------------
+// ====================================================
+if (@RSCManoNum == 59) {cutin "RSCPAYONDUNGEON",4; set $@RSCCUTIN,59;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Payon Dungeon Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,0;
+set @RSCataqelem,0;
+set @RSChechizo,1;
+set @RSCUpaydun,1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------ Mammonite Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 60) {cutin "RSCMAMMONITE",4; set $@RSCCUTIN,60;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Mammonite Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,0;
+if ($@RSCstr1 >= 15){
+set @RSCdamage,3;
+set @RSCataqelem,1;
+if ($@RSCstr1 >= 90) {set @RSCdamage,@RSCdamage+9; goto fasecombate;}
+if ($@RSCstr1 >= 80) {set @RSCdamage,@RSCdamage+8; goto fasecombate;}
+if ($@RSCstr1 >= 70) {set @RSCdamage,@RSCdamage+7; goto fasecombate;}
+if ($@RSCstr1 >= 60) {set @RSCdamage,@RSCdamage+6; goto fasecombate;}
+if ($@RSCstr1 >= 50) {set @RSCdamage,@RSCdamage+5; goto fasecombate;}
+if ($@RSCstr1 >= 40) {set @RSCdamage,@RSCdamage+4; goto fasecombate;}
+if ($@RSCstr1 >= 30) {set @RSCdamage,@RSCdamage+3; goto fasecombate;}
+if ($@RSCstr1 >= 20) {set @RSCdamage,@RSCdamage+2; goto fasecombate;}
+if ($@RSCstr1 >= 10) {set @RSCdamage,@RSCdamage+1; goto fasecombate;}}
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// ------------ Long Mace Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 61) {cutin "RSCLONGMACE",4; set $@RSCCUTIN,61;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Long Mace Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+if ($@RSCstr1 >= 12){
+set @RSCdamage,2;
+set @RSCataqelem,0;
+if ($@RSCvit1 >= 90) {set @RSCdefran1,@RSCdefran1+9; goto fasecombate;}
+if ($@RSCvit1 >= 80) {set @RSCdefran1,@RSCdefran1+8; goto fasecombate;}
+if ($@RSCvit1 >= 70) {set @RSCdefran1,@RSCdefran1+7; goto fasecombate;}
+if ($@RSCvit1 >= 60) {set @RSCdefran1,@RSCdefran1+6; goto fasecombate;}
+if ($@RSCvit1 >= 50) {set @RSCdefran1,@RSCdefran1+5; goto fasecombate;}
+if ($@RSCvit1 >= 40) {set @RSCdefran1,@RSCdefran1+4; goto fasecombate;}
+if ($@RSCvit1 >= 30) {set @RSCdefran1,@RSCdefran1+3; goto fasecombate;}
+if ($@RSCvit1 >= 20) {set @RSCdefran1,@RSCdefran1+2; goto fasecombate;}
+if ($@RSCvit1 >= 10) {set @RSCdefran1,@RSCdefran1+1; goto fasecombate;}}
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// -------------- Am Mut Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 62) {cutin "RSCAMMUT",4; set $@RSCCUTIN,62;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Am Mut Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,2;
+set @RSCataqelem,4;
+set $@RSCstr1,$@RSCstr1+2;
+set $@RSCint1,$@RSCint1+1;
+set @RSCUammut,1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// -------------- Dokebi Soulcard ---------------------
+// ====================================================
+if (@RSCManoNum == 63) {cutin "RSCDOKEBI",4; set $@RSCCUTIN,63;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Dokebi Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,4;
+if (@RSCUammut == 0) set $@RSCint1,$@RSCint1+1;
+if (@RSCUammut == 1) set $@RSCint1,$@RSCint1+2;
+if (@RSCUammut == 1) set $@RSChp1,$@RSChp1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// -------------- Munak Soulcard ----------------------
+// ====================================================
+if (@RSCManoNum == 64) {cutin "RSCMUNAK",4; set $@RSCCUTIN,64;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Munak Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set $@RSCstr1,$@RSCstr1+1;
+set $@RSCdex1,$@RSCdex1+1;
+set $@RSCmhp1,$@RSCmhp1+1;
+set @RSCUmunak,1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// --------- Greatest General Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 65) {cutin "RSCGREATESTGENERAL",4; set $@RSCCUTIN,65;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Greatest General Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+set @RSCazar,rand(1,3);
+if (@RSCazar == 1) set $@RSCint1,$@RSCint1+2;
+if (@RSCazar == 2) set $@RSCsp1,$@RSCsp1+3;
+if (@RSCazar == 3) set $@RSCmsp1,$@RSCmsp1+2;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// --------- Cat o' Nine Tails Soulcard ---------------
+// ====================================================
+if (@RSCManoNum == 66) {cutin "RSCCATONINE",4; set $@RSCCUTIN,66;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Cat 'o Nine Tails Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,3;
+set @RSCataqelem,0;
+set $@RSCagi1,$@RSCagi1+rand(1,8);
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// --------- Moonlight Flower Soulcard ----------------
+// ====================================================
+if (@RSCManoNum == 67) {cutin "RSCMOONLIGHTFLOWER",4; set $@RSCCUTIN,67;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Moonlight Flower Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,6;
+set @RSCataqelem,2;
+set $@RSCstr1,$@RSCstr1+3;
+set @RSCstun,10;
+set $@RSCdeffue1,$@RSCdeffue1+1;
+if ($@RSCstr1 >= 50) set $@RSCataque1,$@RSCataque1+1;
+cutin "",255;
+goto fasecombate;
+end;}
+
+// ====================================================
+// --------------- Horong Soulcard --------------------
+// ====================================================
+if (@RSCManoNum == 68) {cutin "RSCHORONG",4; set $@RSCCUTIN,68;
+mapannounce "gon_test","[Ataque] "+strcharinfo(0)+" usa: Horong Soulcard ",bc_yellow; 
+specialeffect2 58;
+sleep2 500;
+specialeffect2 273;
+sleep2 1000;
+set @RSCdamage,1;
+set @RSCataqelem,0;
+if ($@RSCenfermedad2 == 3) set @RSCdamage,5;
+cutin "",255;
+goto fasecombate;
+end;}
+
+
+
+// ====================================================
+// --------------- Fase de Combate --------------------
+// ====================================================
+
+fasecombate:
+set @RSCdamage,@RSCdamage+$@RSCataque1;
+if (@RSCdamage <= -1) set @RSCdamage,0;
+set @RSCcridamage,rand(1,100);
+if (@RSCcridamage <= $@RSCcritical1) {set @RSCdamage,@RSCdamage+$@RSCluk1; mapannounce "gon_test","[Especial] ¡¡Golpe Crítico!!",bc_yellow;}
+set @RSCataqextra,rand(1,100);
+set @RSCdamageextra,rand(1,3);
+if (@RSCataqextra <= $@RSCagi1) {set @RSCdamage,@RSCdamage+@RSCdamageextra; mapannounce "gon_test","[Especial] ¡¡Ataque Extra!!",bc_yellow;}
+set $@RSCprecisave,$@RSCprecision1;
+set $@RSCprecision1,$@RSCprecision1-$@RSCevasion2;
+set @RSCacierto,rand(1,100);
+if (@RSCacierto > $@RSCprecision1) {set @RSCdamage,0; sleep2 1000; mapannounce "gon_test","[Especial] ¡¡Has fallado el ataque!!",bc_yellow;}
+set $@RSCprecision1,$@RSCprecisave;
+sleep2 1000;
+if (@RSCataqelem == 0) {set @RSCdamage,@RSCdamage-$@RSCdefensa2; mapannounce "gon_test","[Elemento] Ataque de Elemento Neutral",bc_yellow;}
+if (@RSCataqelem == 1) {set @RSCdamage,@RSCdamage-$@RSCdefensamag2; mapannounce "gon_test","[Elemento] Ataque de Elemento Neutral",bc_yellow;}
+if (@RSCataqelem == 2) {set @RSCdamage,@RSCdamage-$@RSCdeffue2; mapannounce "gon_test","[Elemento] Ataque de Elemento Fuego",bc_yellow;}
+if (@RSCataqelem == 3) {set @RSCdamage,@RSCdamage-$@RSCdefagu2; mapannounce "gon_test","[Elemento] Ataque de Elemento Agua",bc_yellow;}
+if (@RSCataqelem == 4) {set @RSCdamage,@RSCdamage-$@RSCdefvie2; mapannounce "gon_test","[Elemento] Ataque de Elemento Viento",bc_yellow;}
+if (@RSCataqelem == 5) {set @RSCdamage,@RSCdamage-$@RSCdeftie2; mapannounce "gon_test","[Elemento] Ataque de Elemento Tierra",bc_yellow;}
+if (@RSCataqelem == 6) {set @RSCdamage,@RSCdamage-$@RSCdefsag2; mapannounce "gon_test","[Elemento] Ataque de Elemento Sagrado",bc_yellow;}
+if (@RSCataqelem == 7) {set @RSCdamage,@RSCdamage-$@RSCdefosc2; mapannounce "gon_test","[Elemento] Ataque de Elemento Oscuro",bc_yellow;}
+if (@RSCataqelem == 8) {set @RSCdamage,@RSCdamage-$@RSCdefven2; mapannounce "gon_test","[Elemento] Ataque de Elemento Veneno",bc_yellow;}
+if (@RSCataqelem == 9) {set @RSCdamage,@RSCdamage-$@RSCdeffan2; mapannounce "gon_test","[Elemento] Ataque de Elemento Fantasma",bc_yellow;}
+if (@RSCataqelem == 10) {set @RSCdamage,@RSCdamage-$@RSCdefran2; mapannounce "gon_test","[Elemento] Ataque con Arma de Rango",bc_yellow;}
+set @RSCstun,@RSCstun-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCstun) { set $@RSCenfermedad2,1; mapannounce "gon_test","[Estado] ¡¡El rival ha sido aturdido!!",bc_yellow;}
+set @RSCstun,0;
+set @RSCfreeze,@RSCfreeze-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCfreeze) { set $@RSCenfermedad2,2; mapannounce "gon_test","[Estado] ¡¡El rival ha sido congelado!!",bc_yellow; set $@RSCdefvie2,$@RSCdefvie2-1; set $@RSCdefhie2,$@RSCdefhie2+1;}
+set @RSCfreeze,0;
+set @RSCpoison,@RSCpoison-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCpoison) { set $@RSCenfermedad2,3; mapannounce "gon_test","[Estado] ¡¡El rival ha sido envenenado!!",bc_yellow;}
+set @RSCpoison,0;
+set @RSCsilence,@RSCsilence-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCsilence) { set $@RSCenfermedad2,4; mapannounce "gon_test","[Estado] ¡¡El rival ha sido enmudecido!!",bc_yellow; set $@RSCmspG2,$@RSCmsp2; set $@RSCspG2,$@RSCsp2; set $@RSCmsp2,0; set $@RSCsp2,0;}
+set @RSCsilence,0;
+set @RSCsleep,@RSCsleep-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCsleep) { set $@RSCenfermedad2,5; mapannounce "gon_test","[Estado] ¡¡El rival ha sido dormido!!",bc_yellow; set $@RSCdefensamag2,$@RSCdefensamag2-1;}
+set @RSCsleep,0;
+set @RSCstone,@RSCstone-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCstone) { set $@RSCenfermedad2,6; mapannounce "gon_test","[Estado] ¡¡El rival ha sido petrificado!!",bc_yellow; set $@RSCdeffue2,$@RSCdeffue2-1; set $@RSCdeftie2,$@RSCdeftie2+1;}
+set @RSCstone,0;
+set @RSCburn,@RSCburn-$@RSCvit2;
+set @RSCestado,rand(1,100);
+if (@RSCestado <= @RSCburn) { set $@RSCenfermedad2,7; mapannounce "gon_test","[Estado] ¡¡El rival ha sido quemado!!",bc_yellow;}
+set @RSCburn,0;
+if (@RSChechizo == 1) {set @RSCdamage,0; set @RSChechizo,0;}
+set $@RSChp2,$@RSChp2-@RSCdamage;
+if ($@RSChp1 >= $@RSCmhp1)set $@RSChp1,$@RSCmhp1;
+if ($@RSCsp1 >= $@RSCmsp1)set $@RSCsp1,$@RSCmsp1;
+if ($@RSCataque1 <= -1) set $@RSCataque1,0;
+if ($@RSCdefensa1 <= -1) set $@RSCdefensa1,0;
+if ($@RSCstr1 <= -1) set $@RSCstr1,0;
+if ($@RSCagi1 <= -1) set $@RSCagi1,0;
+if ($@RSCvit1 <= -1) set $@RSCvit1,0;
+if ($@RSCint1 <= -1) set $@RSCint1,0;
+if ($@RSCdex1 <= -1) set $@RSCdex1,0;
+if ($@RSCluk1 <= -1) set $@RSCluk1,0;
+if ($@RSCataque2 <= -1) set $@RSCataque2,0;
+if ($@RSCdefensa2 <= -1) set $@RSCdefensa2,0;
+if ($@RSCstr2 <= -1) set $@RSCstr2,0;
+if ($@RSCagi2 <= -1) set $@RSCagi2,0;
+if ($@RSCvit2 <= -1) set $@RSCvit2,0;
+if ($@RSCint2 <= -1) set $@RSCint2,0;
+if ($@RSCdex2 <= -1) set $@RSCdex2,0;
+if ($@RSCluk2 <= -1) set $@RSCluk2,0;
+if ($@RSCdamage <= -1) set $@RSCdamage,0;
+sleep2 1000;
+mapannounce "gon_test","[Efecto] Daño Total: "+@RSCdamage+" ",bc_yellow;
+set $@RSCCUTIN,0;
+if ($@RSChp1 <= 0){ sleep2 1000; mapannounce "gon_test",""+strcharinfo(0)+" pierde el duelo.",bc_yellow; specialeffect2 338; specialeffect2 381; sleep2 1000; goto perder;}
+if ($@RSChp2 <= 0){ sleep2 1000; mapannounce "gon_test",""+strcharinfo(0)+" gana el duelo.",bc_yellow; specialeffect2 338; specialeffect2 381; sleep2 1000; goto ganar;}
+set $@RSCtur1blo,1;
+set $@RSCtur2blo,0;
+sleep2 1000;
+close;
+end;
+
+ganar:
+set @RSCplayer,0;
+set $@RSCPremio,1;
+set $@RSCtur1blo,1;
+set $@RSCtur2blo,1;
+set @RSCGanador,1;
+set @RSCUpaydun,0;
+set @RSCUammut,0;
+set @RSCUmunak,0;
+close;
+end;
+
+perder:
+set @RSCplayer,0;
+set $@RSCPremio,1;
+set $@RSCtur1blo,1;
+set $@RSCtur2blo,1;
+set @RSCUpaydun,0;
+set @RSCUammut,0;
+set @RSCUmunak,0;
+close;
+end;
+}
+
+
+-	script	barrerasoulcards	-1,{
+OnInit:
+setcell "gon_test",56,91,59,82,cell_walkable,0;
+end;
+}

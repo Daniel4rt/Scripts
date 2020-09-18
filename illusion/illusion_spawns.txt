@@ -1,0 +1,77 @@
+//==================================================
+// gef_d01_i - Illusion of Vampire
+//==================================================
+gef_d01_i,171,59	boss_monster	--ja--	3757,1,3600000,600000,1
+gef_d01_i,179,103	monster	--ja--	3756,1,0
+gef_d01_i,0,0	monster	--ja--	3750,30,0
+gef_d01_i,0,0	monster	--ja--	3751,20,0
+gef_d01_i,0,0	monster	--ja--	3752,20,0
+gef_d01_i,0,0	monster	--ja--	3753,20,0
+gef_d01_i,0,0	monster	--ja--	3754,30,0
+gef_d01_i,0,0	monster	--ja--	3755,30,0
+
+//==================================================
+// pay_d03_i - Illusion of Moonlight
+//==================================================
+pay_d03_i,0,0	boss_monster	Angry Moonlight	3758,1,3600000,600000,1
+pay_d03_i,0,0	monster	Angry Nine Tail	3759,17,0
+pay_d03_i,0,0	monster	Cursed Munak	3760,36,0
+pay_d03_i,0,0	monster	Cursed Bongun	3761,37,0
+pay_d03_i,0,0	monster	Cursed Sohee	3762,35,0
+pay_d03_i,0,0	monster	Unfair Soldier	3763,29,0
+pay_d03_i,0,0	monster	Truthful Wizard	3764,1,0
+pay_d03_i,0,0	monster	Furious Hero	3765,1,0
+
+//==================================================
+// ice_d03_i - Illusion of Frozen
+//==================================================
+ice_d03_i,0,0	monster	Furious Gazeti	3792,42,0
+ice_d03_i,0,0	monster	Furious Snowier	3793,15,0
+ice_d03_i,0,0	monster	Furious Ice Titan	3794,70,0
+ice_d03_i,0,0	monster	Furious Iceicle	3795,32,0
+ice_d03_i,0,0	boss_monster	Awaken Ktullanux	3796,1,7200000,600000,1
+
+//==================================================
+// ein_d02_i - Illusion Teddy Bear
+//==================================================
+ein_d02_i,0,0	monster	Red Teddy Bear	20255,32,0
+ein_d02_i,0,0	monster	Yellow Teddy Bear	20256,32,0
+ein_d02_i,0,0	monster	Green Teddy Bear	20257,32,0
+ein_d02_i,0,0	monster	White Teddy Bear	20258,32,0
+ein_d02_i,0,0	monster	Blue Teddy Bear	20259,32,0
+ein_d02_i,0,0	monster	Hardworking Pitman	20261,15,0
+ein_d02_i,0,0	monster	Soul Fragment	20262,15,0
+ein_d02_i,0,0	monster	Haunted Obsidian	20263,15,0
+ein_d02_i,0,0	boss_monster	Shining Teddy Bear	20260,1,10800000,600000,1
+
+//==================================================
+// tur_d03_i - Desolate Village
+//==================================================
+tur_d03_i,0,0	monster	Ominous Permeter	3800,15,0
+tur_d03_i,0,0	monster	Ominous Frezzer	3801,40,0
+tur_d03_i,0,0	monster	Ominous Assaulter	3799,35,0
+tur_d03_i,0,0	monster	Ominous Heater	3803,10,0
+tur_d03_i,0,0	monster	Ominous Solider	3802,25,0
+tur_d03_i,218,70,0	warp	illutur	1,1,tur_d04_i,100,187
+
+//==================================================
+// tur_d04_i - Bleak King's Palace
+//==================================================
+tur_d04_i,0,0	monster	Ominous Permeter	3800,4,0
+tur_d04_i,0,0	monster	Ominous Freezer	3801,15,0
+tur_d04_i,0,0	monster	Ominous Assaulter	3799,42,0
+tur_d04_i,0,0	monster	Ominous Heater	3803,33,0
+tur_d04_i,100,111	boss_monster	Ominous Turtle General	3804,1,3600000,600000,1
+tur_d04_i,100,194,0	warp	illutur-1	1,1,tur_d03_i,218,75
+
+//==================================================
+// com_d02_i - Illusion of Luanda
+//==================================================
+com_d02_i,0,0	monster	--ja--	20270,15,0
+com_d02_i,0,0	monster	--ja--	20271,15,0
+com_d02_i,0,0	monster	--ja--	20272,15,0
+com_d02_i,0,0	monster	--ja--	20273,1,3600000,600000,1
+com_d02_i,0,0	monster	--ja--	20274,10,0
+com_d02_i,0,0	monster	--ja--	20275,10,0
+com_d02_i,0,0	monster	--ja--	20276,10,0
+com_d02_i,0,0	boss_monster	--ja--	20277,1,10800000,600000,1

@@ -1,0 +1,43 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---           Guerra de Territorios: Payon          ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+
+-	script	yd_pay_flag	722,{
+	mes "[^cc6600Bandera de Territorio^000000]";
+	mes "El territorio de ^5533ffPayon^000000,";
+	mes "le pertenece al gremio:"," ";
+	mes "^ff7070"+getguildname(getterritoryowner("pay_fild08"))+"^000000.";
+	close2;
+OnInit:
+OnClock0000:
+OnRecvFieldPay:
+	flagemblem getterritoryowner("pay_fild08");
+	end;
+}
+
+// Duplicados de Banderas
+//============================================================
+prontera,157,193,4	duplicate(yd_pay_flag)	Payon#yd	722
+pay_fild08,137,157,4	duplicate(yd_pay_flag)	Payon#empe	722
+pay_fild08,145,157,4	duplicate(yd_pay_flag)	Payon#empe2	722
+pay_fild08,134,194,4	duplicate(yd_pay_flag)	Payon#field1	722
+pay_fild08,31,75,4	duplicate(yd_pay_flag)	Payon#field2	722
+payon,174,108,4	duplicate(yd_pay_flag)	Payon#city	722
+
+// Territory War Manager
+//============================================================
+pay_fild08,141,152,0	duplicate(Yd_Manager)	War#pay_fild08	-1,100,100
+
+// Mapflags
+//============================================================
+pay_fild08	mapflag	loadevent

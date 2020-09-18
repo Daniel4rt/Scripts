@@ -1,0 +1,145 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---            Función de OnNPCKillEvent            ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+// Absolutamente todos los eventos que se ejecuten al
+// matar a un monstruo deben colocarse aquí, para evitar
+// sobrecargar al emulador con múltiples ejecuciones
+// al matar a un enemigo NPC (mob).
+// =======================================================
+-	script	DISABLE_OVERLAY_NPC	-1,{
+OnInit:
+// ==== Configuraciones iniciales ====
+
+	// Listado de libros
+	setarray .books,8540,8541,8542,8543,8544,8545,8546,8547,8548,8549,8550,8551;
+	
+	// Listado de ingredientes
+	setarray .ingredients,8530,8531,8532,8533,8534,8535;
+	
+	// Listado de frases al matar a un MvP
+	setarray .frase$,"mandado al otro mundo","mutilado","sepultado","enterrado","aniquilado","sodomizado","masacrado","asesinado","ejecutado","liquidado","hecho puré","pisoteado","extinguido","derrotado","vencido","destronado","exorcisado";
+
+	// Listado de materiales al matar a un MvP
+	setarray .mvpm,8570,8571,8572,8573,8574,8575,8576,25622,25629,25728,25730;
+
+	// Probabilidad que el MvP tire un material extra.
+	.rarechance = 30;
+
+	end;
+
+OnNPCKillEvent:
+// Base Data
+	.@mobid = killedrid;
+	.@moblv = getmonsterinfo(.@mobid,MOB_LV);
+
+	if(getofid()) {
+// ==== Archeology ====
+		if(getcharid(1) && getofid() == OFID_SQUIRE && getskilllv(3063) >= 1 && callfunc("F_IsRangeLevel",.@moblv,60))
+			if(rand(10000) < ((getoficiolvl()*3)/2))
+				spawnruina();
+	
+// ==== Reading Book ====
+		if(getofid() == OFID_BOOKER && checksc(SC_READINGBOOK) && getskilllv(3066) >= 1 && callfunc("F_IsRangeLevel",.@moblv,60))
+			if(rand(10000) < getoficiolvl()*3)
+				getitembound .books[rand(0,getarraysize(.books)-1)],1,Bound_Char;
+
+// ==== Lunch Time Ingredientes ====
+		if(getofid() == OFID_SQUIRE && getskilllv(3065) >= 1) {
+			if(rand(10000) < getoficiolvl()*3)
+				getitem .ingredients[rand(0,getarraysize(.ingredients)-1)],(rand(1,3)+(getoficiolvl()/10));
+			if(getoficiolvl() >= 30) {
+				if(rand(10000) < getoficiolvl()*4)
+					getitem 8535,(rand(1,3)+(getoficiolvl()/10));
+			}
+		}
+	}
+
+// ==== MvP Ranking ====
+	if ( getmonsterinfo( killedrid,MOB_MVPEXP ) ) {
+		if(title_mvp)
+			announce "<< [ "+getmonsterinfo(killedrid,MOB_NAME)+" ] ha sido "+.frase$[rand(getarraysize(.frase$)-1)]+" por [ "+strcharinfo(0)+" ] >>",bc_all,"0x"+color_mvp$;
+		else
+			announce "<< [ "+getmonsterinfo(killedrid,MOB_NAME)+" ] ha sido "+.frase$[rand(getarraysize(.frase$)-1)]+" por [ "+strcharinfo(0)+" ] >>",bc_all,"0xFF7070";
+		sleep2 3200;
+		if(title_mvp)
+			announce "<< ["+strcharinfo(0)+"]: "+title_mvp$+" >>",bc_all,"0x"+color_mvp$,800,16;
+		else
+			dispbottom "No cuentas con título, elígelo en el Ranker de Prontera para anunciarlo cuando mates un MvP.",0xFF5050;
+		ranking "mvp",1,1;
+		Puntos_MvP += 2;
+		dispbottom "============ [Ranker MvP ~ Estadísticas] ============",0xFF008D;
+		dispbottom "Has obtenido [1] punto en el Ranker MvP.",0x7070FF;
+		dispbottom "Tienes un total de ["+Puntos_MvP+"] puntos MvP.",0x7070FF;
+		if( getmonsterinfo( killedrid,MOB_MVPEXP ) > 100 ) {
+			query_sql("SELECT COUNT(*) FROM `bc_mvps_death` WHERE `mob_id` = '"+killedrid+"'",.@c);
+			if(.@c > 0)
+				query_sql("UPDATE `bc_mvps_death` SET `cuantity` = `cuantity` + 1 WHERE `mob_id` = '"+killedrid+"'");
+			else
+				query_sql("INSERT INTO `bc_mvps_death` (`mob_id`,`cuantity`) VALUES ('"+killedrid+"','1')");
+		}
+		
+		// Compartir puntos MvP con los miembros de la party.
+		getmapxy .@m$,.@x,.@y,0;
+		getpartymember getcharid(1);
+		.@c = $@partymembercount;
+		copyarray .@n$[0],$@partymembername$[0],.@c;
+		for(.@i = 0; .@i < .@c; .@i++) {
+			if(!isloggedin(getcharid(3,.@n$[.@i]),getcharid(0, .@n$[.@i])))
+				continue;
+			if(checkisdead(getcharid(0, .@n$[.@i])))
+				continue;
+			if(callfunc("F_CheckMacChar",getcharid(0, .@n$[.@i]),getcharid(3,.@n$[.@i])))
+				continue;
+			if(!(getmapxy(.@mapm$, .@xm, .@ym, 0, .@n$[.@i])) && (.@mapm$ == .@m$) && .@n$[.@i] != strcharinfo(0)) {
+				set Puntos_MvP,(getvar(Puntos_MvP,getcharid(0, .@n$[.@i]))+1),getcharid(0, .@n$[.@i]);
+				dispbottom "============ [MvP por Party ~ Estadísticas] ============",0xFF008D,getcharid(0, .@n$[.@i]);
+				dispbottom "Has obtenido [1] Punto MvP.",0x7070FF,getcharid(0, .@n$[.@i]);
+			}
+		}
+	}
+
+// ==== Verificación de un MvP con aura verde ====
+	if (checkgreenmvp(killedrid)) {
+		switch(killedrid) {
+			// Orc Warlord Token [50%]
+			case 1087:
+			case 1190:
+				if(rand(100) > 60) {
+					.@it = 25508;
+					break;
+				}
+			// Random MvP material
+			default:
+				do {
+					.@it = .mvpm[rand(getarraysize(.mvpm)-1)];
+				} while( .@it < 1 );
+				break;
+		}
+		sleep2 1000;
+		dispbottom "[Material Raro]: Has obtenido 1 x "+getitemname(.@it)+".",0x00FAFE;
+		getitem .@it,1;
+		sleep2 1000;
+		if(rand(100) < .rarechance) {
+			if(rand(1,2) == 1)
+				.@it = 25728;
+			else
+				.@it = 25730;
+			dispbottom "[Material Raro Extra]: Has obtenido 1 x "+getitemname(.@it)+".",0x00FAFE;
+			getitem .@it,1;
+		}
+	}
+
+// >> Insertar más códigos aquí. <<
+	
+end;
+}

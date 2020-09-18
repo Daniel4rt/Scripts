@@ -1,0 +1,2230 @@
+//===== rAthena Script ======================================= 
+//= Quest NPCs related to Banquet of Heroes
+//===== By: ================================================== 
+//= DanielArt
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= PoringRO Project
+//===== Description: ========================================= 
+//= Contains Quests:
+//= Learning about the families
+//= Ritual of Blessing
+//===== Additional Comments: ================================= 
+//= 1.0 First Version for Poring RO [DanielArt]
+//============================================================ 
+
+// == Warps
+// =================================
+
+// Entrada / Salida
+prt_gld,159,25,0	warp	prtg02_Castle	1,1,prt_cas,82,171
+prt_cas,82,175,0	warp	prtg01_Castle	1,1,prt_gld,159,32
+prontera,156,360,0	warp	ep16001	4,2,prt_cas,216,148
+prt_cas,216,143,0	warp	ep16004	1,1,prontera,156,356
+
+// Internos
+prt_cas,54,153,0	warp	ep16002	1,1,prt_cas,164,172
+prt_cas,164,176,0	warp	ep16003	1,1,prt_cas,54,159
+prt_cas,110,153,0	warp	ep16005	1,1,prt_cas,268,171
+prt_cas,268,176,0	warp	ep16006	1,1,prt_cas,110,158
+prt_cas,27,47,0	warp	ep16007	1,1,prt_cas,178,153
+prt_cas,178,148,0	warp	ep16008	1,1,prt_cas,27,41
+
+// Villa Izquierda
+prt_cas_q,132,120,0	warp	ep16009	1,1,prt_cas,272,164
+prt_cas_q,153,9,0	warp	ep16010	1,1,prt_cas,156,164
+prt_cas_q,33,29,0	warp	ep16011	1,1,prt_cas_q,134,9
+prt_cas_q,130,9,0	warp	ep16012	1,1,prt_cas_q,30,29
+prt_cas_q,33,78,0	warp	ep16013	1,1,prt_cas_q,135,33
+prt_cas_q,130,33,0	warp	ep16014	1,1,prt_cas_q,29,78
+prt_cas_q,130,56,0	warp	ep16015	1,1,prt_cas_q,29,129
+prt_cas_q,33,129,0	warp	ep16016	1,1,prt_cas_q,135,56
+prt_cas_q,130,81,0	warp	ep16017	1,1,prt_cas_q,28,178
+prt_cas_q,33,178,0	warp	ep16018	1,1,prt_cas_q,135,81
+
+// Villa Derecha
+prt_cas_q,153,120,0	warp	ep16019	1,1,prt_cas_q,80,22
+prt_cas_q,74,22,0	warp	ep16020	1,1,prt_cas_q,148,120
+prt_cas_q,153,144,0	warp	ep16021	1,1,prt_cas_q,80,78
+prt_cas_q,74,78,0	warp	ep16022	1,1,prt_cas_q,148,144
+prt_cas_q,153,168,0	warp	ep16023	1,1,prt_cas_q,78,131
+prt_cas_q,74,131,0	warp	ep16024	1,1,prt_cas_q,148,168
+prt_cas_q,153,192,0	warp	ep16025	1,1,prt_cas_q,78,189
+prt_cas_q,74,190,0	warp	ep16026	1,1,prt_cas_q,148,192
+
+// == Invitación
+// =================================
+prontera,161,179,4	script	Royal Errand Boy#ep16-invite	833,5,5,{
+	mes "[Royal Errand Boy]";
+	if(Q_BANQUET) {
+		mes "Podrá encontrar la celebración del banquete en el Castillo de Prontera, dirigiéndose al norte de este lugar.";
+		close;
+	}
+	if(BaseLevel >= 100 && ep13_yong1 > 2) {
+		mes "Oh, espera. Tu eres...";
+		mes strcharinfo(0)+", ¿cierto?";
+		mes "Veamos...";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Estoy en lo correcto, te miras exáctamente igual que la fotografía de los cuarteles del gremio, ¡hahahaha!";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Es dificil encontrar a aventureros que trabajan en lo que sea cuando no trabajan en la milicia, más que no perteneces a ninguna facción.";
+		next;
+		select("¿Te puedo ayudar?");
+		mes "[Royal Errand Boy]";
+		mes "¿Ayudarme?, ¡por supuesto!";
+		mes "Sabes que hay un banquete tomando lugar como celebración por derrotar a Satan Morroc, ¿cierto?";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Una invitación te ha sido enviada, pero ha sido imposible localizarte";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Estaba seguro de que todos nosotros anduvieron buscándote por la ciudad viendo tu fotografía.";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Bueno, no hay mucho tiempo, por favor toma esta invitación.";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Debes asistir al banquete, ¿entiendes?. ^5533ffHas sido llamado como un invitado especial^000000.";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "La gente del palacio te dará más detalles.";
+		mes "Yo solo soy un mensajero después de todo, el banquete empezará pronto, así que no tardes mucho en llegar.";
+		next;
+		mes "[Royal Errand Boy]";
+		mes "Asegúrate de llevar la invitación contigo, ¡no lo olvides!";
+		mes "¿Por qué no vas ahora mismo?";
+		next;
+		Q_BANQUET = 1;
+		getitem 6933,1;
+		mes "[Royal Errand Boy]";
+		mes "Por si no lo recuerdas el palacio está justo al norte de aquí, no tardes en llegar.";
+		close;
+	}
+	mes "Buenas tardes, actualmente hay un banquete dedicado a los héroes de Ash Vacuum, pero lamentablemente no veo que usted muestre alguna particularidad heróica, vuelva después por favor.";
+	close;
+OnTouch:
+	if(BaseLevel >= 100 && !Q_BANQUET && ep13_yong1 > 2)
+		npctalk "Tu debes ser "+strcharinfo(0)+", ven aquí, tengo algo que decirte.";
+	end;
+}
+
+prt_cas,161,168,5	script	Crusader#ep16-n1	751,{
+	mes "[Crusader]";
+	mes "Por este pasillo llegarás a los Castillos de Prontera.";
+	emotion ET_CRY;
+	close;
+}
+
+prt_cas,270,168,5	duplicate(Crusader#ep16-n1)	Crusader#ep16-n2	751
+
+// == Chamberlain Bell
+// =================================
+prt_cas,218,151,3	script	Chamberlain Bell#ep16e	967,5,5,{
+	if( Q_BANQUET == 1 && Q_BANQUET_E == 1 ) {
+		mes "[Chamberlain Bell]";
+		mes "Por favor sigame, vayamos por el camino alfombrado y luego gire hacia la izquierda, y prosiga totalmente recto, le estaré esperando.";
+		close;
+	}
+	mes "[Chamberlain Bell]";
+	mes "Bienvenid"+(Sex?"o":"a")+" al Castillo de Prontera, "+strcharinfo(0)+".";
+	close;
+OnTouch:
+	if( countitem(6933) && Q_BANQUET == 1 && !Q_BANQUET_E ) {
+		sleep2 300;
+		Q_BANQUET_E = 1;
+		npctalk "Estuve esperándote, "+strcharinfo(0)+", ven aquí por favor.",strnpcinfo(0),bc_self;
+	}
+	end;
+}
+
+prt_cas,156,166,5	script	Chamberlain Bell#ep16	967,10,10,{
+	if( Q_BANQUET == 2 ) {
+		mes "[Chamberlain Bell]";
+		mes "Por favor entre por esta puerta.";
+		close;
+	}
+	mes "[Chamberlain Bell]";
+	mes "Lo siento pero no se le permite la entrada a personas que no han sido invitadas al banquete.";
+	close;
+OnTouch:
+	sleep2 600;
+	if( countitem(6933) && Q_BANQUET == 1 ) {
+		hideoffnpc strnpcinfo(0);
+		sleep2 500;
+		npctalk "Por aquí, Sr"+(Sex?"":"ta")+". "+strcharinfo(0)+".",strnpcinfo(0),bc_self;
+		Q_BANQUET = 2;
+		sleep2 30000;
+		hideonnpc strnpcinfo(0);
+	}
+	end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+prt_cas,152,163,0	script	#eq16_warp1	45,1,1,{
+	end;
+OnTouch:
+	if( Q_BANQUET >= 2 )
+		warp "prt_cas_q",149,9;
+	end;
+}
+prt_cas,277,164,0	script	#eq16_warp2	45,1,1,{
+	end;
+OnTouch:
+	if( Q_BANQUET >= 2 )
+		warp "prt_cas_q",138,120;
+	end;
+}
+
+prt_cas_q,29,28,3	script	Court Mage#ep16r	735,{
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+prt_cas_q,137,10,4	script	Chamberlain Bell#ep16p	967,4,4,{
+	if( Q_FAMILY ) {
+		mes "[Chamberlain Bell]";
+		mes "Pase por favor, hablemos dentro.";
+		close;
+	}
+	mes "[Chamberlain Bell]";
+	mes "Por favor no olvide mostrar respeto a las familias reales que aquí se hospedan.";
+	close;
+OnTouch:
+	if( !Q_FAMILY )
+		npctalk "Bell: Por favor pase, esta será su habitación.",strnpcinfo(0),bc_self;
+	end;
+}
+
+prt_cas_q,28,30,5	script	Chamberlain Bell#ep16q	967,{
+	if( Q_BANQUET < 2 )
+		warp "prt_cas",157,163;
+	mes "[Chamberlain Bell]";
+	if( Q_BANQUET_MAGE == 1 ) {
+		mes "Oh, ¿cómo estuvo el banquete?";
+		mes "El banquete supuestamente fue un tiempo para dar la bienvenida a los héroes de Ash-Vacuum...";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Bueno, el Mago de la Corte justo se ha ido.";
+		mes "Él volverá pronto después de visitar a las otras familias.";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Aquí... él es.";
+		mes "El Mago de la Corte te dará los detalles.";
+		hideoffnpc "Court Mage#ep16r";
+		close2;
+		pcblockmove getcharid(3),1;
+		npctalk "¡Así que tu eres el famoso "+strcharinfo(0)+"!","Court Mage#ep16r",bc_self;
+		sleep2 3000;
+		npctalk "Oh, es un gusto conocerte.","Court Mage#ep16r",bc_self;
+		sleep2 3000;
+		npctalk "Hay muchas cosas de las que me gustaría hablar contigo...","Court Mage#ep16r",bc_self;
+		sleep2 3000;
+		npctalk "Pero supongo que no tenemos tiempo para eso.","Court Mage#ep16r",bc_self;
+		sleep2 3000;
+		npctalk "Vayamos a la 'Room of Consciousness' ahora mismo.","Court Mage#ep16r",bc_self;
+		sleep2 3000;
+		npctalk "No te sorprendas por la repentina desaparición.","Court Mage#ep16r",bc_self;
+		sleep2 3000;
+		npctalk "¡Tres!","Court Mage#ep16r",bc_self;
+		sleep2 1000;
+		npctalk "¡Dos!","Court Mage#ep16r",bc_self;
+		sleep2 1000;
+		npctalk "¡Uno!","Court Mage#ep16r",bc_self;
+		sleep2 1000;
+		hideonnpc "Court Mage#ep16r";
+		Q_BANQUET_INSTANCE = 1;
+		pcblockmove getcharid(3),0;
+		warp "prt_lib",88,44;
+		end;
+	}
+	if( Q_BANQUET >= 3 ) {
+		mes "Es un placer verlo nuevamente, Sr"+(Sex?"":"ta")+". "+strcharinfo(0)+", por favor disfrute del banquete, las ^5533ffseñoritas de la familia Nerius me pidieron decirte que necesitan verte.^000000";
+		close;
+	}
+	if( Q_FAMILY == 1 ) {
+		if( !Q_FAM_HEINE ) {
+			mes "Ahora, por favor hable con la^5533ff familia Heine^000000.";
+			close;
+		}
+		if( !Q_FAM_NERIUS ) {
+			mes "Ahora, por favor hable con la^5533ff familia Nerius^000000.";
+			close;
+		}
+		if( !Q_FAM_WALTHERS ) {
+			mes "Ahora, por favor hable con la^5533ff familia Walthers^000000.";
+			close;
+		}
+		if( !Q_FAM_WIGNERS ) {
+			mes "Ahora, por favor hable con la^5533ff familia Wigners^000000.";
+			close;
+		}
+		if( !Q_FAM_RICHARDS ) {
+			mes "Ahora, por favor hable con la^5533ff familia Richards^000000.";
+			close;
+		}
+		if( !Q_FAM_GEOBORGS ) {
+			mes "Ahora, por favor hable con la^5533ff familia Geoborgs^000000.";
+			close;
+		}
+		if( !Q_FAM_ROENGENBURG ) {
+			mes "Ahora, por favor hable con la^5533ff familia Roegenburg^000000.";
+			close;
+		}
+		mes "Oh, has vuelto";
+		mes "La asamblea aún tomará un poco de tiempo en llevarse a cabo.";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Así que tienes un poco de tiempo para gastar, por qué no vas a disfrutar el banquete en el Salón del Banquete.";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Las ^5533ffseñoritas de la familia Nerius te han solicitado verte en ese lugar^000000.";
+		mes "Al parecer les has dado una buena impresión, "+strcharinfo(0);
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Cuando el momento llegue, el Mago de la Corte vendrá a guiarte. Podrás disfrutar el banquete mientras tanto.";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Y aquí tienes una recompensa que te ha sido enviada como gratitud...";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Puedes coleccionar e intercambiar las medallas de honor que te daré por objetos útiles.";
+		mes "Deberías de obtener más ayudando alrededor del palacio.";
+		next;
+		mes "[Chamberlain Bell]";
+		mes "Deberían haber algo que hacer ^5533ffcerca de la oficina de los Crusader, que te ayudarán a intercambiarlas^000000.";
+		mes "Si tienes algo de tiempo, obséquiale una visita.";
+		close2;
+		Q_BANQUET = 3;
+		getitem 6919,10;
+		getexp 15000000,15000000;
+		end;
+	}
+	mes "Un gusto conocerle, soy Bell un chambelán del castillo.";
+	next;
+	unittalk getcharid(3),strcharinfo(0)+": Un gusto conocerle igualmente.",bc_self;
+	mes "[Chamberlain Bell]";
+	mes "Esta es su habitación donde estará hospedado como invitad"+(Sex?"o":"a")+" especial durante el banquete, por favor le pido que espere aquí.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "El banquete está hecho para celebrar al regreso de los aventureros de la expedición y por su arduo trabajo.";
+	next;
+	select("¿A qué te refieres con invitad"+(Sex?"o":"a")+" especial?");
+	mes "[Chamberlain Bell]";
+ 	mes "Bien, más importante, el castillo está lleno por la Asamblea Real, los candidatos al trono han sido evaluados antes y se han elegido a los candidatos para heredar el trono.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Hay un ritual secreto que sucede bajo el castillo, y debe ser llevado a cabo antes de la coronación. La coronación se llevará a cabo después del ritual.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Mientras el cielo no se caiga, el ritual se llevará a cabo de manera segura, y Rune-Midgard conocerá a su nuevo rey.";
+	next;
+	select("¿Qué me toca hacer a mí?");
+	mes "[Chamberlain Bell]";
+	mes "Te lo acabo de contar.";
+	mes "Hay un ritual a hacer antes de tomar la decisión y necesitamos que seas un observador del ritual.";
+	unittalk getcharid(3),strcharinfo(0)+": ¿Un observador?",bc_self;
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Es un ritual secreto del palacio para designar al Rey para la gloria eterna de las siete familias reales.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "De esa forma el nuevo rey será reconocido por toda la gente en estas tierras.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Mientras tanto, una evaluación especial es permitida en la Asamblea Real.";
+	mes "Es elegir a un candidato recomendado de cada una de las familias.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Eso, o un héroe que haya hecho una gran contribución en la expedición como observador del ritual.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Consecuentemente, tu has sido asignado. He escuchado que has sido recomendado de manera unánime.";
+	next;
+	select("¿Dónde se llevará a cabo el ritual?");
+	mes "[Chamberlain Bell]";
+	mes "Todo lo que sé, es que es la etapa final. Desde que el anterior rey pasó a una mejor vida, el palacio ha estado en estado de desorden.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Afortunadamente, Rune-Midgard tiene soporte de las siete familias reales.";
+	mes "Es hora de darle la bienvenida a un nuevo rey.";
+	next;
+	npctalk "Bell: Si tan solo Morroc no hubiese revivido...",strnpcinfo(0),bc_self;
+	mes "[Chamberlain Bell]";
+	mes "Como has sido invitado como observador, necesitarás visitar a cada una de las familias e intercambiar saludos antes de ir al banquete.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Esta villa real está elaborada para que las familias se hospeden cuando vienen a la capital. Todas las otras habitaciones excepto esta están ocupadas por otras familias.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Ellos habrán escuchado las nuevas noticias de tu llegada.";
+	mes "¿Qué tal ^5533ffvisitar a la familia Heine^000000?";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Ellos están cerca de la villa del oeste de donde nos encontramos ahora.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Allí se encuentran las residencias de las familias Heine, Nerius y Walther.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "En el este después de crusar el corredor están las residencias para los Wigner, Richard, Geoborg y Roegenburg.";
+	next;
+	mes "[Chamberlain Bell]";
+	mes "Necesitas saludar a cada una de las familias, cuando hayas terminado por favor vuelve a verme.";
+	close2;
+	Q_FAMILY = 1;
+	end;
+}
+
+// == Cuscene: Escuchando el plan
+// =================================
+prt_cas,179,163,0	script	#cutin01	-1,5,5,{
+OnTouch:
+	if(Q_BANQUET == 3 && Q_BANQUET_CS_A < 1) {
+		mes "Escuchas voces de algún lugar.";
+		hideoffnpc "#ep16_ntalk1";
+		hideoffnpc "#ep16_ntalk2";
+		sleep2 1000;
+		npctalk "La historia que me acabas de contar es real, ¿cierto?","#ep16_ntalk1",bc_self;
+		sleep2 4300;
+		npctalk "Claro, logre conocer la condición que buscabas justo ahora.","#ep16_ntalk2",bc_self;
+		sleep2 4500;
+		npctalk "Hm...","#ep16_ntalk1",bc_self;
+		sleep2 4300;
+		npctalk "Él también es heredero al trono. Obtendrás la información que quieres.","#ep16_ntalk2",bc_self;
+		sleep2 4500;
+		npctalk "Debemos estar seguro de que no hay errores en los arreglos. Él debe ser llamado aquí sin ningún error.","#ep16_ntalk1",bc_self;
+		sleep2 4300;
+		npctalk "Todo ha sido preparado... Sin embargo, permíteme decirte los detalles más tarde.","#ep16_ntalk2",bc_self;
+		sleep2 4500;
+		npctalk "Es hora de que te integres al banquete.","#ep16_ntalk2",bc_self;
+		sleep2 4300;
+		npctalk "Cierto, te veré después, espero que no me decepciones.","#ep16_ntalk1",bc_self;
+		sleep2 4300;
+		hideonnpc "#ep16_ntalk1";
+		sleep2 3000;
+		npctalk "Que monstruo del control...","#ep16_ntalk2",bc_self;
+		sleep2 3300;
+		hideonnpc "#ep16_ntalk2";
+		Q_BANQUET_CS_A = 1;
+		next;
+		mes "Por casualidad escuché una conversación sospechosa.";
+		close;
+	} else if(Q_BANQUET_CS_A && !Q_BANQUET_CS_B && Q_B_NERIUS) {
+		pcblockmove getcharid(3),1;
+		unittalk getcharid(3),"... ¿Hm?, ¿Quién está viniendo?",bc_self;
+		sleep2 3000;
+		hideoffnpc "#ep16_ntalk1";
+		hideoffnpc "#ep16_ntalk2";
+		npctalk "¿Cómo estuvo?","#ep16_ntalk2",bc_self;
+		sleep2 4500;
+		npctalk "Hm... no tan bien como esperaba, pero ahora tengo una pista.","#ep16_ntalk1",bc_self;
+		sleep2 4300;
+		npctalk "Nada mal.","#ep16_ntalk1",bc_self;
+		sleep2 4000;
+		npctalk "Sólo fue un momento...","#ep16_ntalk2",bc_self;
+		sleep2 4500;
+		npctalk "La droga funciona de maravilla. Hahah... Ese Lord no tiene ninguna tolerancia a ella como te lo había contado.","#ep16_ntalk1",bc_self;
+		sleep2 1500;
+		unittalk getcharid(3),strcharinfo(0)+": (¿Lord?)",bc_self;
+		sleep2 4300;
+		npctalk "¿Qué deberíamos hacer ahora?","#ep16_ntalk2",bc_self;
+		sleep2 4000;
+		npctalk "Sólo déjalo ahi. El creerá que sólo estaba un poco ebrio.","#ep16_ntalk1",bc_self;
+		sleep2 4300;
+		npctalk "Entonces, preparémonos para el gran evento.","#ep16_ntalk1",bc_self;
+		sleep2 4000;
+		hideonnpc "#ep16_ntalk1";
+		hideonnpc "#ep16_ntalk2";
+		hideoffnpc "Skia Nerius#ep16c";
+		unittalk getcharid(3),strcharinfo(0)+": ¡Pero qué!",bc_self;
+		npctalk "Skia: ¿Encontraste a Nyhill?","Skia Nerius#ep16c",bc_self;
+		sleep2 4000;
+		npctalk "Skia: ¿Por qué te miras tan sorprendid"+(Sex?"o":"a")+" de repente? ¿Qué estás viendo?","Skia Nerius#ep16c",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Entonces, es hora de iniciar, ¿dónde ha ido Nyhill?","Skia Nerius#ep16c",bc_self;
+		sleep2 4000;
+		npctalk "Skia: ¿Estará Nyhill en esa habitación?, él me contó que no le gustaba estar en la Villa Real por el abuelo, el Archiduque.","Skia Nerius#ep16c",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Entremos en esa habitación.","Skia Nerius#ep16c",bc_self;
+		sleep2 3000;
+		hideonnpc "Skia Nerius#ep16c";
+		pcblockmove getcharid(3),0;
+		Q_BANQUET_CS_B = 1;
+		end;
+	}
+	end;
+}
+
+prt_cas,184,163,3	script	Skia Nerius#ep16c	10116,{ 
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+prt_cas,178,159,5	script	#ep16_ntalk1	865,{
+	end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+prt_cas,180,157,3	script	#ep16_ntalk2	47,{
+	end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+prt_lib,76,80,4	script	Investigador#ep16	47,{
+	mes "[Investigador]";
+	mes "Tantos libros y tan poco tiempo de vida.";
+	close;
+}
+
+prt_cas,213,177,6	script	Royal Chef#ep16n1	46,{
+	mes "[Royal Chef]";
+	mes "Las bebidas y comida que hemos preparado e importado son de la mejor calidad, por favor disfrútelo.";
+	close;
+}
+
+prt_cas,219,183,3	script	Crusader#ep16n2	751,{
+	mes "[Crusader]";
+	mes "En este salón están reunidos muchos invitados, por favor compórtese como es debido.";
+	close;
+}
+
+prt_cas,215,183,0	warp	ep16banq	1,1,prt_cas,93,213
+prt_cas,93,208,0	warp	ep16banq-1	1,1,prt_cas,215,180
+
+// == Cutscene: Nerius & Nyhill
+// =================================
+prt_cas,105,238,3	script	Spica Nerius#ep16	10115,10,10,{
+	cutin "ep16_spica_nerius01",2;
+	mes "[Spica Nerius]";
+	if(Q_B_NERIUS) {
+		mes "¿Qué tal está Nyhill?";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if(Q_BANQUET == 3 && Q_BANQUET_CS_A) {
+		mes "Te encuentro otra ves, "+strcharinfo(0)+". El Chambelán ha sido un excelente mensajero, vi que te dirigiste acá directamente.";
+		next;
+		unittalk getcharid(3),strcharinfo(0)+": Vamos a no mencionar eso, desde entonces he estado muy avergonzado de ello...",bc_self;
+		mes "[Spica Nerius]";
+		mes "Estuve sorprendida de que fueras anunciado como un invitado especial. Veo que eres más extraordinario de lo que pensé. Fuiste anunciado como...";
+		next;
+		mes "[Spica Nerius]";
+		mes "Pero es verdad...";
+		mes "Este banquete es para héroes como tú.";
+		mes "Deberías estar orgullos"+(Sex?"o":"a");
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "¡Es verdad!";
+		mes "Nadie te detendrá si vienes con nosotros. Por favor visítanos más tarde.";
+		next;
+		mes "[Skia Nerius]";
+		mes "Si estás aquí solo, te perderás un poco...";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Hahaha... Estoy segura de que escuché una palabra que no debería ir allí.";
+		mes "¿Escuchaste eso, Crux?";
+		mes "Mi hermana quiere llevársel"+(Sex?"o":"a")+" tranquilamente.";
+		npctalk "Crux: ¿Ah, qué?, si...","Crux Lindel#ep16",bc_self;
+		next;
+		npctalk "Spica: Hahahaha",strnpcinfo(0),bc_self;
+		cutin "ep16_crux_findel01",2;
+		mes "[Crux Lindel]";
+		mes "Quiero decir, ¿señoritas?";
+		mes "¿Qué quieren decir con...?";
+		sleep2 1000;
+		npctalk "Skia: Más te vale no contárselo a nuestra Madre.","Skia Nerius#ep16",bc_self;
+		next;
+		mes "[Crux Lindel]";
+		mes "Saben que yo estoy de su lado, mi señorita, ¿cierto?";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Oh, no me hagas reir.";
+		mes "Sé que viniste hasta aquí para espiarnos esta vez.";
+		next;
+		cutin "ep16_crux_findel01",2;
+		mes "[Crux Lindel]";
+		mes "¡No!, no, ¡por favor!";
+		mes "... ¿oh?, ¿no es ese Lord Heine?";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "Oh, tienes razón.";
+		mes "¡Nyhill, por aquí!";
+		next;
+		hideoffnpc "Nyhill Heine#ep16";
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "No tienes por que gritar así, Skia.";
+		mes strcharinfo(0)+" está aquí también.";
+		mes "De todas formas, es imposible ser confundido cuando tratas con la familia Nerius. Buena decisión.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Skia y el Señor de la Familia Heine.";
+		mes "¿Desde cuándo se llaman por el primer nombre?";
+		npctalk "Spica: ¿Tú lo sabías?",strnpcinfo(0),bc_self;
+		sleep2 1000;
+		npctalk "Crux: No, no lo sabía.","Crux Lindel#ep16",bc_self;
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "Hm, intercambiamos saludos hace poco en el corredor.";
+		mes "La residencia Heine está después de la familia Nerius.";
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "Eso fue refrescante, y estoy agradecido contigo.";
+		mes "Y...";
+		next;
+		mes "[Nyhill Heine]";
+		mes strcharinfo(0)+", visité tu habitación para darte mis disculpas, pero te habías ido ya al Salón de Banquetes.";
+		unittalk getcharid(3),strcharinfo(0)+": ¿Disculpas?",bc_self;
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "Antes..";
+		mes "Fui un poco rudo contigo por impulso.";
+		mes "Por favor dísculpame.";
+		next;
+		hideoffnpc "Violeta Heine#ep16";
+		npctalk "Spica: Deberías darle algo como disculpa, ¿no crees?",strnpcinfo(0),bc_self;
+		npctalk "Drunk Woman: No sería una sorpresa desde que Nyhill Heine no tiene nada, después de todo es una 'Miseria', hahaha.","Violeta Heine#ep16",bc_self;
+		cutin "",255;
+		mes "[Drunk Woman]";
+		mes "Haha... Hahahaha...";
+		mes "Pobre Lord Nyhill, es una pena.";
+		mes "Él no fue seleccionado para heredar el trono.";
+		next;
+		npctalk "Nyhill: Violeta, cuida tu comportamiento.","Nyhill Heine#ep16",bc_self;
+		mes "[Drunk Woman]";
+		mes "Oh, ¡bien!, ¿quiénes son estos?";
+		mes "¿No son las hermanas Nerius quienes se hicieron famosas porque una mujer los lideraba?";
+		next;
+		mes "[Drunk Woman]";
+		mes "Lord, debería elegir mejor quién será su acompañamiento, ellas no le harán ningún bien a la familia Nerius.";
+		next;
+		npctalk "Nyhill: Violeta, te dije que pararas.","Nyhill Heine#ep16",bc_self;
+		npctalk "Spica: Eso fue insultante.",strnpcinfo(0),bc_self;
+		mes "[Violeta]";
+		mes "No dije una mentira, ¿o lo hice?";
+		mes "No eres bienvenida en tu propia familia de todas formas. ¿por qué no buscas ligar con una señorita para cambiar tu vida?";
+		mes "Hahahahahaha";
+		next;
+		mes "[Violeta]";
+		mes "¡Oh, dios!, Mi Lord, no sabía que se pudiese enojar.";
+		mes "Eso es mejor, deberías enojarte y mostrar tus emociones...";
+		next;
+		cutin "ep16_crux_findel01",2;
+		mes "[Crux Lindel]";
+		mes "... No sé de qué familia eres, pero necesitas detenerte. Si continúas insultando a mi señorita, no lo dejaré pasar.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Aguarda, Crux.";
+		mes "No deberías rebajarte al mismo nivel en que ella se encuentra hablando.";
+		mes "No intentes hacer un conflicto con la familia Nerius con esto.";
+		next;
+		mes "[Spica Nerius]";
+		mes "¿No es así, Violeta Collette Heine?";
+		mes "Entiendo tus sentimientos hacia el Lord, pero por tu bien, deberías desechar esa desgracia hacia tu familia.";
+		unittalk getcharid(3),strcharinfo(0)+": ¿Heine...?",bc_self;
+		npctalk "Nyhill: ...Phew... Ella tiene líneas secundarias conmigo...","Nyhill Heine#ep16",bc_self;
+		next;
+		mes "[Spica Nerius]";
+		mes "Has lo que quieras si quieres dañar su reputación.";
+		mes "Pero, si continúas con ello, la familia Nerius, no se quedará fuera de esto.";
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "Eso es cierto.";
+		mes "Violeta, te dejará escaparte de esto, por ahora. Deberías de volver ahora, o tendré que castigarte en nombre de la familia.";
+		next;
+		cutin "",255;
+		mes "[Violeta]";
+		mes "Bien, volveré.";
+		mes "Pero si en realidad te sientes así, deberías unirte a la familia Nerius entonces, ¡Ha!";
+		hideonnpc "Violeta Heine#ep16";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "¿Cómo es que la historia se fue en ese sentido?";
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "Lo siento, me disculpo por su mal comportamiento.";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "Sigues diciendo lo siento.";
+		mes "Pero tu no has hecho nada malo, Nyhill.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Bien, Skia. No entiendes.";
+		mes "Aunque haga o no haga, él es la cabeza de la familia, cada falta que su familia haga es su responsabilidad.";
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "Ella está en lo correcto, yo poseo el nombre de Heine, y estoy en una posición de que debo cuidar cualquier cosa que venga de la familia. Lo haga yo o no.";
+		next;
+		mes "[Nyhill Heine]";
+		mes "Skia, es lo mismo para ti, a veces tendrás que convertirte en una sombra tu misma.";
+		hideoffnpc "Royal Chamberlain#ep16a";
+		npctalk "Royal Chamberlain: Champagne ligera, ¿desea una?","Royal Chamberlain#ep16a",bc_self;
+		npctalk "Nyhill: Gracias.","Nyhill Heine#ep16",bc_self;
+		npctalk "Skia: ¿Puedo tener una copa, también?","Skia Nerius#ep16",bc_self;
+		next;
+		hideonnpc "Royal Chamberlain#ep16a";
+		npctalk "Nyhill: ...","Nyhill Heine#ep16",bc_self;
+		mes "[Nyhill Heine]";
+		mes "Siento que estoy interrumpiendo el disfrute del banquete. Debería irme.";
+		mes "Deseo que podamos intercambiar historias algún día.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "No en absoluto. Permítenos darte una invitación oficial la próxima vez, por favor no la rechaces entonces.";
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "¿Cómo podría rechazar una invitación de la familia Nerius?";
+		mes "Bueno... entonces...";
+		npctalk "Skia: Fue divertido.","Skia Nerius#ep16",bc_self;
+		next;
+		hideonnpc "Nyhill Heine#ep16";
+		npctalk "Crux: ¿Qué parte de todo esto fue divertida?","Crux Lindel#ep16",bc_self;
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "... Hm...";
+		mes "Um...";
+		mes "Skia, ¿puedo darle una mirada a la bebida que te han dado?";
+		npctalk "Skia: ¿Por qué?","Skia Nerius#ep16",bc_self;
+		next;
+		mes "[Spica Nerius]";
+		mes "Y, Crux.";
+		mes "Ve a buscar a la Chambelán que le ha dado la bebida.";
+		npctalk "Crux: Si, mi señorita.","Crux Lindel#ep16",bc_self;
+		next;
+		hideonnpc "Crux Lindel#ep16";
+		mes "[Spica Nerius]";
+		mes "Nadie puede engañar a mis ojos de esta manera.";
+		mes strcharinfo(0)+", dale una mirada tu también.";
+		mes "¿No crees que tiene algo raro?";
+		next;
+		select("Bueno, parece que hablas un poco casual.");
+		hideoffnpc "Crux Lindel#ep16";
+		npctalk "Spica: Crux, ¿la encontraste?.",strnpcinfo(0),bc_self;
+		mes "[Spica Nerius]";
+		mes "No estoy hecha para hablar formalmente, intenté ser cortés contigo desde que eres un invitado especial, pero podría morder mi lengua si sigo hablando así.";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		npctalk "Crux: Ahora veo por qué me diste esa orden.","Crux Lindel#ep16",bc_self;
+		mes "[Skia Nerius]";
+		mes "Oh, sacudiendo. ¡Se está sacudiendo!";
+		mes "Crux, ¿lo visto?, los pasos de Nyhill no son normales.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "La champagne se supone que tiene que ser ligera como jugo de fruta, él no debería haberla bebido, creo que hay algo mal.";
+		next;
+		mes "[Spica Nerius]";
+		mes strcharinfo(0);
+		mes "¿No crees que será divertido lo que pasará ahora?";
+		mes "Oh, que sospechoso, desde entonces esto se miraba sospechoso, volvamos ahora.";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "¿Eh, te vas a ir así?";
+		mes "¿Qué si el está enfermo?, ¿qué si se desmaya en el camino?";
+		next;
+		npctalk "Spica: Crux, volvamos a la habitación.",strnpcinfo(0),bc_self;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Si estás curios"+(Sex?"o":"a")+", deberías seguirlo, estoy muy bien protegida por Crux.";
+		next;
+		npctalk "Crux: De acuerdo.","Crux Lindel#ep16",bc_self;
+		hideonnpc strnpcinfo(0);
+		hideonnpc "Crux Lindel#ep16";
+		next;
+		npctalk "Spica: Que corazón tan frío.","Skia Nerius#ep16",bc_self;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "Bien, ¿héroe?";
+		mes "¿Lo seguirás primero?";
+		mes "Si lo sigo de esta manera, todos me notarán extraña.";
+		next;
+		select("Al parecer no tengo alternativa");
+		mes "[Skia Nerius]";
+		mes "Nyhill ya se debió haber ido al Salón del Banquete, estará en la Villa Real, vamos en ese camino.";
+		close2;
+		cutin "",255;
+		Q_B_NERIUS = 1;
+		end;
+	}
+	mes "¿Disculpa quién eres tú?";
+	close2;
+	cutin "",255;
+	end;
+OnTouch:
+	if(Q_B_NERIUS < 1) {
+		hideoffnpc strnpcinfo(0);
+		hideoffnpc "Crux Lindel#ep16";
+	}
+	end;
+}
+
+prt_cas,103,238,4	script	Skia Nerius#ep16	10116,{
+	cutin "ep16_skia_nerius01",2;
+	mes "[Skia Nerius]";
+	if(Q_B_NERIUS == 1) {
+		mes "Nyhill ya se debió haber ido al Salón del Banquete, estará en la Villa Real, vamos en ese camino.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "Hmm...";
+	close2;
+	cutin "",255;
+	end;
+}
+prt_cas,105,234,2	script	Nyhill Heine#ep16	10114,{
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+prt_cas,107,238,3	script	Crux Lindel#ep16	10118,{
+	cutin "ep16_crux_findel01",2;
+	mes "[Crux Lindel]";
+	mes "No te atrevas a faltarle el respeto a la señorita o te la verás conmigo.";
+	close2;
+	cutin "",255;
+	end;
+}
+prt_cas,103,232,1	script	Violeta Heine#ep16	959,{
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+prt_cas,106,231,4	script	Royal Chamberlain#ep16a	80,{
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+prt_cas,84,215,8	script	Guardia#ep16n	105,{
+	cutin "prt_soldier",2;
+	mes "[Guardia]";
+	mes "Por favor disfruta la fiesta.";
+	close2;
+	cutin "",255;
+	end;
+}
+
+prt_cas,97,216,3	script	Anunciante#ep16n	968,7,1,{
+end;
+OnTouch:
+	if( Q_BANQUET )
+		npctalk "Anunciante: El delegado perfecto de dios, "+strcharinfo(0)+".";
+	end;
+}
+
+// == Cutscene: Nyhill ebrio
+// =================================
+prt_cas,27,39,0	script	#cuscene2	-1,3,3,{
+OnTouch:
+	if( Q_BANQUET_CS_B && !Q_BANQUET_CS_C ) {
+		pcblockmove getcharid(3),1;
+		hideoffnpc "Skia Nerius#ep16r";
+		hideoffnpc "Nyhill Heine#ep16r";
+		sleep2 3000;
+		npctalk "Skia: ¿Estás bien?","Skia Nerius#ep16r",bc_self;
+		sleep2 3000;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "¿Quién está ahí?";
+		mes "¿"+strcharinfo(0)+"...?";
+		mes "¿Qué estás haciendo aquí?";
+		next;
+		mes "[Nyhill Heine]";
+		mes "...¿estoy ebrio?";
+		mes "Mi cabeza me duele.";
+		mes "...me siento mareado.";
+		next;
+		npctalk "Nyhill: ...Ha...","Nyhill Heine#ep16r",bc_self;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "¿Por qué estás aquí?";
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "... Oh... Me sentía desorientado y le pedí a un chambelán que me guiara a un lugar donde pudiese descansar.";
+		mes "... Umm...";
+		next;
+		mes "[Nyhill Heine]";
+		mes "Él me contó que era champagne ligera...";
+		mes "...";
+		next;
+		select("¿Algo te pasó?");
+		mes "[Nyhill Heine]";
+		mes "No recuerdo.";
+		mes "Pensé que habría un invitado aquí.";
+		mes "Pero, ¿qué los trajo aquí?";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "Bien, casi es la hora, así que...";
+		unittalk getcharid(3),strcharinfo(0)+": ¿la hora?",bc_self;
+		next;
+		cutin "ep16_nihi_miseria_heine01",2;
+		mes "[Nyhill Heine]";
+		mes "Ya veo, creo que se refiere a toda la preparación que se tuvo que hacer hasta ahora.";
+		mes "Seré castigado si gasto más mi tiempo aquí.";
+		next;
+		mes "[Nyhill Heine]";
+		mes "Debería volver ahora.";
+		mes "Phew... afortunadamente, mi cabeza se está calmando.";
+		next;
+		mes "[Nyhill Heine]";
+		mes "Bien, entonces. Por favor disculpenme.";
+		next;
+		hideonnpc "Nyhill Heine#ep16r";
+		cutin "ep16_skia_nerius04",2;
+		mes "[Skia Nerius]";
+		mes "¡Whoa!, él es rápido.";
+		mes "Bien, héroe, ¿deberíamos volver?";
+		mes "Te volveré pronto supongo.";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "La Corte Mágica ya debió de haber llegado, deberías volver a tu cuarto.";
+		close2;
+		cutin "",255;
+		Q_BANQUET_MAGE = 1;
+		pcblockmove getcharid(3),0;
+		hideonnpc "Skia Nerius#ep16r";
+		end;
+	}
+	end;
+}
+
+prt_cas,25,35,4	script	Skia Nerius#ep16r	10116,{
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+prt_cas,27,34,3	script	Nyhill Heine#ep16r	10114,{
+end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+
+// == Familia Heine
+// =================================
+prt_cas_q,19,78,0	script	#csheine	-1,3,3,{
+OnTouch:
+	if( Q_FAMILY && !Q_CS_HEINE ) {
+		hideoffnpc "Nyhill Heine#ep16";
+		pcblockmove getcharid(3),1;
+		npctalk "Kronecker G. Heine: ¡No estás en el lugar para decir ese tipo de cosas!","granz_ep16",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill Heine: Iré a la casa de la cabeza ahora, por favor deme su permiso.","Nyhill Heine#ep16f",bc_self;
+		sleep2 4000;
+		npctalk "Kronecker G. Heine: Cuida tus modales, ya no eres más un niño.","granz_ep16",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill Heine: Tu sabes que yo no tengo razón para estar aquí.","Nyhill Heine#ep16f",bc_self;
+		sleep2 4000;
+		npctalk "Kronecker G. Heine: Como miembro de esta familia, ¡es tu responsabilidad estar aquí!","granz_ep16",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill Heine: ¿Miembro de la familia? ¿desde cuándo he sido tomado en cuenta en esta familia?","Nyhill Heine#ep16f",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill Heine: ¿Has olvidado el nombre que recibí de la familia?","Nyhill Heine#ep16f",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill Heine: Nyhill Miseria, soy un miserable Heine, ¡que es nadie!, ustedes me dieron ese nombre, ¡porque soy inútil!","Nyhill Heine#ep16f",bc_self;
+		sleep2 4000;
+		npctalk "Friedrich Heine: Vigila tus palabras, Nyhill.","Friedrich Heine#ep16f",bc_self;
+		sleep2 4000;
+		hideonnpc "Nyhill Heine#ep16f";
+		unittalk getcharid(3),strcharinfo(0)+": Oh, él se ha ido.",bc_self;
+		sleep2 4000;
+		npctalk "Kronecker G. Heine: ... Ese inútil niño, ¡él no es bueno!","granz_ep16",bc_self;
+		pcblockmove getcharid(3),0;
+		Q_CS_HEINE = 1;
+		end;
+	}
+	end;
+}
+prt_cas_q,19,85,4	script	Kronecker G. Heine#ep16::granz_ep16	10119,{
+	if( Q_CS_HEINE && !Q_FAM_HEINE ) {
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "... me disculpo para causar tal escena, frente a un invitado.";
+		mes "Me disculpo en nombre de la familia Heine.";
+		next;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "Permítame presentarme yo mismo.";
+		mes "Soy la actual cabeza de la familia Heine, Friedrich Stolze Heine.";
+		next;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "Él es el anterior cabeza de la familia, el Archiduque Granz, mi padre.";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "Mi nombre es Kronecker Granz Heine.";
+		next;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "Él es Peter Heine, el candidato al trono.";
+		next;
+		cutin "ep16_petter_heine01",2;
+		mes "[Peter]";
+		mes "Un gusto en conocerte.";
+		next;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "El que se ha ido del cuarto, haciéndose tonto él mismo, es mi hijo, Nyhill.";
+		next;
+		mes "[Friedrich]";
+		mes "Él es miembro de la familia Heine, pero sigue actuando como un niño.";
+		mes "Por favor discúlpalo por sus malos modales.";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "Déjalo hacer lo que él quiera.";
+		mes "No podemos cuidarlo más.";
+		next;
+		cutin "ep16_petter_heine01",2;
+		mes "[Peter]";
+		mes "... Archiduque, por favor no se enoje con Nyhill.";
+		mes "Recuerde, Nyhill se supone que iba a ser el candidato al trono.";
+		next;
+		mes "[Peter]";
+		mes "Solo soy un miembro secundario de la familia después de todo...";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "Detente ahí mismo, no son necesarias más palabras.";
+		mes "Nyhill no tiene lo que se requiere para ser rey.";
+		next;
+		mes "[Kronecker]";
+		mes "Él no tiene ninguno de los elementos requeridos para conocer el legado de la familia, él no puede ser elegido como candidato.";
+		next;
+		mes "[Kronecker]";
+		mes "Él nisiquiera sabe donde estar, y aún sigue hambriento por el poder.";
+		next;
+		cutin "ep16_petter_heine01",2;
+		mes "[Peter]";
+		mes "Eso no tiene sentido para mi...";
+		mes "Él se ha vuelto muy frío desde que perdió su candidatura.";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "El derecho de la familia Heine es que todos tengan el nombre de Heine.";
+		mes "Nyhill tiene todo.";
+		next;
+		mes "[Kronecker]";
+		mes "¿Por qué ese niño no puede entenderlo?";
+		mes "No es apropiado hablar sobre situaciones familiares en frente de un invitado.";
+		next;
+		mes "[Kronecker]";
+		mes "Lo siento por eso.";
+		mes "Phew... Desearía saber qué hemos hecho para tener a un niño como él en la familia.";
+		next;
+		mes "[Kronecker]";
+		mes "Escuché que serás aquél que atenderá el ritual.";
+		mes "De manera agradecida, el siguiente rey debe ser de la familia Heine.";
+		next;
+		unittalk getcharid(3),strcharinfo(0)+": ¿Te refieres a que Peter será...?",bc_self;
+		mes "[Kronecker]";
+		mes "Los candidatos al trono fueron probados por la Asamblea Real hace poco...";
+		next;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "Repentinamente, Isenarm de la familia Walther, quién se decía que era el candidato más fuerte de ellos, se enfureció y amenazó a los otros candidatos.";
+		next;
+		mes "[Friedrich]";
+		mes "Ernst de la familia Geoborg fue forzado a ejecutarlo.";
+		next;
+		mes "[Friedrich]";
+		mes "Me di cuenta de que Ernst sería nombrado el siguiente rey, pero el abruptamente se rehusó.";
+		mes "... supongo que sólo obedecía el deseo de la reina.";
+		next;
+		mes "[Friedrich]";
+		mes "Después del curso de los eventos, la Asamblea Real fue hecha otra ves.";
+		mes "Esta vez, Peter participará representando a la familia Heine.";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "Y ahora Nyhill está celoso de Peter.";
+		mes "¿Qué tan bajo puede caer?";
+		next;
+		npctalk "Peter: No puedo decir que estoy listo, pero haré mi mayor esfuerzo.","Peter Heine#e16f",bc_self;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "Hm... él no es un mal niño, ignora lo que sucedió recientemente.";
+		mes "El nunca ha traído desgracia al nombre de la familia Heine.";
+		next;
+		mes "[Friedrich]";
+		mes "Y no intento defenderlo sólo por ser mi hijo.";
+		mes "Nyhill, él es...";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "No intentes hablar por él, su incompetencia es un pecado.";
+		mes "Un gran poder mágico corre en los Heine por generaciones.";
+		next;
+		mes "[Kronecker]";
+		mes "Hay una razón para que él se llame Miseria.";
+		unittalk getcharid(3),strcharinfo(0)+": ¿Miseria? ¿Querrás decir algo como... miserable?",bc_self;
+		next;
+		cutin "ep16_friedrich_stolz_heine",2;
+		mes "[Friedrich]";
+		mes "No te involucres a ti mismo demasiado en nuestros asuntos familiares.";
+		mes "Te veré luego más tarde.";
+		next;
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "No ha pasado mucho desde que la Asamblea Real acabó.";
+		mes "Necesitamos prepararnos para eso, lo siento, pero no podemos gastar más tiempo en tí.";
+		next;
+		mes "[Kronecker]";
+		mes "Por favor ve a visitar a las otras familias que no has visitado.";
+		close2;
+		cutin "",255;
+		Q_FAM_HEINE = 1;
+		end;
+	} else {
+		cutin "ep16_kronecker_granz_heine",2;
+		mes "[Kronecker]";
+		mes "Lo sentimos, pero no podemos gastar tiempo en tí.";
+		close2;
+		cutin "",255;
+		end;
+	}
+end;
+}
+prt_cas_q,21,83,3	script	Friedrich Heine#ep16f	10120,{
+	cutin "ep16_friedrich_stolz_heine",2;
+	mes "[Friedrich]";
+	if(Q_CS_HEINE)
+		mes "Por favor, no pienses mal de mi hijo.";
+	else
+		mes "Estamos un poco ocupados actualmente.";
+	close2;
+	cutin "",255;
+	end;
+}
+prt_cas_q,18,83,6	script	Peter Heine#e16f	987,{
+	cutin "ep16_petter_heine01",2;
+	mes "[Peter]";
+	if(Q_CS_HEINE)
+		mes "No puedo decir que esté listo, pero haré mi mejor esfuerzo.";
+	else
+		mes "Qué tal, soy Peter Heine, el candidato al trono de rey.";
+	close2;
+	cutin "",255;
+	end;
+}
+prt_cas_q,22,80,3	script	Nyhill Heine#ep16f	10114,{ end; }
+
+// == Cutscene: Skia & Nyhill
+// =================================
+prt_cas_q,140,34,0	script	#csskinyh	-1,3,3,{
+OnTouch:
+	if( Q_FAM_HEINE && !Q_CS_CORRIDOR_SN ) {
+		hideoffnpc "Nyhill Heine#ep16co";
+		hideoffnpc "Skia Nerius#ep16co";
+		pcblockmove getcharid(3),1;
+		sleep2 1000;
+		npctalk "Nyhill: ¿Eres tu la Pincesa Oscura de la que he escuchado tanto?","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Debe ser muy dificil para tí también. ¿Es tu primera vez asistiendo a un banquete?","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Oh, tu debes ser el Lord de la familia Heine.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Si, es verdad que yo soy la Princesa Oscura, pero nunca lo he encontrado dificil.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Hago lo que puedo.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Tu no elegiste nacer en esta vida supongo, ¿o lo hiciste?","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Yo crecí como una sombra, pero eso nunca me hizo sentir triste.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Antes me preguntaba...","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Pero yo elegí ser lo que soy, ese es mi camino.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Realmente. Tengo envidia de cómo puedes verlo así.","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Siempre he querido ser libre del nombre de Miseria.","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: ¿Tu sabes qué pasa con alguien que escucha que es nada desde el momento en que nació?","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Se pierde, como si estuviese vacío por dentro.","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: ...","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: ¿Pero de qué estoy hablando?, por favor discúlpeme.","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Tu sabes, cuando tienes nada...","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: ...","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Puedes llenar ese vacío con lo que sea. No hay un futuro destinado para una persona.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Así que es eso...","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Nyhill: Bueno, no me he presentado apropiadamente aún. Mi nombre es Nyhill Miseria Heine.","Nyhill Heine#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Yo soy Skia Nerius. Tu me puedes llamar Skia.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Oh, cierto. Estaba en camino para conocer al héroe.","Skia Nerius#ep16co",bc_self;
+		sleep2 4000;
+		npctalk "Skia: Por favor discúlpame.","Skia Nerius#ep16co",bc_self;
+		sleep2 1000;
+		hideonnpc "Skia Nerius#ep16co";
+		sleep2 3000;
+		npctalk "Nyhill: ... Skia... parece que hay una señorita interesante en la familia Nerius.","Nyhill Heine#ep16co",bc_self;
+		sleep2 2000;
+		hideonnpc "Nyhill Heine#ep16co";
+		pcblockmove getcharid(3),0;
+		Q_CS_CORRIDOR_SN = 1;
+		end;
+	}
+	end;
+OnInit:
+	hideonnpc "Nyhill Heine#ep16co";
+	hideonnpc "Skia Nerius#ep16co";
+	end;
+}
+prt_cas_q,144,38,3	script	Nyhill Heine#ep16co	10114,{ end; }
+prt_cas_q,141,40,4	script	Skia Nerius#ep16co	10116,{ end; }
+
+// == Familia Nerius
+// =================================
+prt_cas_q,20,139,4	script	Spica Nerius#ep16f	10115,{
+	if(Q_CS_CORRIDOR_SN && !Q_FAM_NERIUS) {
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Tu debes ser "+strcharinfo(0)+", todo mundo habla de ti.";
+		mes "Gracias por visitarnos.";
+		mes "Soy Spica de la familia Nerius.";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "Yo soy Skia.";
+		mes "Un gusto conocerte.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Y él es mi guadaespaldas.";
+		next;
+		cutin "ep16_crux_findel01",2;
+		mes "[Crux Lindel]";
+		mes "Mi nombre es Crux Findel.";
+		mes "Estoy aprendiendo el arte de la espada en la familia Nerius.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Nuestra madre, la actual cabeza de la familia, se supone que debería estar aquí.";
+		mes "Pero, desde que tantos héroes como tu dicen que asistirán a este banquete, "+strcharinfo(0);
+		next;
+		mes "[Spica Nerius]";
+		mes "Nuestra madre nos dejó venir aquí y conocerlos en orden para aprender de ellos.";
+		next;
+		select("¿Dónde está el candidato al trono?");
+		mes "[Spica Nerius]";
+		mes "Debiste haber sido invitad"+(Sex?"o":"a")+" a ser observador"+(Sex?"":"a")+" del ritual...";
+		mes "Ya veo...";
+		next;
+		mes "[Spica Nerius]";
+		mes "Erich está en la librería real.";
+		mes "Creo que estaba buscando planos de algún tipo. Ese tipo de cosas le interesan.";
+		next;
+		mes "[Spica Nerius]";
+		mes "Nerius no está interesado en el trono.";
+		mes "Erich no tiene por qué participar en la Asamblea Real.";
+		next;
+		mes "[Spica Nerius]";
+		mes "Desde que es un candidato formalmente, ha estado haciendo ese tipo de cosas ahora.";
+		next;
+		select("¿Por qué no están interesados?");
+		mes "[Spica Nerius]";
+		mes "Es una de las características de los Nerius.";
+		mes "La familia ha sido liderada por generaciones de mujeres. Antes, nos hemos convertido en más reinas que reyes.";
+		next;
+		mes "[Spica Nerius]";
+		mes "Si Erich no hubiera salido, una de nosotros, Skia y yo, hubieramos sido electas como candidatas para reina.";
+		next;
+		mes "[Spica Nerius]";
+		mes "A nuestra madre no le gusta la idea.";
+		mes "Por eso es que Erich acabó convirtiéndose en candidato al trono. Nuestro pobre primo...";
+		next;
+		mes "[Spica Nerius]";
+		mes "Bueno, creo que fue suficiente de nuestra familia.";
+		mes "¿Has intercambiado ya saludos con las otras familias?";
+		next;
+		mes "[Spica Nerius]";
+		mes "Mientras la libertad no venga a nosotros, tendré que disfrutar esto lo más posible.";
+		mes "Así que...";
+		next;
+		cutin "ep16_skia_nerius01",2;
+		mes "[Skia Nerius]";
+		mes "¿Por qué no lo disfrutamos con él?";
+		mes "Estoy segura de que el Lord de la familia Heine sería un buen amigo, también.";
+		next;
+		cutin "ep16_spica_nerius01",2;
+		mes "[Spica Nerius]";
+		mes "Skia, mi amada gemela.";
+		mes "Necesitas hablar con más elegancia.";
+		next;
+		npctalk "Crux: Te puedo escuchar.","Crux Lindel#ep16f",bc_self;
+		npctalk "Skia: Dios, detente.","Skia Nerius#ep16f",bc_self;
+		mes "[Spica Nerius]";
+		mes "De cualquier modo, lo que quiero decir es que la familia Nerius está abierta para tí, "+strcharinfo(0)+", así que por favor visítanos cuando quieras.";
+		next;
+		mes "[Spica Nerius]";
+		mes "Necesitamos prepararnos para el banquete ahora, así que necesitamos tiempo para vestirnos.";
+		next;
+		mes "[Spica Nerius]";
+		mes "¿Por qué no vas a visitar a las otras familias?";
+		next;
+		mes "[Spica Nerius]";
+		mes "Te enviaré una invitación formal para vernos otra ves.";
+		close2;
+		cutin "",255;
+		Q_FAM_NERIUS = 1;
+		end;
+	}
+	cutin "ep16_spica_nerius01",2;
+	mes "[Spica Nerius]";
+	mes "Las personas suelen tocar la puerta antes de entrar.";
+	npctalk "Crux: Largo de aquí.","Crux Lindel#ep16f",bc_self;
+	unittalk getcharid(3),strcharinfo(0)+": Discúlpenme.",bc_self;
+	close2;
+	cutin "",255;
+	end;
+}
+prt_cas_q,18,137,7	script	Skia Nerius#ep16f	10116,{ end; }
+prt_cas_q,21,140,4	script	Crux Lindel#ep16f	10118,{ end; }
+
+// == Familia Walthers
+// =================================
+prt_cas_q,20,184,2	script	Ian Walther#ep16f	55,{
+	if(Q_FAM_NERIUS && !Q_FAM_WALTHERS_S) {
+		mes "[Ian]";
+		mes "¿Eres tu "+(Sex?"el":"la")+" héroe que ha sido invitad"+(Sex?"o":"a")+" al banquete?";
+		mes "Un gusto conocerte. Yo soy ^5533ffIan Walther^000000.";
+		next;
+		mes "[Ian]";
+		mes "Como piensas ^5533ffla familia Walther no está participando en la Asamblea Real^000000, estamos asistendo al banquete como una de las siete familias reales.";
+		next;
+		mes "[Ian]";
+		mes "Él es el ^5533ffheredero de la familia Walther, Isenhonor^000000. Él es mi nieto.";
+		next;
+		mes "[Ian]";
+		mes "El será la cabeza de la familia una vez que alcance la adultez este año. Por ahora, yo me encargo de la familia.";
+		next;
+		mes "[Isenhonor]";
+		mes "¿Cómo estás?, soy ^5533ffIsenhonor Walther^000000";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "¿Por qué no están participando en la Asamblea Real, ignorando que tienen un heredero?";
+		next;
+		mes "[Ian]";
+		mes "No necesitas preocuparte, ^5533ffnuestro candidato de la familia fue involucrado en un desafortunado incidente^000000 en la ^5533ffanterior Asamblea Real^000000.";
+		next;
+		mes "[Ian]";
+		mes "^5533ffIsenarm^000000, quien fue candidato al trono, comenzó a actuar violentamente.";
+		mes "^5533ffÉl terminó siendo asesinado por el heredero de la familia Geoborg.^000000";
+		next;
+		mes "[Ian]";
+		mes "Después de una larga discusión, nuestra familia decidió no formar parte de la ^5533ffAsamblea Real^000000 en esta ocasión.";
+		next;
+		mes "[Isenhonor]";
+		mes "...";
+		next;
+		mes "[Ian]";
+		mes "Bien entonces. Espero que disfrutes el banquete, fue hecho para ti, después de todo.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Si. Gracias por darme un poco de su tiempo.";
+		close2;
+		Q_FAM_WALTHERS_S = 1;
+		end;
+	} else if(Q_FAM_WALTHERS_S) {
+		mes "[Ian]";
+		mes "Me pregunto por que ^5533ffIsenarm^000000 actuó así.";
+		next;
+		mes "[Isenhonor]";
+		mes "...";
+		close;
+	}
+	mes "[Ian]";
+	mes "Lo siento pero estamos ocupados preparándose para el banquete, vuelve en otra ocasión.";
+	close;
+}
+prt_cas_q,14,184,4	script	Isenhonor Walther#ep16f1	983,{
+	if(Q_FAM_WALTHERS_S && !Q_FAM_WALTHERS) {
+		mes "["+strcharinfo(0)+"]";
+		mes "¿Hola?";
+		next;
+		mes "[Isenhonor]";
+		mes "¿Qué estás haciendo aquí?";
+		mes "El Salón del Banquete no es por aquí.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Quiero que me hables más sobre la historia de tu hermano.";
+		next;
+		mes "[Isenhonor]";
+		mes "¿Te refieres a la historia de mi hermano siendo asesinado debido a su violenta actitud?, veo que escuchaste eso hace poco, espero y no hayas creído tal cosa.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Bueno...";
+		next;
+		mes "[Isenhonor]";
+		mes "No puedo creer honestamente en que mi hermano se haya 'vuelto violento'. Aunque lo haya hecho, debe de haber una buena ^5533ffrazón^000000.";
+		next;
+		mes "[Isenhonor]";
+		mes "Mi hermano, el debió haber hecho eso por alguna razón. Nadie sabe la verdad, pero la gente al parecer se cree la historia.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Quiero limpiar el nombre de tu hermano, puedes ver dentro del asunto tu mismo.";
+		next;
+		mes "[Isenhonor]";
+		mes "Lo estoy intentando. Pero ^5533fflos ancianos de mi familia no quieren que investigue ese deshonrroso incidente^000000.";
+		next;
+		mes "[Isenhonor]";
+		mes "También, es imposible para mi conocer a ^5533ffErnst Geoborg^000000.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "¿Él no te ha conocido?";
+		next;
+		mes "[Isenhonor]";
+		mes "No, todo el acceso hacia él está bloqueado.";
+		next;
+		mes "[Isenhonor]";
+		mes "El ^5533ffCaballero Guardián^000000 y ^5533ffErnst Geoborg^000000 son las únicas dos personas que saben lo que pasó ese día.";
+		mes "De todas formas, es imposible conocerlos a ellos. No sé por dónde comenzar.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "¿Un Caballero Guardián? ¿tu hermano tenía un Caballero Guardián?";
+		next;
+		mes "[Isenhonor]";
+		mes "Si. Cada miembro de la familia Walther tiene un Caballero Guardián. Nuestra familia trabaja en el comercio por el mar, así que viajamos en barco.";
+		next;
+		mes "[Isenhonor]";
+		mes "Como sabes, los marineros no son muy gentiles, y tenemos que cargar dinero con nosotros. Debido a eso, tenemos que tener precaución. Todos necesitamos Caballeros Guardianes.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "¿Dónde está tu Caballero Guardián entonces, Isenhonor?";
+		next;
+		mes "[Isenhonor]";
+		mes "Estoy enfermo de los Caballeros Guardianes. Desde que el Caballero Guardián de mi hermano lo haya abandonado y huído. No los quiero llamar Caballeros Guardianes.";
+		next;
+		mes "[Isenhonor]";
+		mes "¿Cómo debería llamar a un Caballero Guardián que traiciona a su maestro y huye?";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Creo que sería buena idea comenzar una investigación con su Caballero Guardián. Debido a que ellos trabajan juntos, debe de saber algo.";
+		next;
+		mes "[Isenhonor]";
+		mes "Bien, cuando le pregunte, él me dirá que no sabe nada. Si lo supiera, me hubiera dicho desde antes. Eran bastante cercanos y a menudo se ejercitaban juntos.";
+		next;
+		mes "[Isenhonor]";
+		mes "Ahora que lo menciono, ellos eran cercanos, posiblemente protegía a su amigo...";
+		mes "Por qué no lo pensé antes...";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Permíteme hablar con él, si escucho algo, te lo haré saber. Aun que no averigue nada, será mejor que no intentar nada.";
+		next;
+		mes "[Isenhonor]";
+		mes "¿Por qué te meterías en tal problema?";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Bueno, tengo una corazonada, como aventurero mi instinto dice que algo raro pasa.";
+		next;
+		mes "[Isenhonor]";
+		mes "¿Todos los aventureros confían en sus corazonadas como tú?";
+		mes "Esto podría ser peligroso.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Eso es por lo cual se llama aventura. Las aventuras van a donde las aventuras están.";
+		next;
+		mes "[Isenhonor]";
+		mes "No lo entiendo...";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Lo puedes llamar necesidad latente de curiosidad. Además, no puedo negarme a nadie en problemas.";
+		next;
+		mes "[Isenhonor]";
+		mes "Aprecio tu ayuda, estoy desesperado aún para aceptar tu favor, aún así, no sé si has escuchado mucho sobre el Caballero Guardián.";
+		next;
+		mes "[Isenhonor]";
+		mes "Si deseas conocerlo, deberás ir al ^5533ffsur de alberta^000000. Él debería de estar allí.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Bien, entonces...";
+		close2;
+		Q_FAM_WALTHERS = 1;
+		end;
+	} else if(Q_FAM_WALTHERS) {
+		mes "[Isenhonor]";
+		mes "Si deseas conocerlo, deberás ir al ^5533ffsur de alberta^000000. Él debería de estar allí.";
+		close;
+	}
+	mes "[Isenhonor]";
+	mes "...";
+	close;
+}
+
+// == Familia Wigner
+// ==================================
+prt_cas_q,153,123,3	script	Guardia#ep16wig	105,{
+	mes "[Guardia]";
+	mes "No se permite la entrada a la habitación de la familia Wigner sin autorización, por favor retírense.";
+	close;
+}
+prt_cas_q,153,116,1	duplicate(Guardia#ep16wig)	Guardia#ep16wig2	105
+prt_cas_q,146,121,4	script	Suspicious Guy#ep16w	59,{
+	mes "[Suspicious Man]";
+	mes "Por favor dejenme ver a la familia Wigner.";
+	close;
+}
+prt_cas_q,148,122,4	script	Dama#ep16w1	68,{
+	mes "[Dama]";
+	switch(rand(5)) {
+		case 1: mes "Oh, Lord Jurgen es tan apuesto."; break;
+		case 2: mes "¿Has visto el color de los ojos de la familia Wirgen?, son de un verde brillante muy bello."; break;
+		case 3: mes "Desearía que Isaac fuera mayor."; break;
+		case 4: mes "Me pregunto si los hombres de la familia Wigner estarán destinados a ser calvos."; break;
+		case 5: mes "Esa mujer pelirroja arruina completamente el estilo de la familia Wigner."; break;
+	}
+	close;
+}
+prt_cas_q,150,122,4	duplicate(Dama#ep16w1)	Dama#ep16w2	71
+prt_cas_q,148,117,8	duplicate(Dama#ep16w1)	Dama#ep16w3	90
+prt_cas_q,150,117,8	duplicate(Dama#ep16w1)	Dama#ep16w4	91
+prt_cas_q,82,23,2	script	Catherine Wigner#ep16	71,{ end; }
+prt_cas_q,82,21,2	script	Levuiere Wigner#ep16	10132,{
+	if(Q_FAM_WALTHERS && !Q_FAM_WIGNERS_B) {
+		mes "[Levuiere]";
+		mes "Estimado aventurero, bienvenido a la habitación de la familia Wigner. Mi nombre es ^5533ffLeuviere Wigner^000000.";
+		next;
+		mes "[Levuiere]";
+		mes "Estoy honrado por tu visita.";
+		mes "Especialmente considerando que este banquete ha sido hecho en tu honor.";
+		next;
+		mes "[Levuiere]";
+		mes "El banquete es por supuesto más que una celebración, desde que la Asamblea Real es hecha al mismo tiempo.";
+		next;
+		mes "[Levuiere]";
+		mes "Por supuesto, hay un miembro de nuestra familia que participará en la Asamblea Real.";
+		next;
+		mes "[Levuiere]";
+		mes "Esta es la Señora de la casa de la familia Wigner, ^5533ffCatherine Wigner^000000";
+		next;
+		mes "[Catherine]";
+		mes "¿Cómo estás?, por favor siéntete en casa mientras estás con nosotros. Permíteme saber si experimentas algun incoveniente aquí.";
+		next;
+		mes "[Catherine]";
+		mes "Nosotros los Wigners te apoyaremos tanto como sea posible, querid"+(Sex?"o":"a")+" aventurer"+(Sex?"o":"a")+".";
+		next;
+		mes "[Catherine]";
+		mes "Por favor visíta nuestro señorío también si es que tienes tiempo. También serás bienvenido allí.";
+		mes "Ahora, ¿dónde está ^5533ffJurgen^000000?";
+		next;
+		movenpc "Jurgen Wigner#ep16",80,24;
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "¿Me estaban buscando?";
+		next;
+		cutin "",255;
+		mes "[Levuiere]";
+		mes "¡Aquí estás!, estimado aventurero, él es el ^5533ffheredero de la familia Wigner^000000, y el ^5533ffcandidato al trono^000000 participando en la Asamblea Real en esta ocasión.";
+		next;
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "Hola. Mi nombre es ^5533ffJurgen Wigner^000000. Me es un placer conocerte.";
+		next;
+		mes "[Jurgen]";
+		mes strcharinfo(0)+", por favor siéntete en casa. Si necesitas algo, o encuentras algo que sea un inconveniente por lo que sea, por favor házmelo saber.";
+		unittalk getcharid(3),strcharinfo(0)+": Gracias por su hospitalidad.",bc_self;
+		next;
+		mes "[Jurgen]";
+		mes "Entonces, por favor discúlpeme.";
+		next;
+		movenpc "Jurgen Wigner#ep16",95,11;
+		cutin "",255;
+		mes "[Levuiere]";
+		mes "Tch, estoy preocupado de que no se muestre muy sociable, por el asunto de ser uno de los candidatos a heredar el trono, tu sabes. "+strcharinfo(0)+", por favor, disculpa la descortesía de mi hijo.";
+		next;
+		mes "[Levuiere]";
+		mes "Si el tiempo lo permite, ¿te gustaría conocer al resto de nuestros hijos?, ellos estaban muy emocionados por conocer al héroe que derrotó a Morroc.";
+		next;
+		mes "[Levuiere]";
+		mes "Entonces, por favor siéntete en casa y da una mirada alrededor, "+strcharinfo(0)+".";
+		close2;
+		Q_FAM_WIGNERS_B = 1;
+		end;
+	} else if(Q_FAM_WIGNERS_B) {
+		mes "[Levuiere]";
+		mes "Entonces, por favor siéntete en casa y da una mirada alrededor, "+strcharinfo(0)+".";
+		close;
+	}
+	mes "[Levuiere]";
+	mes "Estás en las villas de la asamblea real, por favor toca antes de entrar.";
+	close;
+}
+
+prt_cas_q,95,11,5	script	Jurgen Wigner#ep16	989,{
+	if(Q_FAM_WIGNERS_B && !Q_FAM_WIGNERS) {
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "Estimado aventurero, agradezco que aún estés aquí. Siento mi comportamiento antes. Quería hablar contigo de algo, y si cometo errores al hablar frente a mi madre, recibo reprimenda.";
+		next;
+		mes "[Jurgen]";
+		mes "Ahora ella debe de estar enojada conmigo, y ese tipo de cosas me siguen aún molestando. Debido a eso, me tuve que retirar, lo siento.";
+		next;
+		mes "[Jurgen]";
+		mes strcharinfo(0)+", ¿te gustaría que te presentarla a la familia?, esta elegante señorita que está aquí es mi hermana, ^5533ffKatrin Wigner^000000.";
+		next;
+		cutin "16kat_nor",2;
+		mes "[Katrin]";
+		mes "No deberías de llamarme tu 'hermana', deberías decir la primera hija de la familia Wigner, en esta ocasión.";
+		next;
+		mes "[Katrin]";
+		mes "Estimado aventurero, estoy honrada de conocerte, espero que hayas descansado en estadía de los Wigner.";
+		next;
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "Este es mi hermano, ^5533ffIsaac Wigner^000000.";
+		hideoffnpc "Isaac Wigner#ep16";
+		next;
+		mes "[Jurgen]";
+		mes "Él es el hijo más pequeño de la familia Wigner, al contrario de mi hermana y yo, no nos interesan los negocios de la familia, él es un prodigio que nos enorgullece.";
+		next;
+		hideoffnpc "Strong Guards#ep16w";
+		hideoffnpc "Strong Guards#ep16w2";
+		hideoffnpc "Suspicious Guy#ep16w1";
+		cutin "16isa",2;
+		mes "[Isaac]";
+		mes "¿Hola?, yo soy Isaac Wigner, que gran problema es en el que estás, tener que visitar aburridas familias una por una. Deseo que al menos te estés divirtiendo...";
+		next;
+		npctalk "Guardias Fuertes: ¿Qué está haciendo esa persona?","Strong Guards#ep16w2",bc_self;
+		cutin "16kat_nor",2;
+		mes "[Katrin]";
+		mes "Isaac, te advertí de hablar de ese modo antes.";
+		mes "Estás siendo irrespetuoso con Jurgen, quién te ha presentado. ¿Vas a ponernos en vergüenza?";
+		next;
+		cutin "16isa",2;
+		mes "[Isaac]";
+		mes "¡Es una broma, sólo una broma!, hermana, eres demasiado rígida.";
+		mes "En una abrupta atmósfera como esta, un aventurero se merece una risa, ¿no crees?";
+		next;
+		npctalk "Guardias Fuertes: ¡Sal de ahí, en este instante!","Strong Guards#ep16w",bc_self;
+		next;
+		hideonnpc "Strong Guards#ep16w";
+		hideonnpc "Strong Guards#ep16w2";
+		hideonnpc "Suspicious Guy#ep16w1";
+		cutin "16kat_nor",2;
+		mes "[Katrin]";
+		mes "No estás siento divertido, estás siendo irrespetuoso con nuestro invitado.";
+		mes "Estimado aventurero, por favor disculpa sus malos modales. Lo siento.";
+		next;
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "Bueno, quiero ir a casa lo antes posible, este lugar es demasiado pequeño y amontonado.";
+		mes "Me gustaría al menos estar en el Salón del Banquete.";
+		next;
+		mes "[Jurgen]";
+		mes "Debe de haber mucha gente que quiera verme, y estoy obligado a mostrar mi cara.";
+		next;
+		mes "[Jurgen]";
+		mes "Mi presencia iluminará la oscuridad del palacio, debería de entretener a las personas aburridas de ese lugar.";
+		next;
+		cutin "16kat_ang",2;
+		mes "[Katrin]";
+		mes "Estás insultando al banquete real, necesitas hacer lo mejor en la Asamblea Real que es más sagrada de lo que tú piensas.";
+		next;
+		cutin "16kat_nor",2;
+		mes "[Katrin]";
+		mes "No debes de olvidar que eres uno de los candidatos al trono, y tienes potencial para liderar un reino con las siete familias reales.";
+		next;
+		mes "[Katrin]";
+		mes "Eso significa que no debes de actuar como un niño, te dije antes que dejaras de hablar sobre el peso de tu responsabilidad tan a la ligera.";
+		next;
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "Por supuesto, sé eso. Eso es porque mejoré mi apariencia y corregí mi cabello perfectamente.";
+		mes "No intento perderlos, tu sabes.";
+		next;
+		mes "[Jurgen]";
+		mes "Necesitas mejorar tu persona para hacerte cargo de asuntos más grandes.";
+		mes "Claro, estoy más que preparado.";
+		next;
+		mes "[Jurgen]";
+		mes "¿Quiéres ver mi nueva capa?, será del color de mis ojos.";
+		mes "Eso definitivamente iluminará el palacio.";
+		next;
+		cutin "16isa",2;
+		mes "[Isaac]";
+		mes "Oh, ahí va otra vez. Debería irme ya.";
+		mes "Estimado aventurero, ojalá y nos veamos en otra ocasión.";
+		next;
+		hideonnpc "Isaac Wigner#ep16";
+		cutin "16kat_nor",2;
+		mes "[Katrin]";
+		mes "Supongo que es todo por hoy, si no estás ocupado, ^5533ff¿no te gustaría una taza de café con nuestros padres?^000000.";
+		next;
+		mes "[Katrin]";
+		mes "Nuestros padres adoran escuchar historias de aventureros.";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "Buena idea, entonces, por favor discúlpenme.";
+		close2;
+		cutin "",255;
+		Q_FAM_WIGNERS = 1;
+		end;
+	} else if(Q_FAM_WIGNERS) {
+		cutin "16jur_nor",2;
+		mes "[Jurgen]";
+		mes "Estoy seguro de que mi nueva capa iluminará el palacio, ¿sabes?, será del color de mis ojos.";
+		mes "¿No es fabuloso?";
+		close2;
+		cutin "",255;
+		end;
+	}
+OnInit:
+	hideonnpc "Isaac Wigner#ep16";
+	hideonnpc "Strong Guards#ep16w";
+	hideonnpc "Strong Guards#ep16w2";
+	hideonnpc "Suspicious Guy#ep16w1";
+	end;
+}
+
+prt_cas_q,96,7,3	script	Katrin Wigner#ep16	10125,{
+	cutin "16kat_nor",2;
+	mes "[Katrin]";
+	mes "Si algo le molesta por favor no dude en decirlo.";
+	unittalk getcharid(3),strcharinfo(0)+": Gracias por tu hospitalidad.",bc_self;
+	close2;
+	cutin "",255;
+	end;
+}
+
+prt_cas_q,93,8,5	script	Isaac Wigner#ep16	10126,{ end; }
+
+prt_cas_q,98,20,8	script	Strong Guards#ep16w	105,{ end; }
+prt_cas_q,96,21,6	script	Strong Guards#ep16w2	105,{ end; }
+prt_cas_q,99,23,3	script	Suspicious Guy#ep16w1	59,{ end; }
+
+// == Familia Richard
+// ==================================
+prt_cas_q,80,80,4	script	Butter for the Richard::butt_ep16	57,{
+	if(Q_FAM_WIGNERS && !Q_FAM_RICHARDS_S) {
+		mes "[Butter]";
+		mes "¿Cómo estás?, estaba esperando por tí. Fuí informado por el Chambelán que vendrías.";
+		next;
+		mes "[Butter]";
+		mes "He escuchado tu nombre antes, "+strcharinfo(0)+". Su eres el héroe de la subyugación de Morroc, ¿correcto?";
+		next;
+		mes "[Butter]";
+		mes "¡Oh!, lo siento, he tomado mucho de tu tiempo, dentro de la habitación está Po, el siguiente cabeza de la familia Richard.";
+		mes "Está esperando por tí.";
+		next;
+		mes "[Butter]";
+		mes "Permíteme escoltarte dentro.";
+		close2;
+		Q_FAM_RICHARDS_S = 1;
+		end;
+	} else if(Q_FAM_RICHARDS_S && !Q_FAM_RICHARDS) {
+		mes "[Butter]";
+		mes "Lord Po te espera dentro.";
+		close;
+	} else if(Q_FAM_RICHARDS) {
+		mes "[Butter]";
+		mes "Un gusto verle nuevamente.";
+		next;
+		mes "[Butter]";
+		mes "Al parecer Lord Po desea aplicarle el estricto sistema de entrenamiento de la milicia de Rune Midgard.";
+		next;
+		mes "[Butter]";
+		mes "Pero lamentablemente por el momento la sala no se encuentra disponible.";
+		next;
+		mes "[Butter]";
+		mes "Por favor vuelva en otra ocasión.";
+		close;
+	}
+	mes "[Butter]";
+	mes "Esta es la habitación de la familia Po.";
+	close;
+}
+
+prt_cas_q,93,74,4	script	Po Richard#ep16	993,{
+	if(Q_FAM_RICHARDS_S && !Q_FAM_RICHARDS_TALK) {
+		cutin "richard_po01",2;
+		mes "[Po Richard]";
+		mes "Tu debes ser el aventurero que ha hecho una gran contribución en la subyugación de Dark Lord. Tu trabajo es bien sabido en este palacio.";
+		next;
+		mes "[Po Richard]";
+		mes "Especialmente para ti, la familia Richard, estamos realmente interesados en tu trabajo.";
+		next;
+		mes "[Po Richard]";
+		mes "¿Quiéres saber por qué?";
+		next;
+		mes "[Po Richard]";
+		mes "Bien, si no quieres, te contaré de todas formas.";
+		next;
+		mes "[Po Richard]";
+		mes "Como todos piensan la mayoría de los aventureros no se interesan en el palacio, pero la familia Richard está a cargo de la fuerza militar de Rune-Midgard.";
+		next;
+		mes "[Po Richard]";
+		mes "Nosotros producimos bastantes guerreros excelentes. ¡Hm!, estoy curioso por todo lo sucedido. ¿Has escuchado de los guerreros de la familia Richard?";
+		next;
+		if(select("Si, los he escuchado:No, nunca") == 2) {
+			mes "[Po Richard]";
+			mes "Pues no eran necesariamente los grandes guerreros.";
+			next;
+		}
+		mes "[Po Richard]";
+		mes "¡Oh!, debí parecer un fanfarrón, la familia Richard lo deberá de intentar de hacer mejor.";
+		next;
+		mes "[Po Richard]";
+		mes "Bueno, no importa, ha sido mucho tiempo desde entonces.";
+		next;
+		mes "[Po Richard]";
+		mes "¿Deberíamos tomar un descanso antes de proceder?";
+		close2;
+		cutin "",255;
+		Q_FAM_RICHARDS_TALK = 1;
+		end;
+	} if( Q_FAM_RICHARDS_TALK && !Q_FAM_RICHARDS) {
+		cutin "richard_po01",2;
+		mes "[Po Richard]";
+		mes "Bueno, hablemos sobre por qué la familia Richard está interesada en tí.";
+		next;
+		mes "[Po Richard]";
+		mes "Como sabes nuestra familia se dedica a la producción de guereros. Corremos con un sistemático estilo de entrenamiento para lograr nuestra meta.";
+		next;
+		mes "[Po Richard]";
+		mes "Yo no entreno mucho, pero sé lo que es un buen programa de entrenamiento, basado en las clases de las otras familias.";
+		next;
+		mes "[Po Richard]";
+		mes "Por favor escucha, estoy a punto de abordar la parte más importante.";
+		next;
+		mes "[Po Richard]";
+		mes "Los aventureros no han estado iniciados inicialmente, pero tenemos muchos miembros de la familia real participando en la subyugación de Dark Lord, y fuimos informados de tu trabajo.";
+		next;
+		mes "[Po Richard]";
+		mes "Cuando te contaba sobre tus contribuciones, una pregunta vino a mi mente, ¿qué pasaría si un aventurero libre tomara parte de nuestro estricto entrenamiento? ¿qué pasaría?, estoy curioso.";
+		next;
+		mes "[Po Richard]";
+		mes "Deberíamos de ganar grandiosas recompenzas si reformamos a un gran aventurero como usted para ayudarnos.";
+		next;
+		mes "[Po Richard]";
+		mes "Siento que es una oferta muy atractiva, ¿te gustaría probar el reto del sistema de entrenamiento de la familia Richard?";
+		next;
+		if(select("Le daré una oportunidad:No lo haré") == 2) {
+			mes "[Po Richard]";
+			mes "Bueno, aun que te niegues tendrás que hacerlo, simplemente porque yo lo digo.";
+			next;
+			mes "[Po Richard]";
+			mes "Así que fingiré que dijiste que sí.";
+			next;
+		}
+		mes "[Po Richard]";
+		mes "¡Espléndido!, ese es el espíritu que necesitamos.";
+		next;
+		mes "[Po Richard]";
+		mes "Permíteme decirle al mayordomo sobre eso. Podrás proceder con el entrenamiento hablando con él.";
+		close2;
+		Q_FAM_RICHARDS = 1;
+		cutin "",255;
+		end;
+	} else if(Q_FAM_RICHARDS) {
+		cutin "richard_po01",2;
+		mes "[Po Richard]";
+		mes "Podrás proceder con el entrenamiento hablando con mi mayordomo.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	cutin "richard_po01",2;
+	mes "[Po Richard]";
+	mes "Un gusto, soy Po Richard, familia encargada de la milicia de Rune Midgard.";
+	close2;
+	cutin "",255;
+	end;
+}
+
+// == Familia Geoborg
+// ==================================
+prt_cas_q,87,132,4	script	Bodyguard Martin#ep16	733,{ end; }
+prt_cas_q,85,127,2	script	Bodyguard Gerard#ep16	418,{ end; }
+prt_cas_q,85,131,0	script	#cutingeoborg	-1,5,5,{
+OnTouch:
+	if( Q_FAM_RICHARDS && !Q_FAM_GEOBORGS_S ) {
+		mes "[Bodyguard Martin]";
+		mes "¡Tu!, ¡Detente ahí mismo!";
+		mes "Necesitas pasar por nuestro chequeo de seguridad.";
+		emotion ET_SURPRISE,getnpcid(0,"Bodyguard Martin#ep16");
+		emotion ET_SURPRISE,getnpcid(0,"Bodyguard Gerard#ep16");
+		npctalk "Bodyguard Martin: ¡Detente ahí!","Bodyguard Martin#ep16",bc_self;
+		next;
+		mes "[Bodyguard Martin]";
+		mes "Por favor muestra tu identificación y tus objetos personales en esta tabla y pon la cara en la pared.";
+		next;
+		emotion ET_HUK,getnpcid(0,"Bodyguard Gerard#ep16");
+		mes "[Bodyguard Gerard]";
+		mes "¡Martin!, ¿qué estás haciendo?";
+		mes "¡No seas tan rudo con nuestro invitado!, él es de quien te hablé.";
+		next;
+		mes "[Bodyguard Martin]";
+		mes "¡Es por la seguridad de la reina!";
+		next;
+		mes "[Bodyguard Gerard]";
+		mes "Estás cerca de la reina para su seguridad, no acoses a los visitantes.";
+		next;
+		mes "[Bodyguard Martin]";
+		mes "El palacio ha sido muy poco ético. ¡Cómo podemos proteger a la reina con tal tipo de seguridad tan fácil de pasar!";
+		next;
+		mes "[Bodyguard Gerard]";
+		mes "No podemos hacer nada, al menos no durante la ordenanza imperial.";
+		next;
+		emotion ET_THINK,getnpcid(0,"Bodyguard Martin#ep16");
+		mes "[Bodyguard Martin]";
+		mes "Ahora si la ordenanza imperial fuera igno-...";
+		next;
+		cutin "ep16gao_1",2;
+		mes "[Reina]";
+		mes "Es demasiado el ruido por aquí.";
+		next;
+		cutin "",255;
+		mes "[Bodyguard Gerard]";
+		mes "¡Huh, su majestad!";
+		mes "Lo siento.";
+		mes "Tenemos un invitado.";
+		close2;
+		Q_FAM_GEOBORGS_S = 1;
+		end;
+	} else if( !Q_FAM_RICHARDS ) {
+		mes "[Bodyguard Martin]";
+		mes "Lo siento pero no tienes permitida la entrada.";
+		close2;
+		warp "prt_cas_q",148,168;
+		end;
+	}
+}
+
+prt_cas_q,94,129,4	script	Queen#ep16	10121,{
+	if( Q_FAM_GEOBORGS_S && !Q_FAM_GEOBORGS ) {
+		cutin "ep16gao_1",2;
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Bienvenido.";
+		mes "Soy la reina Catherine D. Geoborg.";
+		next;
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Lo siento si mis caballeros te ocasionaron algún problema.";
+		mes "Están un poco paranóicos estos días. Por favor entiéndelos.";
+		next;
+		if(select("Preguntar sobre la familia Geoborg:Salir de la habitación") == 2) {
+			mes "[Queen Catherine D. Geoborg]";
+			mes "¡Oh!, ¿tenías algo que hacer?";
+			mes "Disculpa por entretenerte, vuelve cuando quieras conversar.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Nosotros, la familia Geoborg, somos decendientes de Tristan I, quien fundó el reino. Nuestra familia ha producido numerosos reyes y caballeros por generaciones.";
+		next;
+		mes "[Queen Catherine D. Geoborg]";
+		mes "En la primera asamblea real, que fue hecha este año, el cuarto príncipe, Ernst, fue electo como candidato. Pero, dejó su puesto en la Asamblea Real esta vez debido a un particular incidente.";
+		next;
+		select("¿A qué se refiere con incidente?");
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Oh... mi lengua ha hablado por ella sola.";
+		mes "Es un poco dificil contarte sobre esas cosas, preferiría que no dijeras nada.";
+		next;
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Has venido todo este camino, pero no es mucho lo que te puedo decir.";
+		next;
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Si tienes más preguntas, deberías preguntarle a Gerard o Martin en este lugar. Por favor disculpame por no compartir más tiempo contigo, tengo cosas urgentes que hacer.";
+		close2;
+		cutin "",255;
+		Q_FAM_GEOBORGS = 1;
+		end;
+	} else if( Q_FAM_GEOBORGS ) {
+		cutin "ep16gao_1",2;
+		mes "[Queen Catherine D. Geoborg]";
+		mes "Lo siento, pero tengo cosas importantes que hacer.";
+		close2;
+		cutin "",255;
+		end;
+	}
+}
+
+// == Familia Roengenburg
+// ==================================
+prt_cas_q,90,186,4	script	Maximilian Roengenburg#16	10133,{
+	if( Q_FAM_GEOBORGS ) {
+		mes "[Maximilian]";
+		mes "Hola, aventureros. Estoy honrado de que visiten a la familia ^5533ffRoegenburg^000000. Yo soy ^5533ffMaximilian Roegenburg^000000.";
+		next;
+		mes "[Maximilian]";
+		mes "Somos una de las siete familias reales fundadas por el reino y estamos trabajando duro en beneficio de Rune Midgard.";
+		next;
+		mes "[Maximilian]";
+		mes "^5533ffHelmut Roegenburg^000000, el heredero de la familia, está supuesto a participar en la Asamblea Real, permíteme presentártelo.";
+		next;
+		cutin "16hel",2;
+		mes "[Helmut]";
+		mes "Hola, soy ^5533ffHelmut Roegenburg^000000.";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "Hola, soy "+strcharinfo(0)+", es un placer conocerte.";
+		next;
+		cutin "16hel",2;
+		mes "[Helmut]";
+		mes "Estoy honrado de conocer al héroe que venció a Morroc, por favor disfruta tu tiempo mientras estás con los Roegenburg.";
+		next;
+		mes "[Helmut]";
+		mes "Si tienes algo de tiempo, ¿qué tal conocer al resto de la familia Roegenburg?";
+		next;
+		mes "[Helmut]";
+		mes "Sería interesante para tí escuchar la historia de la familia de ^5533ffWolf Roegenburg^000000.";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "Si, eso suena como una buena idea. Gracias.";
+		close2;
+		Q_FAM_ROENGENBURG_TALK = 1;
+		end;
+	}
+	mes "[Maximilian]";
+	mes "Disfruta de tu estancia con la familia Roegenburg";
+	close;
+}
+prt_cas_q,90,184,4	script	Helmut Roengenburg#16	10127,{
+	cutin "16hel",2;
+	mes "[Helmut]";
+	if( Q_FAM_ROENGENBURG_TALK ) {
+		mes "Sería interesante que escucharas la historia de la familia de ^5533ffWolf Roegenburg^000000.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "Gracias por visitar a la familia Roegenburg";
+	close2;
+	cutin "",255;
+	end;
+}
+prt_cas_q,96,186,3	script	Wolf Roegenburg#16	10128,{
+	cutin "16wol_nor",2;
+	mes "[Wolf]";
+	if( Q_FAM_ROENGENBURG_TALK && !Q_FAM_ROENGENBURG ) {
+		mes "Estimado aventurero, es un honor tenerte con nosotros.";
+		mes "Soy el segundo hijo de la familia Roegenburg, ^5533ffWolf Roegenburg^000000.";
+		next;
+		mes "[Wolf]";
+		mes "Para llevar el deseo de Willhelm Roegenburg, un héroe nacional, los Roegenburg estamos haciendo grandes esfuerzo en proteger nuestro honor, justicia y tradiciones.";
+		next;
+		mes "[Wolf]";
+		mes "Desde la fundación de Rune Midgard, mucha gente de Roegenburg ha hecho contribuciones a la nación.";
+		next;
+		mes "[Wolf]";
+		mes "Actualmente ^5533ffHelmut Roegenburg^000000, quien es un excelente candidato para el trono, está participando en la Asamblea Real, ¿ya lo conociste?";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "Si, ya lo conocí justo ahora, ¿quién es ella?";
+		next;
+		cutin "16agn_nor",2;
+		mes "[Agnes]";
+		mes "Estimado aventurero, es un placer conocerte, yo soy ^5533ffAgnes Roegenburg^000000, la más jóven de los cuatro Roegenburg.";
+		next;
+		mes "[Agnes]";
+		mes "¿Ya tienes una pareja para asistir al banquete?, todavía no tengo a nadie con quién ir, nadie me lo pide.";
+		next;
+		cutin "16wol_ang",2;
+		mes "[Wolf]";
+		mes "Agnes, no digas eso, no es apropiado, le estamos contando al aventurero la historia de los Roegenburg.";
+		next;
+		hideoffnpc "Myer Roegenburg#16";
+		cutin "16mye_nor",2;
+		mes "[Myer]";
+		mes "Ahora, ¿querría mi príncipe venir conmigo?";
+		next;
+		cutin "16agn_nor",2;
+		mes "[Agnes]";
+		mes "Ah, Myer, ¡hermano! ¡Hermano!";
+		next;
+		cutin "16wol_nor",2;
+		mes "[Wolf]";
+		mes "Gracias por venir cuando se te necesita.";
+		mes "Él es ^5533ffMyer Roegenburg^000000, él es el tercer hijo de los Roegenburg.";
+		next;
+		mes "[Wolf]";
+		mes "Él estuvo lejos por mucho tiempo y acaba de regresar, ¿no es así Myer?";
+		next;
+		cutin "16mye_nor",2;
+		mes "[Myer]";
+		mes "Bueno, mitad de eso es cierto, escuche que un ^5533ffmaniaco de la guerra y un amante de las armas se unirían para participar en la Asamblea Real.^000000";
+		next;
+		mes "[Myer]";
+		mes "Así que volví lo antes posible aun que fuese por un corto tiempo, no podía quedarme fuera de esto.";
+		next;
+		cutin "16wol_ang",2;
+		mes "[Wolf]";
+		mes "Todavía tu lengua, ^5533ffaunque pases el tiempo afuera y te cortes con plebeyos^000000, no tienes que llevar ese tipo de inmundicia al palacio.";
+		next;
+		mes "[Wolf]";
+		mes "No creas que soy el tipo de ignorante que te cree todo, ¿o si?";
+		next;
+		mes "[Wolf]";
+		mes "Por supuesto, sé que mi abuelo y tu enviaron gente para vigilarme.";
+		mes "Están tan nerviosos que es imposible no darme cuenta.";
+		next;
+		cutin "16mye_ang",2;
+		mes "[Myer]";
+		mes "Así que mi noble hermano no le gusta mi forma de hablar, ¿no es así?";
+		next;
+		mes "[Myer]";
+		mes "Si nos unimos y ^5533ffHelmut se convierte en rey, toda la ciudad se convertirá en barrios pobres^000000, excepto por el palacio.";
+		next;
+		mes "[Myer]";
+		mes "¿No sería mejor escuchar eso entonces reducirías tu sorpresa que tendrás después?";
+		next;
+		cutin "16mye_nor",2;
+		mes "[Myer]";
+		mes "Bueno, tal ves tu no escuchaste eso en casa, mientras calculabas el dinero que hacías de las guerras que hacías.";
+		next;
+		cutin "16wol_ang",2;
+		mes "[Wolf]";
+		mes "Eres increíblemente rudo, te dije que hablaras de manera refinada.";
+		mes "¿Cuándo actuarás como te digo?";
+		next;
+		cutin "16agn_ang",2;
+		mes "[Agnes]";
+		mes "¡Detenganse ustedes dos!";
+		mes "¡No es necesario pelear!";
+		next;
+		mes "[Agnes]";
+		mes "Este es un banquete para el aventurero, y no deberíamos hacer esto frente a él.";
+		next;
+		mes "[Agnes]";
+		mes "¡Especialmente tu!, ¿qué pensará el aventurero de nosotros?";
+		next;
+		cutin "16mye_nor",2;
+		mes "[Myer]";
+		mes "Si, tienes razón, no soy bienvenido aquí, lo mejor será que me vaya. Agnes, volveré después.";
+		next;
+		hideonnpc "Myer Roegenburg#16";
+		cutin "16agn_nor",2;
+		mes "[Agnes]";
+		mes "Oh por dios, lo olvidé, ¡necesito alistarme!";
+		next;
+		cutin "16wol_nor",2;
+		mes "[Wolf]";
+		mes "Lo siento por tan poco placentera situación, mis diculpas si te hice sentir incómodo.";
+		next;
+		mes "[Wolf]";
+		mes "Le diré a Myer que se diculpe apropiadamente contigo más tarde. Él es diferente a lo que viste aquí. Por favor entiéndelo.";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "No, todo está bien.";
+		next;
+		cutin "16wol_nor",2;
+		mes "[Wolf]";
+		mes "Por cierto, estimado aventurero, ¿me podrías hacer un favor?, si tu programa lo permite.";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "Claro, ¿qué sucede?";
+		next;
+		cutin "16wol_nor",2;
+		mes "[Wolf]";
+		mes "Por favor visita a los Wigner, y traeme algo que ^5533ffIsaac Wigner^000000 te dará.";
+		next;
+		mes "[Wolf]";
+		mes "Se supone que pasaría a recogerlo, pero necesito hablar con Myer, así que si pudieras...";
+		next;
+		mes "[Wolf]";
+		mes "Claro, tienes todo el derecho a negarte, no te lo negaré, sólo buscaré a alguien más que sea de confiansa como tú.";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "¿Estás probándome?";
+		next;
+		cutin "16wol_nor",2;
+		mes "[Wolf]";
+		mes "Ah, no, nada de eso. Me disculpo si te hice sentir incómodo ahora, sólo que no tengo a nadie más con quién contar, que contigo.";
+		next;
+		cutin "",255;
+		mes "["+strcharinfo(0)+"]";
+		mes "De acuerdo, así que necesitas que visite a los Wigner y le pregunte a Isaac Wigner sobre algo que le pediste, ¿es correcto?";
+		next;
+		cutin "16wol_nor",2;
+		mes "[Wolf]";
+		mes "Correcto.";
+		close2;
+		cutin "",255;
+		Q_FAM_ROENGENBURG = 1;
+		end;
+	} if( Q_FAM_ROENGENBURG && !Q_BAN_ISAAC ) {
+		mes "Si me pudieses hacer el favor de pedirle lo que le solicité a Isaac Wigner, te lo agradecería.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "Nuestra familia tiene un linaje familiar muy interesante.";
+	close2;
+	cutin "",255;
+	end;
+OnInit:
+	hideonnpc "Myer Roegenburg#16";
+	end;
+}
+prt_cas_q,96,184,3	script	Agnes Roegenburg#16	10130,{
+	cutin "16agn_nor",2;
+	mes "[Agnes]";
+	mes "Necesito alistarme para el banquete.";
+	close2;
+	cutin "",255;
+	end;
+}
+
+prt_cas_q,92,183,4	script	Myer Roegenburg#16	10129,{ end; }
+prt_cas_q,84,182,7	script	Chambelán#16roen	968,{
+	mes "[Chambelán]";
+	mes "Oh, no se moleste en hablar conmigo.";
+	close;
+}
+// ritual: https://youtu.be/mLxhJrLu3cE?t=4m53s

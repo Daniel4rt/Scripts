@@ -1,0 +1,128 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                  Atrapa la Masa                 ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+amasa	mapflag	restricted	1
+amasa	mapflag	noreturn
+amasa	mapflag	nowarpto
+amasa	mapflag	nosave	SavePoint
+amasa	mapflag	nomemo
+amasa	mapflag	nowarp
+amasa	mapflag	nocommand
+prontera,196,177,4	script	Atrapa a la Masa::evt_rice	764,{
+	mes "[^cc6600Atrapa a la Masa^000000]";
+	mes "El evento consiste en atrapar a 10 Rice Cake antes que todo y llevarlo con el NPC en la sala.";
+	next;
+	mes "[^cc6600Atrapa a la Masa^000000]";
+	mes "No se permite entrar con un huevo de este pet o con su taming, y sobre todo ^ff0000sin carro^000000.";
+	next;
+	mes "[^cc6600Atrapa a la Masa^000000]";
+	mes "¿Deseas entrar al evento?";
+	next;
+	if(select("No gracias","Entrar al Evento [^0000ff"+getmapusers("amasa")+"^000000]") == 1)
+		close;
+	if(F_CheckEvent(0)) {
+		mes "[^cc6600Atrapa a la Masa^000000]";
+		mes "Por favor deshabilita cualquier tipo de montura antes de entrar.";
+		close;
+	}
+	if(countitem(9028) > 0) {
+		mes "[^cc6600Atrapa a la Masa^000000]";
+		mes "Se te ha denegado el paso al evento, no debes de tener huevos de masas.";
+		close;
+	}
+	delitem 12340,countitem(12340);
+	getitem 12340,50;
+	sc_end SC_ALL;
+	warp "amasa",49,71;
+	close;
+OnEnable:
+	enablenpc "evt_rice";
+	movenpc "evt_rice",156,179;
+	waitingroom "Atrapa la Masa",0;
+	end;
+OnDisable:
+	movenpc "evt_rice",197,177;
+	delwaitingroom;
+OnInit:
+	disablenpc "evt_rice";
+	end;
+}
+amasa,50,77,4	script	#warpbackgef	45,1,1,{
+end;
+OnTouch:
+	delitem 12340,countitem(12340);
+	delitem 9028,(countitem(9028) - 1);
+	warp "prontera",150,180;
+	end;
+OnInit:
+	disablenpc "#warpbackgef";
+	end;
+}
+amasa,46,74,5	script	Cuidador de Masas::evt_rice2	684,{
+	if(countitem(9028) >= 10) {
+		mes "[^ff6060Cuidador de Masas^000000]";
+		mes "Felicidades, has sido el primero en atrapar 10 Rice Cake, te puedes quedar con él.";
+		F_Event 1,rand(1,5);
+		delitem 12340,countitem(12340);
+		delitem 9028,(countitem(9028) - 1);
+		announce "["+strcharinfo(0)+"] ha atrapado primero a 10 Rice Cake y se ha llevado el premio.",bc_all,0xFF8800;
+		disablenpc "evt_rice2";
+		enablenpc "#warpbackgef";
+		mapannounce "amasa","El resto de los usuarios salgan por el warp del medio.",bc_map,0xFF8800;
+		close;
+	}
+	if(countitem(12340) < 1)
+		getitem 12340,10;
+	mes "[^ff6060Cuidador de Masas^000000]";
+	mes "Si eres el primero en atrapar 10 Rice Cake te recompenzaré.";
+	close;
+OnInit:
+	disablenpc "evt_rice2";
+	end;
+}
+-	script	RICEVT	-1,{
+OnAtrapaMasa:
+OnWhisperGlobal:
+	announce "¡Las inscripciones para el evento 'Atrapa La Masa' han iniciado en Prontera.!",bc_all,0xFF8800;
+	killmonsterall "amasa";
+	donpcevent "evt_rice::OnEnable";
+	disablenpc "evt_rice2";
+	disablenpc "#warpbackgef";
+	sleep2 3000;
+	announce "Tendrás que usar los Taming Item que se te otorgarán para atrapar 10 Rice Cake.",bc_all,0xFF8800;
+	sleep2 3000;
+	announce "Tienes tres minutos para entrar al evento antes de que se cierre.",bc_all,0xFF8800;
+	sleep2 60000;
+	announce "¡El evento de atrapa la masa empezará en 2 minutos!",bc_all,0xFF8800;
+	sleep2 60000;
+	announce "¡El evento de atrapa la masa empezará en 1 minuto!",bc_all,0xFF8800;
+	sleep2 30000;
+	announce "¡Quedan sólo 30 segundos para que el evento de inicio!",bc_all,0xFF8800;
+	sleep2 30000;
+	announce "La entrada al evento se ha cerrado.",bc_all,0xFF8800;
+	sleep2 5000;
+		if(getmapusers("amasa") < 1) {
+			announce "No hay suficientes usuarios para participar, el evento se cancela.",bc_all,0xFF8800;
+			donpcevent "evt_rice::OnDisable";
+			end;
+		}
+	mapannounce "amasa","¡Consigue 10 masas antes que todos con los Taming Item de tu inventario y entrégalos a el Cuidador!",bc_map,0xFF8800;
+	monster "amasa",0,0,"Rice Cake",1815,75,"RICEVT::OnRiceKill";
+	sleep2 5000;
+	enablenpc "evt_rice2";
+	donpcevent "evt_rice::OnDisable";
+	end;
+OnRiceKill:
+	monster "amasa",0,0,"Rice Cake",1815,1,"RICEVT::OnRiceKill";
+	end;
+}

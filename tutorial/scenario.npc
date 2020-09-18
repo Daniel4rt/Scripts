@@ -1,0 +1,224 @@
+// Spawn Zone > Training Zone
+scenario,50,143,0	warp	scenario001	2,2,scenario,154,148
+scenario,154,158,0	warp	scenario001-1	2,2,scenario,50,135
+// Training Zone > Treasure Zone
+scenario,132,125,0	warp	scenario002	2,2,scenario,42,15
+scenario,42,7,0	warp	scenario002-1	2,2,scenario,141,125
+
+scenario,151,127,0,0	monster	--ja--	1002,6,1000,800,0
+scenario,161,132,0,0	monster	--ja--	2398,6,1000,800,0
+scenario,160,124,0,0	monster	--ja--	1113,6,1000,800,0
+
+scenario,42,123,5	script	Orlen#sceQ	637,10,10,{
+	cutin "aca_ninja_k",2;
+	if( callfunc("F_CQ2",45100,45104) ) {
+		mes "[ ^000088Orlen^000000 ]";
+		mes "Por ahora sal por esa puerta y acostumbra tu cuerpo al mundo.";
+		close2;
+		cutin "",255;
+		showevent QTYPE_NONE,0;
+		end;
+	}
+	if(@a < 1) {
+		mes "[ ^000088Orlen^000000 ]";
+		mes "Así que haz despertado, permíteme darte la bienvenida.";
+		next;
+		mes "[ ^000088Orlen^000000 ]";
+		mes "Te encuentras en un sitio desconocido por la humanidad, un lugar donde traemos al mundo seres extraordinarios.";
+		next;
+		mes "[ ^000088Orlen^000000 ]";
+		mes "Pero aún cuando seas proveniente de este lugar, no puedo decirte dónde te encuentras.";
+		next;
+		mes "[ ^000088Orlen^000000 ]";
+		mes "¿Deseas que te siga explicando?";
+		next;
+		if(select("No me interesa","Sígueme explicando") == 1) {
+			mes "[ ^000088Orlen^000000 ]";
+			mes "De acuerdo, sigue descanzando, vuelve conmigo si deseas continuar.";
+			close2;
+			@a = 1;
+			cutin "",255;
+			end;
+		}
+	}
+	mes "[ ^000088Orlen^000000 ]";
+	mes "En estos momentos no te puedes enterar ni quién eres ni dónde estás, pero creéme, lo recordarás con el tiempo.";
+	next;
+	mes "[ ^000088Orlen^000000 ]";
+	mes "Por ahora, deberás acostumbrar tu cuerpo a este mundo, así que sal por ese tunel y habla con nuestros aliados para que te orienten.";
+	close2;
+	showevent QTYPE_NONE,0;
+	cutin "",255;
+	setquest 45100;
+	end;
+OnTouch:
+	if( callfunc("F_CQ2",45101,45104) )
+		end;
+	callfunc("F_Icon",45100,"!",0);
+	end;
+}
+
+scenario,149,143,6	script	Breid#sceQ	733,10,10,{
+	cutin "v_breid01",2;
+	if( callfunc("F_CQ2",45102,45103) ) {
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Ve a hablar con el hombre en la sala de la izquierda, él te ayudará a ir al verdadero mundo.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if( sce_q == 3 ) {
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Te vi moverte, yo diría que estás listo, bueno, al menos no morirás sin dar pelea.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Verás, estás en unas Ruinas muy escondidas en el mundo, no hay otra forma de salir de aquí sin una magia en particular.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Ve a hablar con el hombre en la sala de la izquierda, él te ayudará a ir al verdadero mundo.";
+		close2;
+		changequest 45101,45102;
+		sce_q = 0;
+		cutin "",255;
+		end;
+	}
+	if( sce_q == 1 ) {
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Ve a hablar con el fortachón a mi izquierda para continuar.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if( callfunc("F_CQ",45100) ) {
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Oh, un nuevo integrante, ya veo.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Seguro que estás ansioso por saber qué demonios haces aquí o quién eres, pero no te la dejaré tan fácil.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Estás como un ciervo que acaba de nacer y debes acostumbrar tu cuerpo a moverte otra vez.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Si quieres que se te permita salir de aquí deberás asegurarte de aprender lo básico al menos.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Por el contrario serás carne para los cuervos allá fuera.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "¿Deseas continuar?";
+		next;
+		if(select("No.","Continuemos.") == 1) {
+			mes "[ ^ff7700Breid^000000 ]";
+			mes "Si quieres explorar un poco la zona no me importa, pero deberás de prepararte antes si quieres salir.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Algo que te debe de quedar muy claro, es que una de las razones por las que haz sido traído aquí es para investigar.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Pero esta investigación no trata de papeles y documentación, deberás investigar las catastrofes del mundo.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "¿Qué?, ¿No suena sencillo?","Qué lástima";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Como deberás enfrentarte con temibles monstruos a lo largo de tu aventura, necesito que practiques tus técnicas de combate.";
+		next;
+		mes "[ ^ff7700Breid^000000 ]";
+		mes "Para ello necesito que vayas con el fortachón a mi izquierda, él te instruirá en eso.";
+		close2;
+		sce_q = 1;
+		cutin "",255;
+		end;
+	}
+	mes "[ ^ff7700Breid^000000 ]";
+	mes "Te ves algo cansado, ¿por qué no descansas un poco más?";
+	close2;
+	cutin "",255;
+	end;
+OnTouch:
+	if( callfunc("F_CQ",45100) || callfunc("F_CQ2",45102,45104) )
+		end;
+	callfunc("F_Icon",45101,"!",0);
+	end;
+}
+
+scenario,146,130,4	script	Caballero Real#sceQ	734,10,10,{
+	if( sce_q == 3 ) {
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "Vuelve con ^5533ffBreid^000000.";
+		close;
+	}
+	if( sce_q < 3 && checkquest(45101,HUNTING) == 2 ) {
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "Excelente trabajo, vuelve con ^5533ffBreid^000000.";
+		close2;
+		sce_q++;
+		showevent QTYPE_NONE,0;
+		end;
+	}
+	if( sce_q == 1 ) {
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "De acuerdo, movamos esos músculos.";
+		next;
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "Para que recuerdes como combatir, la forma más sencilla es haciéndolo.";
+		next;
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "En el área hay distintos enemigos, quiero que elimines a ^5533ffcinco de cada uno^000000, entonces sabré que estás listo.";
+		next;
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "¡Ve allá!";
+		close2;
+		sce_q++;
+		changequest 45100,45101;
+		end;
+	}
+	if( callfunc("F_CQ",45102) ) {
+		mes "[ ^777777Caballero Real^000000 ]";
+		mes "Al menos ahora recuerdas como defenderte contra ciertos monstruos.";
+		close;
+	}
+	mes "[ ^777777Caballero Real^000000 ]";
+	mes "Ve a descansar.";
+	close;
+end;
+OnTouch:
+	if( callfunc("F_CQ",45100) || callfunc("F_CQ2",45102,45104) )
+		end;
+	if(sce_q == 2 || sce_q == 1)
+		callfunc("F_Icon",45101,"!",0);
+	end;
+}
+
+// Revisión de quest
+function	script	F_CQ	{
+	if(checkquest(getarg(0)) == 1 || checkquest(getarg(0)) == 2)
+		return 1;
+	return 0;
+}
+function	script	F_CQ2	{
+	for(.@i = getarg(0); .@i < getarg(1); .@i++) {
+		if(checkquest(.@i) == 1 || checkquest(.@i) == 2)
+			return 1;
+	}
+	return 0;
+}
+
+// Casteo del ícono sobre el NPC
+function	script	F_Icon	{
+	if(checkquest(getarg(0)) == -1) {
+		if(getarg(1) == "!")
+			showevent QTYPE_QUEST,getarg(2);
+		if(getarg(1) == "?")
+			showevent QTYPE_QUEST2,getarg(2);
+		if(getarg(1) == "W")
+			showevent QTYPE_WARG,getarg(2);
+		if(getarg(1) == "WA")
+			showevent QTYPE_WARG2,getarg(2);
+	}
+	return;
+}

@@ -1,0 +1,165 @@
+moc_para01,53,37,4	script	Eat Gear#para	464,{
+	disable_items;
+	mes "[^cc6600Eat Gear^000000]";
+	mes "Parece que traes algo delicioso en tu inventario, deja ver si es verdad.";
+	next;
+	switch(select("De acuerdo, veamos:¿Qué eres?:^777777Salir^000000")) {
+		case 1:
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Por favor selecciona lo que desees mostrarme, veamos si me apetece.";
+			next;
+			.@m$ = "";
+			for(.@i = 0; .@i < getarraysize(.eq); .@i++)
+				.@m$ += ((getequipisequiped(.eq[.@i]))? .eqp$[.@i]+" ~ [^ff7070+"+getequiprefinerycnt(.eq[.@i])+"^000000 ^0037FF"+getequipname(.eq[.@i])+"^000000]":.eqp$[.@i]+" ~ [ ^0037FFVació^000000 ]")+":";
+			.@s = select(.@m$) - 1;
+			.@p = .eq[.@s];
+			.@r = getequiprefinerycnt(.@p);
+			.@wlv = getiteminfo(getequipid(.@p),13);
+			.@type = getiteminfo(getequipid(.@p),2);
+			.@droprate = getiteminfo(getequipid(.@p),3);
+			if(.@droprate == 10000) {
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Lo siento pero no me interesan objetos comunes o que se vendan en las tiendas, tienes que nutrir mi estómago con algo más delicioso.";
+				close;
+			}
+			if(.@type == 5 && .@wlv < 3) {
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Si me vas a ofrecer armas, que sean al menos de ^5533ffNivel 3^000000, no me des esas cosas asquerosas de baja categoria.";
+				close;
+			}
+			if(.@r < 7 || .@r > 9) {
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Eso que  me muestras no me apetece.";
+				next;
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Si de verdad quieres complacemerme deberás de traerme un equipo refinado a ^5533ff+7, +8 o +9^000000, lo demás no me interesa.";
+				close2;
+				emotion ET_SORRY;
+				end;
+			}
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Eso que traes ahí me interesa bastante, ¿qué dices? ¿quieres dármelo?";
+			next;
+			if(select("Aquí tienes, todo tuyo:Ni loco, adios") == 2) {
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Tsh, descarado, bueno, ven aquí si cambias de opinión.";
+				close;
+			}
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Veamos, hmmm... ^5533ff*lo mastica*^000000";
+			sleep2 1000;
+			mes "Hm...";
+			sleep2 1500;
+			mes "Nom nom nom....";
+			next;
+			delequip .@p;
+			if(rand(100) >= 60) {
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Tenía un sabor raro, de seguro ni lo lavaste antes de dármelo, sólo te daré una parte de tu recompensa.";
+				specialeffect2 155;
+				if(.@r == 7)
+					getitem .stone[.@s],.itemfailure_c[.@r];
+				else
+					getitem .safeticket[.@s],.itemfailure_c[.@r];
+				next;
+				mes "[^cc6600Eat Gear^000000]";
+				mes "Vuelve cuando no tengas algo lleno de sudor, recuerda lavarlo antes de dármelo, estuvo un tanto asqueroso.";
+				close;
+			}
+			specialeffect2 154;
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Bastante delicioso, ten esto por darme un exquisito equipo.";
+			getitem .safeticket[.@s],.itemsuccess_c[.@r];
+			next;
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Vuelve cuando tengas algo más delicioso que ofrecerme.";
+			close;
+		case 2:
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Los aventureros me trajeron a este lugar ya que se dieron cuenta que si me dan lo que me gusta les otorgaré gran poder.";
+			next;
+			mes "[^cc6600Eat Gear^000000]";
+			mes "En mi interior se encuentra un portal que producirá ^5533ffSafe Ticket Refiner^000000 si me traes algún objeto refinado a ^ff7070+7, +8 o +9^000000.";
+			next;
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Si tienes algo como eso en tu equipo por favor hazmelo saber.";
+			close;
+		case 3:
+			mes "[^cc6600Eat Gear^000000]";
+			mes "Vuelve conmigo cuando obtengas cualquier cosa deliciosa de tu equipo.";
+			close;
+	}
+	end;
+OnInit:
+	// Variables de Equipo
+	setarray .eqp$,"Headgear","Armor","Weapon","Shoes","Garment","Shield / Weapon";
+	setarray .eq,EQI_HEAD_TOP,EQI_ARMOR,EQI_HAND_R,EQI_SHOES,EQI_GARMENT,EQI_HAND_L;
+	
+	// Tiers
+	setarray .safeticket,8519,6234,6230,6234,6234,6234;
+	setarray .itemsuccess_c[7],1,2,5;
+	setarray .stone,8517,6457,6456,6457,6457,6457;
+	setarray .itemfailure_c[7],1,2,5;
+	end;
+}
+
+moc_para01,53,34,3	script	Mercader de Tickets::tickettrader	900,{
+	disable_items;
+	mes "[^cc6600Mercader de Tickets^000000]";
+	mes "Veo que vienes buscándome en busca de nuevas opciones para mejorar tu equipamento, y yo soy el ideal para ofrecértelos.";
+	next;
+	mes "[^cc6600Mercader de Tickets^000000]";
+	mes "He estado recorriendo diversos páramos del mundo, he conversado con diversos herreros y me han proporcionado de muchos boletos valiosos para refinar.";
+	next;
+	mes "[^cc6600Mercader de Tickets^000000]";
+	mes "Te puedo otorgar el que gustes, más no será gratis ni sencillo, por cada comercio que hagas conmigo requeriré que me des un <ITEM>Gold Coin<INFO>8503</INFO></ITEM>, dime, ¿qué deseas obtener?";
+	next;
+	.@t = select(" > Arma: > Armadura: > Gorro: > ^777777Salir^000000");
+	if(.@t == 4) {
+		mes "[^cc6600Mercader de Tickets^000000]";
+		mes "Por mi no hay problema, vuelve cuando quieras.";
+		close;
+	}
+	.@m$ = "";
+	for(.@i = 1; .@i < getarraysize(.ntid1); .@i++)
+		.@m$ += getitemname(getd(".ntid"+.@t+"["+.@i+"]"))+":";
+	.@s = select(.@m$);
+	.@z = 300000 * .@i;
+	mes "[^cc6600Mercader de Tickets^000000]";
+	mes "Veo que deseas obtener un:";
+	mes "<ITEM>"+getitemname(getd(".ntid"+.@t+"["+.@s+"]"))+"<INFO>"+getd(".ntid"+.@t+"["+.@s+"]")+"</INFO></ITEM>"," ";
+	mes "Para ello necesitarás:^ff0000";
+	mes .reqNE[.@s]+"^000000 x <ITEM>"+getitemname(getd(".ntid"+.@t+"["+(.@s-1)+"]"))+"<INFO>"+getd(".ntid"+.@t+"["+(.@s-1)+"]")+"</INFO></ITEM>";
+	mes callfunc("F_InsertComma",.@z)+"z.";
+	next;
+	if(select("Tengo todo lo que me pides:Volveré luego") == 2) {
+		mes "[^cc6600Mercader de Tickets^000000]";
+		mes "Por mi no hay problema, vuelve cuando quieras.";
+		close;
+	}
+	if(countitem(getd(".ntid"+.@t+"["+(.@s-1)+"]")) < .reqNE[.@s] || countitem(8503) < 1) {
+		mes "[^cc6600Mercader de Tickets^000000]";
+		mes "No cuentas con los objetos necesarios para llevar a cabo el trato.";
+		close;
+	}
+	if(Zeny < .@z) {
+		mes "[^cc6600Mercader de Tickets^000000]";
+		mes "Para poder realizar la transacción requiero que me pagues ^5533ff"+callfunc("F_InsertComma",.@z)+"^000000z.";
+		close;
+	}
+	tax .@z,15;
+	delitem 8503,1;
+	delitem getd(".ntid"+.@t+"["+(.@s-1)+"]"),.reqNE[.@s];
+	getitem getd(".ntid"+.@t+"["+.@s+"]"),1;
+	specialeffect2 154;
+	mes "[^cc6600Mercader de Tickets^000000]";
+	mes "Perfecto, aquí tienes lo que me has pedido.";
+	close;
+OnInit:
+	//               +5   +6   +7   +8   +9   +11
+	setarray .ntid1,6456,6231,6230,6229,6228,6238;
+	setarray .ntid2,6457,6235,6234,6233,6232,6239;
+	setarray .ntid3,8517,8518,8519,8520,8521,8522;
+	setarray .reqNE,   5,  5,  5,  5,  5,  5;
+	end;
+}

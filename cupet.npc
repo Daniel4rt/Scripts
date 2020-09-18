@@ -1,0 +1,192 @@
+//===== rAthena Script =======================================
+//= Cute Pet Manager
+//===== By: ==================================================
+//= Z3R0
+//===== Current Version: =====================================
+//= 1.4
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Exchanges Hunted Items for Tames
+//===== Additional Comments: =================================
+//= 1.0 First / Optimized Version
+//= 1.1 Little clean-up & added a delitem. [Capuche]
+//= 1.2 Translated to Spanish [DanielArt]
+//= 1.3 Remove limit of making [DanielArt]
+//= 1.4 Customized for Poring RO [DanielArt]
+//============================================================
+
+// 1st NPC
+-	script	CPM1	-1,{
+	
+	setarray .@tame_id[0],619,620,622,623,624,627,628,629,630;
+	setarray .@tame_amount[0],3,3,3,3,3,3,3,3,3;
+	setarray .@hunt_id[0],909,909,705,916,935,919,919,940,921;
+	setarray .@hunt_amount[0],500,600,500,500,500,500,600,500,500;
+	setarray .@mob_id[0],1002,1113,1063,1049,1011,1167,1107,1052,1014;
+	set .@tame_gets, 3;
+	
+	callfunc "cute_pet_manager",.@tame_id,.@tame_amount,.@hunt_id,.@hunt_amount,.@mob_id,cpm_one,.@tame_gets,.@hunt_id2,.@hunt_amount2;
+
+}
+
+// 2nd NPC
+-	script	CPM2	-1,{
+	
+	setarray .@tame_id[0],621,625,632,631,633,634,635,636,659,637,639,640;
+	setarray .@tame_amount[0],2,2,2,2,2,2,2,2,2,2,2,2;
+	setarray .@hunt_id[0],938,935,925,7033,945,942,931,901,1094,1021,936,1035;
+	setarray .@hunt_amount[0],500,600,500,300,500,500,500,500,500,500,500,500;
+	setarray .@mob_id[0],1031,1042,1019,1077,1056,1057,1023,1026,1188,1110,1029,1155;
+	set .@tame_gets, 2;
+	
+	callfunc "cute_pet_manager",.@tame_id,.@tame_amount,.@hunt_id,.@hunt_amount,.@mob_id,cpm_two,.@tame_gets,.@hunt_id2,.@hunt_amount2;
+
+}
+
+// 3rd NPC
+-	script	CPM3	-1,{
+	
+	setarray .@tame_id[0],638,626,641,661,660,642;
+	setarray .@tame_amount[0],1,1,1,1,1,1;
+	setarray .@hunt_id[0],1020,943,1038,7047,1970,923;
+	setarray .@hunt_amount[0],600,600,600,500,1,100;
+	setarray .@hunt_id2[0],0,0,0,0,7017,0;
+	setarray .@hunt_amount2[0],0,0,0,0,20,0;
+	setarray .@mob_id[0],1170,1035,1109,1275,1200,1101;
+	set .@tame_gets, 1;
+	
+	callfunc "cute_pet_manager",.@tame_id,.@tame_amount,.@hunt_id,.@hunt_amount,.@mob_id,cpm_three,.@tame_gets,.@hunt_id2,.@hunt_amount2;
+
+}
+
+// 4to NPC
+-	script	CPM4	-1,{
+	
+	setarray .@tame_id[0],12357,12358,12359,12360,12361,12362,12363,12364,12365,12366,12367,12368,12369,12370,12371,12372,12373,12374;
+	setarray .@tame_amount[0],1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1;
+	setarray .@hunt_id[0],7165,7262,7198,7206,1060,7156,1001,5090,7165,7152,7209,1048,953,7023,953,7120,7023,7098;
+	setarray .@hunt_amount[0],100,200,200,200,200,200,50,5,50,300,200,400,70,1,200,300,1,200;
+	setarray .@hunt_id2[0],7166,0,1023,0,0,0,0,0,0,0,0,0,1019,0,0,0,0,0,0;
+	setarray .@hunt_amount2[0],100,0,50,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0;
+	setarray .@mob_id[0],1630,1513,1586,1505,1143,1401,1179,1299,1416,1404,1504,1148,1495,1374,1040,1379,1370,1837;
+	set .@tame_gets, 1;
+	
+	callfunc "cute_pet_manager",.@tame_id,.@tame_amount,.@hunt_id,.@hunt_amount,.@mob_id,cpm_four,.@tame_gets,.@hunt_id2,.@hunt_amount2;
+
+}
+
+function	script	cute_pet_manager	{
+
+	mes "[Cute Pet Manager]";
+	mes "¡Hola~!, soy uno de los nuevos ^5533ffCute Pet Manager^000000, quien está a cargo de las relaciones públicas con el nuevo sistema de mascotas.";
+	next;
+	mes "[Cute Pet Manager]";
+	mes "Estoy aquí para mostrarte algunos ^5533ffTaming Items^000000 que servirán para atrapar mascotas.";
+	next;
+	mes "[Cute Pet Manager]";
+	mes "Para ello tendrás que elegir uno, y te diré qué materiales necesitaré para poder otorgártelo.";
+	next;
+	mes "[Cute Pet Manager]";
+	mes "Si ya tienes los materiales listos, te los podré intercambiar inmediatamente.";
+	next;
+	mes "[Cute Pet Manager]";
+	mes "Los <ITEM>"+getitemname(6083)+"<INFO>6083</INFO></ITEM> los podrás obtener con facilidad con el ^cc6600Dragón Dorado^000000 ubicado en esta misma sala.";
+	next;
+	mes "[Cute Pet Manager]";
+	mes "Así que...";
+	mes "¿Qué ^5533ffTaming Item^000000 te interesa?";
+	next;
+	// Create Menu System
+	set .@size, getarraysize(getarg(0));
+	for (set .@a, 0; .@a < .@size; set .@a, .@a + 1)
+		set .@menu$, .@menu$ + (.@menu$ == "" ? "" : ":") + getitemname(getelementofarray(getarg(0), .@a)) + " - [ ^ff7070"+strmobinfo(1,getelementofarray(getarg(4), .@a))+"^000000 ]";
+	set .@choice, select(.@menu$) - 1;
+	set .@tame_id, getelementofarray(getarg(0), .@choice);
+	set .@tame_amount, getelementofarray(getarg(1), .@choice);
+	set .@hunt_id, getelementofarray(getarg(2), .@choice);
+	set .@hunt_amount, getelementofarray(getarg(3), .@choice);
+	set .@mob_id, getelementofarray(getarg(4), .@choice);
+	set .@hunt_id2, getelementofarray(getarg(7), .@choice);
+	set .@hunt_amount2, getelementofarray(getarg(8), .@choice);
+	if (.@hunt_id2) { 
+		set .@hunt2_count, countitem(.@hunt_id2);
+	}
+	if (countitem(.@hunt_id) >= .@hunt_amount && countitem(6083) > 0 && .@hunt2_count >= .@hunt_amount2) {
+		mes "[Cute Pet Manager]";
+		mes "Veo que has recolectado todos los objetos que te he pedido para obtener un <ITEM>" + getitemname(.@tame_id) + "<INFO>"+.@tame_id+"</INFO></ITEM>.";
+		mes "¿Deseas intercambiarlo ya?";
+		next;
+		if  (select("Intercambiar:No, gracias") == 2) { 
+			mes "[Cute Pet Manager]";
+			mes "¿No quieres intercambiar?, bueno, vuelve cuando tengas ganas.";
+			close;
+		}
+		delitem .@hunt_id, .@hunt_amount;
+		delitem 6083, 1;
+		if (.@hunt_id2)
+			delitem .@hunt_id2, .@hunt_amount2;
+		set getarg(5), getarg(5) + 1;
+		getitem .@tame_id, .@tame_amount;
+		
+		mes "[Cute Pet Manager]";
+		mes "Una decisión sabia, espero que tú y tu mascota permanezcan juntos largo tiempo.";
+		close;
+	} else {
+		mes "[Cute Pet Manager]";
+		mes "Has elegido <ITEM>" + getitemname(.@tame_id) + "<INFO>"+.@tame_id+"</INFO></ITEM>.";
+		mes "Puedes usarlo para atrapar el monstruo:";
+		mes " ~ ^FF0000" + strmobinfo(1,.@mob_id) + "^000000.";
+		next;
+		mes "[Cute Pet Manager]";
+		mes "Traeme ^FF0000" + .@hunt_amount + " <ITEM>" + getitemname(.@hunt_id) + "<INFO>"+.@hunt_id+"</INFO></ITEM>^000000" + (.@hunt_id2 ? ", ^FF0000" + .@hunt_amount2 + " <ITEM>" + getitemname(.@hunt_id2) + "<INFO>"+.@hunt_id2+"</INFO></ITEM>" : ""),"^000000 y ^FF0000un <ITEM>"+getitemname(6083)+"<INFO>6083</INFO></ITEM>^000000, entonces podrás intercambiármelo por un","<ITEM>" + getitemname(.@tame_id) + "<INFO>"+.@tame_id+"</INFO></ITEM>.";
+		close;
+	}
+}
+
+premium,171,45,0	script	Dragón Dorado#cpm	111,{
+	mes "[Dragón Dorado]";
+	mes "Así que te interesan las cosas que ofrecen mis pequeños hijos, pues no te preocupes, yo te puedo proporcionar de lo que te hace falta.";
+	next;
+	mes "[Dragón Dorado]";
+	mes "Un material que requerirás para fabricarlo, así es, me refiero a los:"," ";
+	mes "<ITEM>"+getitemname(6083)+"<INFO>6083</INFO></ITEM>";
+	next;
+	mes "[Dragón Dorado]";
+	mes "Para obtenerlo te ofresco intercambiarlo por alguno de los siguientes objetos que te mostraré, al hacerlo tienes probabilidad de obtener ^ff0000más de uno^000000.";
+	next;
+	mes "[Dragón Dorado]";
+	mes "Así que dime, ¿qué objeto quieres darme a cambio?";
+	next;
+	.@m$ = "";
+	for(.@i = 0; .@i < getarraysize(.itlist); .@i++)
+		.@m$ += "^"+(countitem(.itlist[.@i]) ? "5533ff" : "777777")+getitemname(.itlist[.@i])+"^000000:";
+	.@s = select(.@m$) - 1;
+	if(countitem(.itlist[.@s]) < 1) {
+		mes "[Dragón Dorado]";
+		mes "Lo siento pero no veo ningun","<ITEM>"+getitemname(.itlist[.@s])+"<INFO>"+.itlist[.@s]+"</INFO></ITEM>","en tu inventario.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	delitem .itlist[.@s],1;
+	if(.@s > 4)
+		.@a = rand(1,3);
+	else 
+		.@a = rand(1,2);
+	getitem 6083,.@a;
+	mes "[Dragón Dorado]";
+	mes "Aquí tienes, elige tu mascota con sabiduría.";
+	close2;
+	emotion ET_BEST;
+	end;
+OnInit:
+	setarray .itlist,2620,7444,969,7228,6157,6158,6159,6160,6162,6163,6164,6165,6166,6167,6168,6169,6170,6171,6172,6173,6174,6175,6176,6177,6178,6179,6180,6181,6182,6183,6184,6185;
+	end;
+}
+// NPC Duplicates
+premium,176,28,4	duplicate(CPM1)	Cute Pet Basic#13	10102
+premium,178,27,3	duplicate(CPM2)	Cute Pet Easy#14	10104
+premium,177,25,1	duplicate(CPM3)	Cute Pet Medium#15	10106
+premium,178,29,5	duplicate(CPM4)	Cute Pet Hard#16	10108

@@ -1,0 +1,71 @@
+prontera,153,172,4	script	Mercader Misterioso#q	497,10,10,{
+	cutin "ep13_cheshire",2;
+	mes "[^cc6600Mercader Misterioso^000000]";
+	if( Q_CAT_20180605 ) {
+		mes "Necesito armar mi mercancía nuevamente, cuando vuelva te traeré algo más.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if( Q_CATM6 ) {
+		.@e = 0;
+		mes "Item: ^5533ff<ITEM>"+getitemname(.p)+"<INFO>"+.p+"</INFO></ITEM>^000000";
+		for(.@i = 0; .@i < getarraysize(.mats); .@i++) {
+			if(countitem(.mats[.@i]) < .c[.@i]) {
+				mes "Aún faltan: "+.c[.@i]+"x <ITEM>"+getitemname(.mats[.@i])+"<INFO>"+.mats[.@i]+"</INFO></ITEM>";
+				.@e++;
+			}
+		}
+		if(.@e) {
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "Excelente, has traido todo.";
+		mes "Un trato es un trato.;";
+		mes "Aquí tienes.";
+		for(.@i = 0; .@i < getarraysize(.mats); .@i++)
+			delitem .mats[.@i],.c[.@i];
+		getitem3 .p,1,1,0,0,0,0,0,0,.OptID,.OptVal,.OptParam;
+		F_LogItem 1,getcharid(0),strcharinfo(0),.p,1,"(NPC) Mercader Misterioso";
+		close2;
+		Q_CAT_20180605 = 1;
+		cutin "",255;
+		end;
+	}
+	mes "Meowh! ¿qué tal?";
+	mes "Soy un Mercader de Far-Star que viene a intercambiar productos, vengo de vez en cuando y cada vez traigo algo nuevo.";
+	next;
+	if(select("¿Qué ofreces esta vez?:^777777Salir^000000") == 2) {
+		mes "[^cc6600Mercader Misterioso^000000]";
+		mes "Recuerda que no me quedaré mucho tiempo.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "[^cc6600Mercader Misterioso^000000]";
+	mes "Esta vez traigo para ofrecerte unos bellos ^5533ff<ITEM>"+getitemname(.p)+"<INFO>"+.p+"</INFO></ITEM>^000000, pero necesito materiales de Rune Midgard.";
+	next;
+	mes "[^cc6600Mercader Misterioso^000000]";
+	mes "Veamos, si logras traerme lo siguiente aceptaré el trato.";
+	for(.@i = 0; .@i < getarraysize(.mats); .@i++)
+		mes " * "+.c[.@i]+"x <ITEM>"+getitemname(.mats[.@i])+"<INFO>"+.mats[.@i]+"</INFO></ITEM>";
+	next;
+	mes "[^cc6600Mercader Misterioso^000000]";
+	mes "Te estaré esperando.";
+	close2;
+	cutin "",255;
+	Q_CATM6 = 1;
+	end;
+OnInit:
+	setarray .mats,7166,7451,1030;
+	setarray .c,100,2,2;
+	.p = 5359;
+	setarray .OptID[0],RDMOPT_VAR_CRITICALSUCCESSVALUE;
+	setarray .OptVal[0],10;
+	setarray .OptParam[0],1;
+	end;
+OnTouch:
+	showevent QTYPE_QUEST,0,getcharid(0);
+	end;
+}

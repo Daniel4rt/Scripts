@@ -1,0 +1,272 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                    Tesorería                    ---
+//========================================================
+// ---             by Darkness & DanielArt             ---
+//========================================================
+premium,170,107,4	script	Tesorería de Midgard::TESORO	109,{
+	npctalk "Tesorería: Buen"+(isday() ? "os días ":"as noches ") + (sex ? "caballero":"dama")+".","TESORO",bc_self;
+	if (getgroupid() == 99){
+		while(.@w != 1) {
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Este es el Menú Administrador.";
+			mes "¿Qué necesitas?";
+			next;
+			switch(select("Resetear Impuesto total acumulado.:Resetear Impuesto de un Jugador.:- Ver Menú Normal (De jugadores)")) {
+				case 1:
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					$TOTAL_TAX = 0;
+					mes "^B40404¡Listo!, revisemos...^000000","Las Arcas de la Tesorería tienen","Un total acumulado en Zeny de:","^04B404$"+$TOTAL_TAX+"z.^000000";
+					next;
+					break;
+				case 2:
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Indique el nombre del jugador:";
+					input .@n$;
+					next;
+					query_sql("SELECT COUNT(*) FROM `char` WHERE `name`='"+.@n$+"'",.@q);
+					if(getarraysize(.@q) < 1) {
+						mes "^0101DF[ Tesorería de Midgard ]^000000";
+						mes "El nombre del usuario '^ff0000"+.@n$+"^000000' no existe.";
+					} else {
+						set PERSONAL_TAX,0,getcharid(0,.@n$);
+						mes "^0101DF[ Tesorería de Midgard ]^000000";
+						mes "^B40404¡Listo!^000000, ahora el Impuesto personal de '^ff0000"+.@n$+"^000000' es de '0' Zeny.";
+					}
+					next;
+					break;
+				case 3:
+					.@w = 1;
+			}
+		}
+	}
+	mes "^0101DF[ Tesorería de Midgard ]^000000";
+	mes "Bienvenid"+(Sex ? "o":"a")+" a la", "Tesorería General de Midgard", "¿Que puedo hacer por usted?";
+	next;
+	switch( select("^0101DF- Revisar Impuesto Personal.^000000","^0101DF- Conocer los Impuestos del Arca.^000000","^DF0101- Información sobre los Impuestos ^000000") )
+	{
+		case 1: // Revision de impuesto personal
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Bien, veamos...","Antes de continuar necesitaré que me facilites cierta información personal.";
+			next;
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Primero:","^0101DF¿Cual es tu nombre?^0101DF";
+			next;
+			input .@na$;
+			if(.@na$ != strcharinfo(0)) {
+				mes "^0101DF[ Tesorería de Midgard ]^000000";
+				mes "Lo siento mucho", "Su información no me figura en el registro de la Tesorería.";
+				close;
+			}
+			if (!vip_status(1)) {
+				mes "^0101DF[ Tesorería de Midgard ]^000000";
+				mes "Muy bien "+strcharinfo(0)+",","Con fecha "+gettimestr("%d/%m/%Y %H:%M",21)+"hrs.","Se informa que usted a contribuido por concepto de Impuesto ";
+				next;
+				mes "^0101DF[ Tesorería de Midgard ]^000000";
+				mes "La suma en Zeny de:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z.^000000"," ","Devolución correspondida:","^04B404$"+callfunc("F_InsertComma",(PERSONAL_TAX / 2))+"z. ^000000 ^0101DF(50% del Total) (No VIP)^000000";
+				close;
+			} else {
+				mes "^0101DF[ Tesorería de Midgard ]^000000";
+				mes "Muy bien "+strcharinfo(0)+",","Con fecha "+gettimestr("%d/%m/%Y %H:%M",21)+"hrs.","Se informa que usted a contribuido por concepto de Impuesto ";
+				next;
+				mes "^0101DF[ Tesorería de Midgard ]^000000";
+				mes "La suma en Zeny de:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z.^000000"," ","Devolución correspondida:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z. ^000000 ^0101DF(El 100%) (VIP)^000000";
+				close;
+			}
+		case 2: // Conocer el total de Impuesto en Arcas
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Bien, entonces","Le informo que gracias a la Ley de Transparencia de nuestro Reinado","Todos los ciudadanos pueden conocer el total de Impuestos Acumulados hasta la fecha";
+			next;
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Cabe destacar que en la ^0101DFDevolución Personal de Impuestos^000000 este total se irá reduciendo a medida que cada contribuyente retire sus impuestos, si estos no son retirados se irán acumulando";
+			next;
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Si vencidos los plazos para la ^0101DFDevolución Personal de Impuestos^000000 el contribuyente no a retirado sus impuestos, se le multará con el total acumulado de estos sin derecho a reclamo.";
+			next; 
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Los plazos para la ^0101DFDevolución Personal de Impuestos^000000 serán informados a todos los ciudadanos por distintos medios de comunicación y con tiempo de anticipación de forma automática.";
+			next; 
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Bien, entendiendo estos importantes puntos...";
+			next;
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Le informamos que","Con fecha "+gettimestr("%d/%m/%Y %H:%M",21)+"hrs.","Las Arcas de la Tesorería tienen","Un total acumulado en Zeny de:","^04B404$"+$TOTAL_TAX+"z.^000000";
+			close;
+		
+		case 3: // Información general de los impuestos.
+			mes "^0101DF[ Tesorería de Midgard ]^000000";
+			mes "Bien, si tienes dudas", "Sobre los Impuestos yo podré explicarte todo sobre ellos","¿Que quieres saber?:";
+			next;
+			switch(select("^DF0101- ¿Qué son?^000000:^DF0101- ¿Para qué sirven?^000000:^DF0101- ¿En qué me benefician?^000000:^0101DF- Devolución Personal de Impuestos^000000")) {
+				case 1:
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Es una participación monetaria obligatoria equivalente al ^0101DF10% del costo total por un servicio^000000", " Es decir, si un servicio cuesta 100.000z mi contribución será de 10.000z ^0101DF(el 10%).^000000","En resumen: El servicio en si me costo solo 90.000z y los otros 10.000z ^0101DF(Osea el 10% del impuesto)^000000 van a las Arcas de la Tesorería.";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Ese ^0101DF10%^000000 será enviado a la ^0101DFTesorería de Midgard^000000 para su re-inversión en el mercado y trabajar así los dineros recaudados. En gran parte serán destinados para mantener los servicios públicos operativos, pagos de sueldo y el cuidado de las áreas verdes en ciudades (Costo no menor por cierto).";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Un punto muy importante, cada cierto tiempo nosotros informamos por distintos medios de comunicación que se realizará la ^0101DFDevolución Personal de Impuestos^000000 lo que significa que podrás recuperar un porcentaje de lo contribuido, el único requisito es hacerlo durante las fechas que nosotros indicaremos con anticipación.";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Debes estar atento y consultar a los demás ciudadanos si fueron anunciadas las fechas para la ^0101DFDevolución Personal de Impuestos^000000 así te podrás ver beneficiado con más Zeny en tus bolsillos.";
+					close;
+				case 2:
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Bueno, tiene varias funciones:", "Una de ellas es mantener los servicios públicos del continente mes a mes.", "La otra función es ayudarte a que cuando corresponde la 0101DFDevolución Personal de Impuestos^000000 tu te veas beneficiado con una devolución de dinero lo que ayuda a reducir la pobreza en el continente. ";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Y aún más interesante, corresponden al fondo del reino, por lo cual, dependiendo de ellos es posible que se activen diversos eventos cada cierto tiempo.";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Por eso es recomendable que los habitantes consuman servicios para que se anexen a los fondos del Arca y que todos se vean beneficiados por ello.";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Como último punto de interés, debes tener conocimiento de que nosotros pondremos 10z por cada 1z que un habitante dé, de tal forma que los eventos convocados puedan tener un sustento favorable.";
+					close;
+				case 3:
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Tú te verás beneficiado con la posibilidad de recuperar un cierto porcentaje del impuesto pagado cada cierto tiempo, con esto tendrás dinero que probablemente creías ´perdido´ y debido a que se acumula lo más probable que amases una fortuna.";
+					close;
+				case 4:
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Cada vez que utilizas un servicio afiliado a la ^0101DFTesorería de Midgard^000000 serás notificado que has pagado impuestos, es decir cuando tu pagas por este servicio un valor en Zeny, en ese valor va cargado un impuesto del ^0101DF10%^000000 (Ya incluido) este porcentaje se almacena en las Arcas de la ^0101DFTesorería de Midgard^000000";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "Los ^0101DFdías 29 y 30 de cada mes^000000 todos los ciudadanos pueden solicitar la devolución del impuesto personal acumulado hasta la fecha del cual solo se devolverá el ^0101DF50% del total acumulado^000000 sin embargo ^0000FFsi tienes cuenta Premium^000000recibirás el 100% de lo acumulado, esto se entregará en efectivo y ^0101DFsolo se podrá solicitar 1 vez al mes^000000.";
+					next;
+					mes "^0101DF[ Tesorería de Midgard ]^000000";
+					mes "La Tesorería de Midgard se compromete a informar con anticipación esta devolución por lo que se dará por hecho que todos los contribuyentes estarán informados a tiempo.";
+					close;
+			}
+	}
+}
+
+
+premium,172,107,4	script	Asistente de Devolución::TAX	833,{
+	npctalk "Asistente: Buen"+(isday() ? "os días ":"as noches ") + (sex ? "jóven":"señorita")+".","TAX",bc_self;
+	if (gettime(DT_DAYOFMONTH) <= 28) {
+		mes "^04B404[ Asistente de Devolución ]^000000"; 
+		mes "Lo siento, solo atiendo los","Los días: ","^0101DF29, 30 y 31^000000 de cada mes.","Recuerde que","Hoy es "+gettimestr("%d/%m/%Y",21)+""; 
+		close;
+	}
+	dispbottom "[Tesorería de Midgard]  Informa:",0xFFFF00;
+	dispbottom "La Devolución Personal de Impuesto se realiza solo los días 29, 30 y 31 de cada Mes.",0xFFFF00;
+	dispbottom "Este beneficio tiene ciertas restricciones y reglas, infórmese con el Tesorero.",0xFFFF00;
+	mes "^04B404[ Asistente de Devolución ]^000000";
+	mes "Bienvenid"+(Sex ? "o":"a")+" a la", "Tesorería General de Midgard", "Soy el asistente de Devoluciones","^FF4000Estaré solo por unos días.^000000","¿Qué necesitas?:";
+	next;
+	switch( select("^DF7401- Revisar mi Impuesto acumulado.^000000","^DF7401- Total de Impuestos en Arcas.^000000","^DF0101- Solicitar Devolución de Impuesto.^000000")) {
+		case 1:
+			mes "^04B404[ Asistente de Devolución ]^000000";
+			mes "Esa información se la dará mi compañero de al lado.","Hasta luego.";
+			close;
+		case 2:
+			mes "^04B404[ Asistente de Devolución ]^000000";
+			mes "Esa información se la dará mi compañero de al lado.","Hasta luego.";
+			close;
+		case 3:
+			mes "^04B404[ Asistente de Devolución ]^000000";
+			mes "Perfecto","Antes de continuar necesitaré que me facilites cierta información personal.";
+			next;
+			mes "^04B404[ Asistente de Devolución ]^000000";
+			mes "Primero:","^0101DF¿Cual es tu nombre?^0101DF";
+			next;
+			input .@na$;
+			if(.@na$ != strcharinfo(0)) {
+				mes "^0101DF[ Tesorería de Midgard ]^000000";
+				mes "Lo siento mucho", "Su información no me figura en el registro de la Tesorería.";
+				close;
+			}
+			if (!vip_status(1)) {
+				npctalk "Asistente: Favor de prestar atención.","TAX",bc_self;
+				mes "^04B404[ Asistente de Devolución ]^000000";
+				mes "Perfecto "+strcharinfo(0)+",","Actualmente sumas un total de:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z.^000000","La devolución corresponde solo al ^0101DF50%^000000 de este monto","Lo equivalente a:","^04B404$"+callfunc("F_InsertComma",(PERSONAL_TAX / 2))+"z. ^000000"," y debes tener al menos un total de ^FF4000$100.000z^000000 para retirarlos.";
+				mes "¿Desea continuar?";
+				next;
+				switch(select("- No tengo los $100.000z aún.:- Deseo mi devolución.:- Lo pensaré mejor.")) {
+					case 1:
+						mes "^04B404[ Asistente de Devolución ]^000000";
+						mes "Esta bien, revisa constantemente tu impuesto personal acumulado. Recuerda que estaré los días 29, 30 y 31 de cada mes.","El día 1ro de cada mes todo lo NO RECLAMADO se ira donado al Hogar de huérfanos y fundación de Mascotas";
+						close;
+					case 2:
+						callsub S_Devolution;
+					case 3:
+						mes "^04B404[ Asistente de Devolución ]^000000";
+						mes "Esta bien, piénsalo rápido recuerda que estaré solo los días 29, 30 y 31 de cada mes, el día 1ro serán donados los dineros NO RECLAMADOS al Hogar de huérfanos y fundación de Mascotas.";
+						close; 
+				}
+			} else {
+				npctalk "Favor preste atención","TAX",bc_self;
+				mes "^04B404[ Asistente de Devolución ]^000000";
+				mes "Perfecto "+strcharinfo(0)+",","Actualmente sumas un total de:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z.^000000","La devolución corresponde al ^0101DF100%^000000 de este monto ^04B404(Beneficio de cuenta Premium)^000000","y debes tener al menos un total de ^FF4000$100.000z^000000 para retirarlos.";
+				mes "¿Desea continuar?";
+				next;
+				switch(select("- No tengo los $100.000z aún.:- Deseo mi devolución.:- Lo pensaré mejor.")) {
+					case 1:
+						mes "^04B404[ Asistente de Devolución ]^000000";
+						mes "Esta bien, revisa constantemente tu impuesto personal acumulado. Recuerda que estaré los días 29, 30 y 31 de cada mes.","El día 1ro de cada mes todo lo NO RECLAMADO se ira donado al Hogar de huérfanos y fundación de Mascotas";
+						close;
+					case 2:
+						callsub S_Devolution;
+					case 3:
+						mes "^04B404[ Asistente de Devolución ]^000000";
+						mes "Esta bien, piénsalo rápido recuerda que estaré solo los días 29, 30 y 31 de cada mes, el día 1ro serán donados los dineros NO RECLAMADOS al Hogar de huérfanos y fundación de Mascotas.";
+						close; 
+				}
+			}
+	}
+OnAtcommand:
+	if(.@atcmd_command$ == "@addtax") {
+		.@z = .@atcmd_parameters$[0];
+		.@tax = .@atcmd_parameters$[1];
+		if(.@z < 1 || .@tax < 1) {
+			dispbottom "@addtax <zeny> <tax>";
+			end;
+		}
+		dispbottom "[Tesorería]: Añadiendo "+callfunc("F_InsertComma",.@z)+"z con "+callfunc("F_InsertComma",.@tax)+"% de Impuesto.",0xFF7070;
+		tax .@z,.@tax;
+		dispbottom "[Tesorería]: Impuesto Personal: "+callfunc("F_InsertComma",PERSONAL_TAX)+"z.  Global: "+callfunc("F_InsertComma",$TOTAL_TAX)+"z.", 0xFF7070;
+		end;
+	} else if(.@atcmd_command$ == "@mytax") {
+		dispbottom "[Tesorería]: Actualmente has cooperado con "+callfunc("F_InsertComma",PERSONAL_TAX)+"z de impuesto.",0xFF7070;
+		end;
+	}
+OnInit:
+	bindatcmd "addtax","TAX::OnAtcommand",99,99;
+	bindatcmd "mytax","TAX::OnAtcommand",0,99;
+	end;
+S_Devolution:
+	if (!vip_status(1)) {
+		.@di = (PERSONAL_TAX / 2);
+		if( .@di < 100000 ) {
+			mes "^04B404[ Asistente de Devolución ]^000000";
+			mes "Lo siento", "Se te informo que tu devolución debe ser mayor a", "^FF4000$100.000z^000000","Actualmente solo tienes:","^04B404$"+callfunc("F_InsertComma",(PERSONAL_TAX / 2))+"z. ^000000","Son reglas de la Tesorería.";
+			close;
+		}
+		mes "^04B404[ Asistente de Devolución ]^000000";
+		mes "Bien, entonces ","Le informamos que","Con fecha "+gettimestr("%d/%m/%Y %H:%M",21)+"hrs.","Le hemos devuelto un total de:","^04B404$"+callfunc("F_InsertComma",(PERSONAL_TAX / 2))+"z. ^000000","¡Gracias por contribuir!";
+	} else {
+		.@di = PERSONAL_TAX;
+		if( .@di < 100000 ) {
+			mes "^04B404[ Asistente de Devolución ]^000000";
+			mes "Lo siento", "Se te informo que tu devolución debe ser mayor a", "^FF4000$100.000z^000000","Actualmente solo tienes:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z. ^000000","Son reglas de la Tesorería.";
+			close;
+		}
+		mes "^04B404[ Asistente de Devolución ]^000000";
+		mes "Bien, entonces ","Le informamos que","Con fecha "+gettimestr("%d/%m/%Y %H:%M",21)+"hrs.","Le hemos devuelto un total de:","^04B404$"+callfunc("F_InsertComma",PERSONAL_TAX)+"z. ^000000","¡Gracias por contribuir!";
+	}
+	dispbottom "Recibes: "+callfunc("F_InsertComma",.@di)+" Zenys.",0x01DFD7;
+	$TOTAL_TAX -= .@di;
+	$TOTAL_TAX += (100000 + (.@di / 5));
+	Zeny += .@di;
+	PERSONAL_TAX = 0;
+	close;
+}

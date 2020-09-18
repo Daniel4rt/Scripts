@@ -1,0 +1,35 @@
+prontera,147,176,5	script	Evento de Reset	748,10,10,{
+	if(EVT_PJ_RESET >= 4) {
+		mes "[^5533ffEvento de Reset^000000]";
+		mes "Lo siento pero el evento me dictamina que solo te ofrezca tres reinicios gratuitos.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	mes "[^5533ffEvento de Reset^000000]";
+	mes "Qué tal, ^ff8800"+strcharinfo(0)+"^000000";
+	mes "supongo que vienes a por uno de tus  reset gratuitos.";//^ff0000"+(4-#EVT_RESET2)+"^000000
+	next;
+	if(select("Reiniciar ^5533ffStatus^000000 y ^ff8800Skills^000000 [Gratis]:^777777Salir^000000") == 2) {
+		mes "[^5533ffEvento de Reset^000000]";
+		mes "Vuelve cuando estés totalmente segur"+(Sex?"o":"a")+".";
+		close;
+	}
+	EVT_PJ_RESET++;
+	ResetSkill;
+	ResetStatus;
+	mes "[^5533ffEvento de Reset^000000]";
+	if(EVT_PJ_RESET >= 4)
+		mes "Te has quedado sin reinicios gratuitos.";
+	else
+		mes "Listo, aún te quedan ^ff0000"+(4-EVT_PJ_RESET)+"^000000 reinicios gratuitos.";
+	close2;
+	emotion ET_BEST;
+	end;
+OnTouch:
+	if(EVT_PJ_RESET >= 4)
+		end;
+	else
+		showevent QTYPE_EVENT2,0;
+	end;
+}

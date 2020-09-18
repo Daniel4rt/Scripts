@@ -1,0 +1,471 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---            Core: Sistema de Oficios             ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+// *Los siguientes scripts están completamente atados al -
+//  código source del emulador, si no se posee éste      -
+//  correctamente, su funcionamiento será nulo.          -
+//========================================================
+-	script	CMD_DEBUG2NDA	-1,{
+OnInit:
+	bindatcmd "debugrama","CMD_DEBUG2NDA::OnCommand",99,99;
+	end;
+OnCommand:
+	switch (getofid()) {
+		case 5:
+			setarray .@k,3063;
+			break;
+		case 6:
+			setarray .@k,3064,3065;
+			break;
+		case 7:
+			setarray .@k,3066,3069;
+			break;
+		case 8:
+			setarray .@k,3067,3068;
+			break;
+	}
+	for(.@i = 0; .@i < getarraysize(.@k); .@i++)
+		addtoskill .@k[.@i],1,SKILL_PERM_GRANT;
+	dispbottom "Verifica que te hayan sido entregadas tus habilidades y repórtaselo al Game Master.";
+	end;
+}
+-	shop	OF_C	-1,8213:120
+premium,183,109,4	script	Coordinador de Oficios::NPC_OF_MAIN	10098,{
+	cutin "jp_garm_f1",2;
+	mes "[ ^5533ffOficios^000000 ]";
+	if(Q_RAMA2 == 1) {
+		switch(getofid()) {
+			case 1:
+				setarray .@qrm,8526,45108,15;
+				break;
+			case 2:
+				setarray .@qrm,8529,45109,15;
+				break;
+			case 3:
+				setarray .@qrm,8528,45110,15;
+				break;
+			case 4:
+				setarray .@qrm,8527,45111,15;
+				break;
+		}
+		if(checkquest(.@qrm[1]) == 1) {
+			if(countitem(.@qrm[0]) >= .@qrm[2]) {
+				mes "Fantástico, has logrado completar la prueba con honores.";
+				next;
+				delitem .@qrm[0],countitem(.@qrm[0]);
+				completequest .@qrm[1];
+				.@nof = getofid()+4;
+				Q_RAMA2 = 2;
+				specialeffect2 564;
+				sleep2 1000;
+				setoficioid .@nof;
+				specialeffect2 548;
+				sleep2 1000;
+				specialeffect2 549;
+				switch (getofid()) {
+					case 5:
+						setarray .@k,3063;
+						break;
+					case 6:
+						setarray .@k,3064,3065;
+						break;
+					case 7:
+						setarray .@k,3066,3069;
+						break;
+					case 8:
+						setarray .@k,3067,3068;
+						break;
+				}
+				for(.@i = 0; .@i < getarraysize(.@k); .@i++)
+					addtoskill .@k[.@i],1,SKILL_PERM_GRANT;
+				mes "[ ^5533ffOficios^000000 ]";
+				mes "Felicidades, ahora eres un "+getoficioname(getofid())+".";
+				close3;
+			}
+		} else {
+			mes "[ ^5533ffOficios^000000 ]";
+			mes "Algo me dice que tenía que decirte algo, pero no lo recuerdo, deberías ver tu registro de misiones.";
+			close3;
+		}
+		switch(getofid()) {
+			case 1:
+				mes "Me he enterado que en el ^cc6600Monte Mjolnir^000000 han descubierto un nuevo tipo de mineral que se creía inexistente, necesitaré que me traigas ^ff000015 "+getitemname(8526)+"^000000 y con gusto te convertiré en un ^ff7070Explorador^000000.";
+				close3;
+			case 2:
+				mes "Al parecer se han descubierto retazos de un antiguo escudo del cual tengo mucho interés por explorar, varios ^cc6600Buscador de Escudo^000000 han ido en su búsqueda, y es posible de que ya tengan varios, por favor ve a cazarlos y traeme ^ff000015 "+getitemname(8529)+"^000000, si lo logras, te convertiré en un ^ff7070Escudero^000000 gracias a tus logros, estos raros monstruos se encuentran en el ^ff0000segundo campo de Hugel^000000.";
+				close3;
+			case 3:
+				mes "Uno de los estudiantes de ^777777Rusfal Hellwooth^000000 se encuentra cerca de la ancestral ciudad de ^cc6600Gon Ryun^000000, si deseas convertirte en un ^ff7070Booker^000000 necesitaré que lo convenzas de darte ^ff880015 "+getitemname(8528)+"^000000.";
+				close3;
+			case 4:
+				mes "Unos misteriosos y pequeños ángeles han aparecido en el ^cc6600onceavo campo de Yuno^000000, necesito que vayas a buscarlos y traerme ^ff707015 "+getitemname(8527)+"^000000 como prueba de convertirte en un ^ff7070Teósofo^000000.";
+				close3;
+			default:
+				mes "Espera, no puedo ubicar tu nuevo oficio, repórtalo a un Game Master.";
+				close3;
+		}
+	}
+	if(getofid()) {
+		if(getoficiolvl() >= 15 && getofid() < OFID_EXPLORER) {
+			mes "Al parecer ya estás listo para convertirte en una nueva clase de oficio.";
+			next;
+			.@new = getofid() + 4;
+			if(select("Convertirse en ^ff7070"+(getoficioname(.@new))+"^000000:^777777Salir^000000") == 2) {
+				mes "[ ^5533ffOficios^000000 ]";
+				mes "Vuelve cuando quieras.";
+				close3;
+			}
+			mes "[ ^5533ffOficios^000000 ]";
+			mes "Me parece perfecto que desees usar tu experiencia para aprender muchas más habilidades que serán de gran utilidad en tu aventura.";
+			next;
+			mes "[ ^5533ffOficios^000000 ]";
+			mes "Pero debo estar seguro que estás listo en verdad, por ello te pondré un reto más complicado que cuando te convertiste en un ^cc6600"+getoficioname(getofid())+"^000000.";
+			next;
+			mes "[ ^5533ffOficios^000000 ]";
+			mes "Para poder convertirte en un ^ff7070"+getoficioname(getofid()+4)+"^000000 tendrás que completar la siguiente prueba con éxito.";
+			next;
+			mes "[ ^5533ffOficios^000000 ]";
+			switch(getofid()) {
+				case 1:
+					mes "Me he enterado que en el ^cc6600Monte Mjolnir^000000 han descubierto un nuevo tipo de mineral que se creía inexistente, necesitaré que me traigas ^ff000015 "+getitemname(8526)+"^000000 y con gusto te convertiré en un ^ff7070Explorador^000000.";
+					setquest 45108;
+					Q_RAMA2 = 1;
+					close3;
+				case 2:
+					mes "Al parecer se han descubierto retazos de un antiguo escudo del cual tengo mucho interés por explorar, varios ^cc6600Buscador de Escudo^000000 han ido en su búsqueda, y es posible de que ya tengan varios, por favor ve a cazarlos y traeme ^ff000015 "+getitemname(8529)+"^000000, si lo logras, te convertiré en un ^ff7070Escudero^000000 gracias a tus logros.";
+					setquest 45109;
+					Q_RAMA2 = 1;
+					close3;
+				case 3:
+					mes "Uno de los estudiantes de ^777777Rusfal Hellwooth^000000 se encuentra cerca de la ancestral ciudad de ^cc6600Gon Ryun^000000, si deseas convertirte en un ^ff7070Booker^000000 necesitaré que lo convenzas de darte ^ff880015 "+getitemname(8528)+"^000000.";
+					setquest 45110;
+					Q_RAMA2 = 1;
+					close3;
+				case 4:
+					mes "Unos misteriosos y pequeños ángeles han aparecido en el ^cc6600onceavo campo de Yuno^000000, necesito que vayas a buscarlos y traerme ^ff707015 "+getitemname(8527)+"^000000 como prueba de convertirte en un ^ff7070Teósofo^000000.";
+					setquest 45111;
+					Q_RAMA2 = 1;
+					close3;
+				default:
+					mes "Espera, no puedo ubicar tu nuevo oficio, repórtalo a un Game Master.";
+					close3;
+			}
+		}
+	}
+	if(getgroupid() >= 7) {
+		for(.@i = .range[0]; .@i <= .range[1]; .@i++)
+			addtoskill .@i,1,SKILL_PERM_GRANT;
+		addtoskill 3066,2,SKILL_PERM_GRANT;
+	}
+
+	for(.@i = 1; .@i < getarraysize(.no); .@i++) {
+		if(getofid() == .no[.@i] && getskilllv(.ns[.@i]) < 1) {
+			mes "Te estaba buscando, una nueva habilidad para ^cc6600"+getoficioname(.no[.@i])+"^000000 ha sido añadida, aquí tienes.";
+			addtoskill .ns[.@i],1,SKILL_PERM_GRANT;
+			close2;
+			cutin "",255;
+			end;
+		}
+	}
+
+	if(isbegin_quest( (45103 + OF_VAR) ) > 0 && getofid() < 1) {
+		if(countitem( (8223+OF_VAR) ) >= 10) {
+			mes "Excelente, has traido lo que te he pedido.";
+			next;
+			cutin "jp_garm_f5",2;
+			mes "[ ^5533ffOficios^000000 ]";
+			mes "Al parecer no habrá complicaciones en que te conviertas en un ^cc6600"+getoficioname(OF_VAR)+"^000000.";
+			next;
+			cutin "jp_garm_f2",2;
+			specialeffect2 338;
+			soundeffectall "levelup.wav",0;
+			delitem (8223+OF_VAR),countitem((8223+OF_VAR));
+			completequest (45103 + OF_VAR);
+			setoficioid OF_VAR;
+			dispbottom "¡Felicidades!, te has convertido en un "+getoficioname()+".";
+			mes "[ ^5533ffOficios^000000 ]";
+			mes "¡Muchas felicidades!";
+			mes "Recuerda que siempre podrás consultar la información de tu oficio usando ^ff0000@oficio^000000.";
+			switch (getofid()) {
+				case 1:
+					getitembound 8209,1,Bound_Char;
+					setarray .@k,3050,3061;
+					break;
+				case 2:
+					getitembound 608,10,Bound_Char;
+					getitembound 8223,4,Bound_Char;
+					setarray .@k,3051,3057,3058,3059,3060;
+					break;
+				case 3:
+					getitembound 8200,3,Bound_Char;
+					getitembound 8213,3,Bound_Char;
+					setarray .@k,3052;
+					break;
+				case 4:
+					getitembound 8222,1,Bound_Char;
+					setarray .@k,3053,3054,3055,3056;
+					break;
+			}
+			for(.@i = 0; .@i < getarraysize(.@k); .@i++)
+				addtoskill .@k[.@i],1,SKILL_PERM_GRANT;
+			close2;
+			cutin "",255;
+			end;
+		}
+		cutin .c$[OF_VAR],4;
+		mes "Tu misión consiste en ir a cazar ^ff0000"+getmonsterinfo(.hm[OF_VAR],MOB_NAME)+"^000000 y obtener ^cc660010x "+getitemname((8223+OF_VAR))+"^000000, cuando los tengas, vuelve conmigo.";
+		next;
+		mes "[ ^5533ffOficios^000000 ]";
+		mes "Puedes verificar la información de la quest en ^FF0000ALT+U^000000";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "¿Qué tal?, soy el coordinador de oficios y mi trabajo consiste en administrar, guiar y claro, coordinar todo lo relacionado con los oficios.";
+	if(BaseLevel < 50 && getofid() < 1) {
+		close2;
+		cutin "oficios",3;
+		end;
+	}
+	next;
+	if(getofid()) {
+		cutin "jp_garm_f5",2;
+		mes "[ ^5533ffOficios^000000 ]";
+		mes "Recuerda que siempre puedes consultar la información con ^ff0000@oficio^000000."," ","¿En qué te puedo ayudar hoy?";
+		next;
+		switch(select("Comprar materiales para ^5533ff"+getoficioname()+"^000000:Abandonar mi oficio:^777777Salir^000000")) {
+			case 1:
+				close2;
+				cutin "",255;
+				switch ( getofid() ) {
+					case 3: // Escriba
+						callshop "OF_C",1;
+						break;
+					default:
+						dispbottom "Si buscas donde conseguir materiales, deberás comerciarlos con otros jugadores, únicamente al Escriba se le venden Tintas.";
+				}
+				end;
+			case 2:
+				mes "[ ^5533ffOficios^000000 ]";
+				mes "¿Así que deseas abandonar tu actual oficio?";
+				next;
+				mes "[ ^5533ffOficios^000000 ]";
+				mes "No hay ningún problema, solo que para llevar a cabo el trámite necesitaré que me traigas 3x <ITEM>Gold Coin<INFO>8503</INFO></ITEM>, entonces procederemos.";
+				next;
+				if(select(((countitem(8503) >= 3) ? "Aquí mismo las tengo" : "Entendido"),"De acuerdo, volveré después") == 2) {
+					mes "[ ^5533ffOficios^000000 ]";
+					mes "Te estaré esperando.";
+					close3;
+				}
+				if(countitem(8503) < 3) {
+					mes "[ ^5533ffOficios^000000 ]";
+					mes "Te estaré esperando.";
+					close3;
+				}
+				if(removeoficio() == 1) {
+					delitem 8503,3;
+					OF_VAR = 0;
+					OFICIO_ID = 0;
+					for(.@i = .range[0]; .@i < .range[1]; .@i++)
+						if(getskilllv(.@i) > 0)
+							skill .@i,0,0;
+					mes "[ ^5533ffOficios^000000 ]";
+					mes "De acuerdo, tu oficio ha sido removido satisfactoriamente, vuelve conmigo si deseas escoger otro pero tendrás que repetir nuevamente tu misión.";
+					close3;
+				} else {
+					mes "[ ^5533ffOficios^000000 ]";
+					mes "Lo siento pero actualmente no puedo remover tu oficio, vuelve en otra ocasión.";
+					close3;
+				}
+			case 3:
+				mes "[ ^5533ffOficios^000000 ]";
+				mes "Vale, vuelve cuando quieras.";
+				close2;
+				cutin "",255;
+				end;
+		}
+	}
+	cutin "jp_garm_f2",2;
+	mes "[ ^5533ffOficios^000000 ]";
+	mes "¿Estás list"+(Sex?"o":"a")+" para elegir un oficio?","Me parece perfecto.";
+	next;
+	while(.@s < 1) {
+		cutin "jp_garm_f3",2;
+		mes "[ ^5533ffOficios^000000 ]";
+		mes "Dime, ¿en qué estás interesad"+(Sex?"o":"a")+"?";
+		next;
+		.@m$ = "";
+		for(.@i = 1; .@i <= 4; .@i++)
+			.@m$ += " ^ff7070 >^000000 "+getoficioname(.@i)+":";
+		.@s = select(.@m$);
+		cutin "jp_garm_f2",2;
+		mes "[ ^5533ffOficios^000000 ]";
+		mes "Ya veo, así que te interesa ser ^cc6600"+getoficioname(.@s)+"^000000, estupendo.";
+		next;
+		cutin "jp_garm_f4",2;
+		mes "[ ^5533ffOficios^000000 ]";
+		mes "¿Estás list"+(Sex?"o":"a")+" para realizar la misión para convertirte en ^cc6600"+getoficioname(.@s)+"^000000?";
+		next;
+		if(select("¡Vamos allá!:Elegiré otro oficio") == 2)
+			.@s = 0;
+	}
+	setquest (45103 + .@s);
+	OF_VAR = .@s;
+	cutin .c$[.@s],4;
+	mes "[ ^5533ffOficios^000000 ]";
+	mes "Tu misión consiste en ir a cazar ^ff0000"+getmonsterinfo(.hm[.@s],MOB_NAME)+"^000000 y obtener ^cc660010x "+getitemname((8223+.@s))+"^000000, cuando los tengas, vuelve conmigo.";
+	next;
+	mes "[ ^5533ffOficios^000000 ]";
+	mes "Puedes verificar la información de la quest en ^FF0000ALT+U^000000";
+	close2;
+	cutin "",255;
+	end;
+OnInit:
+	bindatcmd "setofid",strnpcinfo(3)+"::OnCommand",99,99;
+	setarray .c$[1],"ÀúÆÄ·æÄ«µå","¿¤´õÀª·Î¿ìÄ«µå","¶óÀÌµå¿öµåÄ«µå","Ä±ÆÄÄ«µå";
+	setarray .hm[1],1609,1033,1195,1406;
+	setarray .no[1],2,1,3;
+	setarray .ns[1],3060,3061,3062;
+	setarray .range[0],3050,3069;
+	end;
+OnCommand:
+	setoficioid atoi(.@atcmd_parameters$[0]);
+	dispbottom "Ahora eres un '"+getoficioname(atoi(.@atcmd_parameters$[0]))+"'.",0x000000;
+	end;
+OnPCBaseLvUpEvent:
+	if(BaseLevel >= 50 && getofid() < 1 && !OF_MSG) {
+		cutin "oficios",3;
+		OF_MSG++;
+	}
+	end;
+}
+
+// Explorador
+-	script	GEM_EXPLORER	-1,{
+	if(checkquest(45108) == 1 && countitem(8526) < 15) {
+		progressbar "008800",5;
+		if(rand(100) < 50) {
+			getitem 8526,1;
+			specialeffect2 610;
+			hideonnpc strnpcinfo(0);
+			initnpctimer strnpcinfo(0);
+		} else {
+			specialeffect2 611;
+			hideonnpc strnpcinfo(0);
+			initnpctimer strnpcinfo(0);
+		}
+	} else
+		message strcharinfo(0),"Es una especie de gema morada, parece que con ciertos conocimientos de arqueología podrías sacar algo de ella.";
+	end;
+OnInit:
+	sleep2 30000;
+	hideonnpc strnpcinfo(0);
+	initnpctimer strnpcinfo(0);
+	end;
+
+OnTimer1800000: // Media hora de respawn
+	hideoffnpc strnpcinfo(0);
+	stopnpctimer strnpcinfo(0);
+	end;
+}
+
+mjolnir_02,148,317,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q01	3742
+mjolnir_02,286,131,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q02	3742
+mjolnir_02,350,89,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q03	3742
+mjolnir_02,233,85,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q04	3742
+mjolnir_02,201,142,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q05	3742
+mjolnir_02,181,55,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q06	3742
+mjolnir_02,137,245,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q07	3742
+mjolnir_02,215,121,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q08	3742
+mjolnir_02,230,146,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q09	3742
+mjolnir_02,240,191,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q10	3742
+mjolnir_02,67,310,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q11	3742
+mjolnir_02,120,348,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q12	3742
+mjolnir_02,158,355,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q13	3742
+mjolnir_02,217,302,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q14	3742
+mjolnir_02,179,285,4	duplicate(GEM_EXPLORER)	Gema Misteriosa#q15	3742
+
+// Escudero
+hu_fild02,0,0	monster	Buscador del Escudo	1850,5
+
+// Booker
+gon_fild01,0,0,0	script	Booker Boy::bkquest	620,{
+	if(checkquest(45110) == 1 && countitem(8528) < 15) {
+		if(Q_BOOKER < 1) {
+			mes "[^5533ffBooker Boy^000000]";
+			mes "Veo que tu cara muestra cierta preocupación, ¿qué sucede?";
+			next;
+			select("Busco los Pinceles de Rusfal");
+			mes "[^5533ffBooker Boy^000000]";
+			mes "Ya veo, yo tengo la colección completa, pero no pienso entregártelos fácil.";
+			next;
+			select("¿A qué te refieres?");
+			mes "[^5533ffBooker Boy^000000]";
+			mes "Yo fuí uno de los aprendices del gran maestro Rusfal, te daré un pincel por cada vez que me encuentres.";
+			next;
+			select("Pero si aquí estás");
+			mes "[^5533ffBooker Boy^000000]";
+			mes "Oh, respecto a eso...";
+			close2;
+			message strcharinfo(0),"¿Eh?, ¡¿a dónde ha ido?!, tendré que buscarlo para que me dé los pinceles.";
+			Q_BOOKER = 1;
+			.@r = rand(1,5);
+			movenpc "bkquest",.x[.@r],.y[.@r],4;
+			close;
+		}
+		mes "[^5533ffBooker Boy^000000]";
+		mes "Excelente, me has encontrado, pero no te lo dejaré tan fácil.";
+		next;
+		mes "[^5533ffBooker Boy^000000]";
+		mes "Estoy pensando en un ^5533ffnúmero del 1 al 3^000000, ¡adivínalo!";
+		.@n = rand(1,3);
+		next;
+		input .@un;
+		if(.@un != .@n) {
+			mes "[^5533ffBooker Boy^000000]";
+			mes "¡Qué lástima, la respuesta era ^ff7070"+.@n+"^000000!";
+			mes "Buena suerte para la próxima.";
+			emotion ET_SORRY;
+			sleep2 2000;
+			.@r = rand(1,5);
+			movenpc "bkquest",.x[.@r],.y[.@r],4;
+			atcommand "@refresh";
+			end;
+		}
+		mes "[^5533ffBooker Boy^000000]";
+		mes "¡Woah, lo has adivinado!";
+		next;
+		mes "[^5533ffBooker Boy^000000]";
+		mes "Aquí tienes, lo prometido es deuda, vuelve a encontrarme para darte otro.";
+		getitem 8528,1;
+		emotion ET_BEST;
+		sleep2 2000;
+		.@r = rand(1,5);
+		movenpc "bkquest",.x[.@r],.y[.@r],4;
+		atcommand "@refresh";
+		end;
+	} else {
+		mes "[^5533ffBooker Boy^000000]";
+		mes "No me interrumpas.";
+	}
+	close;
+OnInit:
+	setarray .x[1],199,170,124,242,272;
+	setarray .y[1],312,325,342,231,109;
+	.@r = rand(1,5);
+	movenpc "bkquest",.x[.@r],.y[.@r],4;
+	end;
+}
+
+// Teósofo
+yuno_fild11,0,0	monster	Andesita Angel	1766,10

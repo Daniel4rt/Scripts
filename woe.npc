@@ -1,0 +1,166 @@
+prontera,147,186,5	script	Batallas Gremiales::woe	837,{
+	mes "[^cc6600War of Emperium^000000]";
+	mes "^777777Día:^000000 Jueves";
+	mes "^777777Horario:^000000 19:00 ~ 20:00 hrs";
+	mes "^777777Tipo:^000000 Second Edition";
+	mes " ","^777777Castillos:^ff0000 Himinn, Mardol^000000";
+	next;
+	mes "[^cc6600War of Emperium^000000]";
+	mes "^777777Día:^000000 Viernes";
+	mes "^777777Horario:^000000 19:00 ~ 20:00 hrs";
+	mes "^777777Tipo:^000000 Training Edition";
+	mes " ","^777777Castillos:^ff0000 Glaris, Wigner^000000";
+	next;
+	mes "[^cc6600War of Emperium^000000]";
+	mes "^777777Día:^000000 Sábado";
+	mes "^777777Horario:^000000 19:00 ~ 20:00 hrs";
+	mes "^777777Tipo:^000000 First Edition";
+	mes "^777777Castillos:^ff0000 Kriemhild, Neuschwanstein, Repherion, Bright Harbor^000000";
+	next;
+	mes "[^cc6600Guerra de Territorios^000000]";
+	mes "^777777Día:^000000 Domingo";
+	mes "^777777Horario:^000000 19:00 ~ 20:00 hrs";
+	mes "^777777Territorios:","^ff0000 Alberta, Comodo, Einbroch, Geffen, Payon, Rachel^000000";
+	close;
+
+// ==== Horas Base ====
+OnClock1900:
+OnClock2000:
+
+// ==== Eventos Base ====
+OnAgitInit:
+OnAgitInit2:
+OnAgitInit3:
+OnWarInit:
+
+	if((gettime(DT_DAYOFWEEK) == .woe_day[0]) && (gettime(DT_HOUR) >= .woe_hour[0] && gettime(DT_HOUR) < .woe_hour[1])) {
+		if (!agitcheck()) {
+			callsub S_BGTerm;
+			AgitStart;
+		}
+	}
+	if ((gettime(DT_DAYOFWEEK) == .woe_day[1]) && (gettime(DT_HOUR) == .woe_hour[1])) { 
+		if (agitcheck()) {
+			AgitEnd;
+			callsub S_BGStart;
+		}
+	}
+	if((gettime(DT_DAYOFWEEK)== .woe_day[2]) && (gettime(DT_HOUR)>= .woe_hour[2] && gettime(DT_HOUR)< .woe_hour[3])) {
+		if (!warcheck()) {
+			callsub S_BGTerm;
+			warstart();
+		}
+	}
+	if ((gettime(DT_DAYOFWEEK)== .woe_day[3]) && (gettime(DT_HOUR)== .woe_hour[3])) { 
+		if (warcheck()) {
+			warend();
+			callsub S_BGStart;
+		}
+	}
+	if((gettime(DT_DAYOFWEEK) == .woe_day[4]) && (gettime(DT_HOUR) >= .woe_hour[4] && gettime(DT_HOUR) < .woe_hour[5])) {
+		if (!agitcheck2()) {
+			callsub S_BGTerm;
+			AgitStart2;
+		}
+	}
+	if ((gettime(DT_DAYOFWEEK) == .woe_day[5]) && (gettime(DT_HOUR) == .woe_hour[5])) { 
+		if (agitcheck2()) {
+			AgitEnd2;
+			callsub S_BGStart;
+		}
+	}
+	if((gettime(DT_DAYOFWEEK) == .woe_day[6]) && (gettime(DT_HOUR) >= .woe_hour[6] && gettime(DT_HOUR) < .woe_hour[7])) {
+		if (!agitcheck3()) {
+			callsub S_BGTerm;
+			AgitStart3;
+		}
+	}
+	if ((gettime(DT_DAYOFWEEK) == .woe_day[7]) && (gettime(DT_HOUR) == .woe_hour[7])) { 
+		if (agitcheck3()) {
+			AgitEnd3;
+			sleep 60000;
+			donpcevent "BG_Queue_Join::OnReloadMapServer";
+		}
+	}
+	end;
+// Battleground Subfunctions
+S_BGTerm:
+	if(bgcheck())
+		bgend();
+	sleep2 1000;
+	return;
+
+S_BGStart:
+	sleep 60000;
+	donpcevent "BG_Queue_Join::OnReloadMapServer";
+	return;
+
+// ====================== \\
+//      WoE Controller    \\
+// =====  by Euphy ====== \\
+OnInit:
+	function woe_update;
+	
+	.@Euphy_Len = getarraysize( $WOE_CONTROL );
+	
+	if( .@Euphy_Len ) {
+		for( .@i = 0; .@i < .@Euphy_Len; .@i += 4 ) {
+			.woe_day[ getarraysize( .woe_day ) ] = $WOE_CONTROL[.@i];
+			.woe_hour[ getarraysize( .woe_hour ) ] = $WOE_CONTROL[.@i+1];
+		}
+	} else {
+
+// ========================================================================
+//                             === Días ===
+		setarray .woe_day,	SATURDAY, SATURDAY,	//WoE FE
+							SUNDAY, SUNDAY,		//Guerra de Territorios
+							THURSDAY, THURSDAY,	//WoE SE
+							FRIDAY, FRIDAY;		//WoE TE
+
+//                            === Horario ===
+		setarray .woe_hour, 19, 20,				//WoE FE
+							19, 20,				//Guerra de Territorios
+							19, 20,				//WoE SE
+							19, 20;				//WoE TE
+// ========================================================================
+
+	}
+
+	while ( 1 ) {
+		woe_update(); // Fix: Necesario aquí para que se refresque siempre, si no arrojará números negativos.
+		.@woe_tick = .woe_time[.current] - gettimetick(2);
+		.@day  = .@woe_tick / 86400;
+		.@hour = .@woe_tick % 86400 / 3600;
+		.@min  = .@woe_tick % 3600 / 60;
+		.@sec  = .@woe_tick % 60;
+		.@mes$ = ( .@day  ? .@day  +" días ":"Restan: ") +
+				 ( .@hour ? .@hour +":":"0:") +
+				 ( .@min  ? (.@min < 10 ? ("0"+.@min+":"):.@min+":"):"00:" ) +
+				 ( .@sec  ? (.@sec < 10 ? ("0"+.@sec):.@sec):"00" )+" hrs";
+		delwaitingroom;
+		if(warcheck()) // Verifica guerra de territorios
+			waitingroom "¡Guerra de Territorios!", 0;
+		else // Verifica WoE
+			waitingroom (agitcheck() || agitcheck2() || agitcheck3()) ? "¡WoE en progreso!" : .@mes$, 0;
+		sleep 1000;
+	}
+	end;
+	
+	OnAgitEnd:
+		woe_update();
+		end;
+
+// Función de refresh de los timers.
+	function woe_update {
+		.@woe_len = getarraysize( .woe_day );
+		for( .@a = 0; .@a < .@woe_len; .@a++ ) {
+			.@woe_day[.@a] = ( .woe_day[.@a] - gettime(4) + 7 ) % 7 * 86400;
+			.@woe_hour[.@a] = ( .woe_hour[.@a] * 3600 ) - gettimetick(1);
+			.woe_time[.@a] = gettimetick(2) + .@woe_day[.@a] + .@woe_hour[.@a];
+			if(gettimetick(2) > .woe_time[.@a])
+				.woe_time[.@a] = .woe_time[.@a] + 7 * 86400;
+			if( .woe_time[.@a] <= .woe_time[.current] )
+				.current = .@a;
+		}
+	}
+}

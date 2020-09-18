@@ -1,0 +1,9 @@
+-	script	PLATOS16	-1,{
+OnInit:
+	areamonster "prt_cas",364,145,371,129,"Glass Plate",3455,15,"PLATOS16::OnMyMobKill";
+	end;
+OnMyMobKill:
+	sleep2 20000;
+	areamonster "prt_cas",364,145,371,129,"Glass Plate",3455,1,"PLATOS16::OnMyMobKill";
+	end;
+}

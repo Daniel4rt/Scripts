@@ -1,0 +1,193 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---             Core: Player vs. Player             ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+
+// Mapflags
+guild_vs3	mapflag	pvp
+guild_vs3	mapflag	pvp_noparty
+guild_vs3	mapflag	pvp_noguild
+guild_vs3	mapflag	nogo
+guild_vs3	mapflag	noteleport
+guild_vs3	mapflag	nomemo
+guild_vs3	mapflag	nowarp
+
+-	script	PVP_CORE	-1,{
+OnInit:
+	// 2 = No contará a GameMaster en el Ranking.
+	// 4 = Contar ranking de los mapas con mapflag PVP.
+	// 8 = Anunciar asesinatos y sonidos.
+	// 16 = Desactivar @pvp de mapas PvP y GvG.
+	// 32 = Reiniciar racha de kills al reentrar a la sala PvP.
+	// 64 = Reconocer mapflag de battleground y contar nuevo ranking.
+	.opt = 2|4|8|16|32|64;
+
+	// Tiempo para eliminar racha de multikills. (segundos)
+	.mk = 10;
+	
+	// Tiempo para considerar que no estás fedeando. (segundos)
+	.feed = 40;
+
+	// Textos de multikill
+	setarray .mkm$[2],"Doble kill","Triple kill","Ultrakill","Rampage","Ownage","Holyshit","Holyshit";
+	
+	// Mensajes de asesinato
+	setarray .mes$,"matado","asesinado","mutilado","sodomizado","derrotado","ejecutado","liquidado","pisoteado";
+	
+	// Mapas clasificados para el comando @pvp.
+	setarray .m$,"guild_vs3";
+
+	// Definición de comandos.
+	bindatcmd "pvp","PVP_CORE::OnCommand",0,99;
+	bindatcmd "gvg","PVP_CORE::OnCommand",0,99;
+	bindatcmd "whopvp","PVP_CORE::OnCommand",0,99;
+
+	end;
+OnPCLogoutEvent:
+	PVP_FEED_RID = PVP_ENEMY_RID = 0;
+	end;
+OnPCKillEvent:
+	callsub OnC;
+	PVP_FEED_RID = killedrid;
+	.@p = callsub(OnA,PVP_FEED_RID);
+	if((.opt & 64) && getmapflag(strcharinfo(3),mf_battleground))
+		ranking "bg",1,1;
+	else
+		ranking "pk",.@p,1; // Puntaje al sistema de Ranking
+	Puntos_PvP++;
+	dispbottom "Total de Puntos PvP: "+Puntos_PvP,0x000000;
+	end;
+OnPCDieEvent:
+	if( Class == 4218 )
+		soundeffectall "leaf_cat_attack.wav",0;
+	else if( Sex )
+		soundeffectall "die_male.wav",0;
+	else
+		soundeffectall "die_merchant_female.wav",0;
+	sleep2 rand(50,200);
+	callsub OnC;
+	callsub OnF,killerrid,@m;
+	@k = @m = 0;
+	PVP_ENEMY_RID = killerrid;
+	end;
+OnA:
+	deltimer "PVP_CORE::OnB";
+	addtimer (.mk * 1000),"PVP_CORE::OnB";
+	addtimer (.feed * 1000),"PVP_CORE::OnE";
+	.@t = getarg(0);
+	@k++; @m++;
+	.@gp = callsub(OnD,.@t);
+	return .@gp;
+OnB:
+	.@m = 0;
+	end;
+OnC:
+	if( (.opt & 2) && getgroupid() >= 6)
+		end;
+	if( (.opt & 4) && (!getmapflag(strcharinfo(3),mf_pvp) && !getmapflag(strcharinfo(3),mf_gvg) && ( (.opt & 64) && !getmapflag(strcharinfo(3),mf_battleground))) )
+		end;
+	return;
+OnD:
+	.@t$ = rid2name(getarg(0));
+	.@map$ = strcharinfo(3);
+	.@rp = 1;
+	if(#PVPA < 1)
+		#PVPA = 0;
+	if(!@k)
+		end;
+	if(.opt & 8) {
+		.@sound = @m;
+		if(@k)
+			mapannounce .@map$,"<"+strcharinfo(0)+"> ha "+.mes$[rand(getarraysize(.mes$)-1)]+" a <"+.@t$+"> [Racha: "+@k+"].",bc_woe,0x54EEFF;
+		if(@k > 0 && @k < 11)
+			soundeffectall #PVPA+"_KS"+(@k == 2 ? 1 : @k)+".wav",0,.@map$;
+		if(@m > 1 && @m < 8) {
+			if(@m != 0 || @m != 1|| @m != 8) {
+				sleep2 rand(2700,3200);
+				mapannounce .@map$,"<"+strcharinfo(0)+"> ha hecho un <"+.mkm$[.@sound]+">.",bc_woe,0x3F9FFE;
+				soundeffectall #PVPA+"_MK"+.@sound+".wav",0,.@map$;
+				.@rp += 1;
+			}
+		}
+		sleep2 100;
+	}
+	if(PVP_ENEMY_RID == getarg(0)) {
+		if(.opt & 8) {
+			sleep2 rand(2700,3200);
+			mapannounce .@map$,"<"+strcharinfo(0)+"> se ha vengado de <"+.@t$+">.",bc_woe,0x66FE00;
+			soundeffectall #PVPA+"_Payback.wav",0,.@map$;
+		}
+		.@rp += 1;
+		PVP_FEED_RID = 0;
+	}
+	if(PVP_FEED_RID == getarg(0))
+		end; // No otorga puntos.
+	return .@rp;
+OnE:
+	PVP_FEED_RID = 0;
+	end;
+OnF:
+	.@rid$ = rid2name(getarg(0));
+	.@map$ = strcharinfo(3);
+	if(getarg(1) > 5 && (.opt & 8)) {
+		mapannounce .@map$,"<"+.@rid$+"> ha acabado con la racha de <"+strcharinfo(0)+">.",bc_woe,0xFF8800;
+		soundeffectall #PVPA+"_Smackdown.wav",0,.@map$;
+	}
+	return;
+OnCommand:
+	if(.@atcmd_command$ == "@whopvp") {
+		donpcevent "PVP_CORE::OnGetOnline";
+		dispbottom " * Actualmente hay '"+$@PVPON+"' jugador"+($@PVPON > 1 ? "es":"")+" en PvP.";
+	} else if(.@atcmd_command$ == "@pvp") {
+		if( (.opt & 16) && getmapflag(strcharinfo(3),mf_pvp) || getmapflag(strcharinfo(3),mf_gvg)) {
+			dispbottom "Este comando no puede ser utilizado en este mapa.";
+			end;
+		}
+		if(.opt & 32)
+			@k = @m = 0;
+		if(getarraysize(.m$) < 2)
+			warp .m$[0],0,0;
+		else
+			dispbottom "Un error ha ocurrido, por favor repórtalo a un GM con el siguiente código: 'PVP-ARRAY>1'.",0x000000;
+	} else if(.@atcmd_command$ == "@gvg") {
+		if( (.opt & 16) && getmapflag(strcharinfo(3),mf_pvp) || getmapflag(strcharinfo(3),mf_gvg)) {
+			dispbottom "Este comando no puede ser utilizado en este mapa.";
+			end;
+		}
+		if(.opt & 32)
+			@k = @m = 0;
+		warp "guild_vs2",0,0;
+	}
+	end;
+OnGetOnline:
+	$@PVPON = getmapusers("pvp_n_1-5");
+	end;
+}
+
+guild_vs3,32,67,5	script	#exitpvp	837,{
+	select("Salir de PvP");
+	getmapxy(.@m$,.@x,.@y,0);
+	specialeffect2 60;
+	specialeffect2 58;
+	sleep2 3000;
+	getmapxy(.@m$,.@x2,.@y2,0);
+	if(.@x2 != .@x || .@y2 != .@y)
+		end;
+	specialeffect2 60;
+	specialeffect2 58;
+	sleep2 3000;
+	getmapxy(.@m$,.@x,.@y,0);
+	if(.@x2 != .@x || .@y2 != .@y)
+		end;
+	warp "SavePoint",0,0;
+	end;
+}

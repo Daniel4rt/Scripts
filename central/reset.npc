@@ -1,0 +1,140 @@
+premium,157,109,4	script	Gato Reseteador	548,{
+mes "[^5533ffGato Reseteador^000000]"; 
+mes "Bienvenid"+(Sex?"o":"a")+" "+strcharinfo(0)," "," ";
+mes "Reset Actuales: ^ff0000"+( (reset_cnt-1) < 0 ? 0 : (reset_cnt - 1))+"^000000";
+next;
+mes "[^5533ffGato Reseteador^000000]";
+mes "¿En que te puedo ayudar hoy?";
+next;
+	switch (select("Resetear:Informacion:^777777Salir^000000")) {
+		case 1:
+			if(BaseLevel < .minlv) {
+				mes "[^5533ffGato Reseteador^000000]";
+				mes "¿Que deseas resetear?";
+					switch (select("Status ^5533ff=>^000000 ^ff0000"+callfunc("F_InsertComma",.p[0])+"^000000z:Skills ^5533ff=>^000000 ^ff0000"+callfunc("F_InsertComma",.p[1])+"^000000z:Ambos ^5533ff=>^000000 ^ff0000"+callfunc("F_InsertComma",.p[2])+"^000000z")) {
+						case 1:
+							if (Zeny < .p[0]) {
+								mes "No tienes el Zeny suficiente.";
+								close;
+							}
+							if (countitem(.it) < 1) {
+								mes "No tienes suficientes "+getitemname(.it);
+								close;
+							}
+							delitem .it,1;
+							tax .p[0],30;
+							ResetStatus;
+							mes "Te he reiniciado tus estadísticas satisfactoriamente, vuelve cuando quieras.";
+							close;
+						case 2:
+							if (Zeny < .p[1]) {
+								mes "No tienes el Zeny suficiente.";
+								close;
+							}
+							if (countitem(.it) < 1) {
+								mes "No tienes suficientes "+getitemname(.it);
+								close;
+							}
+							delitem .it,1;
+							tax .p[1],30;
+							ResetSkill;
+							mes "Te he reiniciado tus habilidades satisfactoriamente, vuelve cuando quieras.";
+							close;
+						case 3:
+							if (Zeny < .p[2]) {
+								mes "No tienes el Zeny suficiente.";
+								close;
+							}
+							if (countitem(.it) < 1) {
+								mes "No tienes suficientes "+getitemname(.it);
+								close;
+							}
+							delitem .it,1;
+							tax .p[2],30;
+							ResetStatus;
+							ResetSkill;
+							mes "Te he reiniciado ambos parámetros exitosamente, vuelve cuando quieras, claro, mientras tengas suficiente dinero.";
+							close;
+					}
+			}
+			if (reset_cnt < 1)
+				reset_cnt = 1;
+			.@rpc = (.p[0]*reset_cnt);
+			.@dpc = (.p[2]*reset_cnt);
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "¿Que deseas resetear?";
+			switch (select("Status ^5533ff=>^000000 ^ff0000"+callfunc("F_InsertComma",.@rpc)+"^000000z:Skills ^5533ff=>^000000 ^ff0000"+callfunc("F_InsertComma",.@rpc)+"^000000z:Ambos ^5533ff=>^000000 ^ff0000"+callfunc("F_InsertComma",.@dpc)+"^000000z")) {
+				case 1:
+					if (Zeny < .@rpc) {
+						mes "No tienes el Zeny suficiente.";
+						close;
+					}
+					if (countitem(.it) < 1) {
+						mes "No tienes suficientes "+getitemname(.it);
+						close;
+					}
+					delitem .it,1;
+					tax .@rpc,30;
+					ResetStatus;
+					reset_cnt++;
+					mes "Te he reiniciado tus estadísticas satisfactoriamente, vuelve cuando quieras.";
+					close;
+				case 2:
+					if (Zeny < .@rpc) {
+						mes "No tienes el Zeny suficiente.";
+						close;
+					}
+					if (countitem(.it) < 1) {
+						mes "No tienes suficientes "+getitemname(.it);
+						close;
+					}
+					delitem .it,1;
+					tax .@rpc,30;
+					ResetSkill;
+					reset_cnt++;
+					mes "Te he reiniciado tus habilidades satisfactoriamente, vuelve cuando quieras.";
+					close;
+				case 3:
+					if (Zeny < .@dpc) {
+						mes "No tienes el Zeny suficiente.";
+						close;
+					}
+					if (countitem(.it) < 2) {
+						mes "No tienes suficientes "+getitemname(.it);
+						close;
+					}
+					delitem .it,2;
+					tax .@dpc,30;
+					ResetStatus;
+					ResetSkill;
+					reset_cnt++;
+					mes "Te he reiniciado ambos parámetros exitosamente, vuelve cuando quieras, claro, mientras tengas suficiente dinero.";
+					close;
+			}
+		case 2:
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "Te puedo resetear Status y Skills por un precio razonable.";
+			next;
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "Primero comenzarás con "+callfunc("F_InsertComma",.p[0])+" z y 1x "+getitemname(.it)+".";
+			next;
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "Dependiendo de cuantas veces hayas reseteado esa cantidad de "+callfunc("F_InsertComma",.p[0])+"z se multiplicará por dos.";
+			next;
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "Ten cuidado de cuantas veces lo haces, que llegará a precios inimaginables.";
+			next;
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "Si eres menor de nivel "+.minlv+" te costará solo "+callfunc("F_InsertComma",.p[2])+" z y 1x "+getitemname(.it)+" el paquete completo.";
+			close;
+		case 3:
+			mes "[^5533ffGato Reseteador^000000]";
+			mes "Nos vemos pronto.";
+			close;
+	}
+OnInit:
+	.it = 8503;
+	.minlv = 99;
+	setarray .p,5000,5000,20000;
+	end;
+}

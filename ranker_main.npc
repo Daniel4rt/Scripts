@@ -1,0 +1,585 @@
+	//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \     Uso exclusivo de Poring RO                            
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                     Ranker                      ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+// -- Mensuales: días 28 y 30, reset el día 1.
+// -- Semanales: día sábado, reset en domingo.
+// -- Diario: 15:00 hrs, reset inmediato.
+//========================================================
+
+// Tiendas MvP
+-	pointshop	R_MVP_SHOP	111,Puntos_MvP:0,5377:30,20512:20,658:50,7776:14,20071:20,5864:200,5868:120,5869:120,5870:120,5871:120,18716:106,5529:18,12912:2,12103:10,12210:8,12412:14,13607:32,12902:80,16268:130
+-	pointshop	R_MVP_S_1	111,Puntos_MvP:0,30002:35,20312:35,20458:35,20449:35,20183:35,20034:35,20325:35,20315:35,20430:35,20247:35,20177:35,19524:35,19525:35,19526:35,19527:35,19528:35,19529:35,19530:35,19531:35,19532:35,19533:35,19534:35,19535:35,19536:35,19537:35,19538:35,19539:35,19540:35,19541:35,19542:35,19543:35,19544:35,19545:35,19546:35,19547:35,19548:35,19549:35,19550:35,19551:35,19552:35,19553:35,19573:35,19574:35,19576:35,19577:35,19579:35,19585:35,19586:35,19587:35,19588:35,19589:35,19590:35,19598:35,19599:35,19600:35,19601:35,19602:35,19607:35,19617:35,19618:35,19619:35
+-	pointshop	R_MVP_S_2	111,Puntos_MvP:0,31088:35,31251:35,20317:35,19685:35,19620:35,20195:35,20196:35,19621:35,19622:35,19623:35,19624:35,19625:35,19629:35,19630:35,19632:35,19633:35,19634:35,19635:35,19636:35,19637:35,19638:35,19639:35,19649:35,19650:35,19651:35,19655:35,19656:35,19661:35,19662:35,19666:35,19668:35,19676:35,19677:35,19678:35,19682:35,19685:35,19686:35,19689:35,19690:35,19695:35,19696:35,19701:35,19702:35,19706:35,19707:35,19709:35,19710:35,19716:35,19719:35,19721:35,19724:35,19729:35,19718:35,19728:35,19730:35
+-	pointshop	R_MVP_S_3	111,Puntos_MvP:0,31125:35,20103:35,31176:35,31178:35,31177:35,31179:35,31180:35,31181:35,31183:35,31185:35,31187:35,31188:35,31189:35,31190:35,31193:35,31195:35,31196:35,31197:35,31202:35,31203:35,31208:35,31209:35,31210:35,31211:35,31212:35,31213:35,31214:35,31215:35,31216:35,31217:35,31218:35,31219:35,31220:35,31221:35,31222:35,31223:35,31224:35,31225:35,31226:35,31227:35,31228:35,31229:35,31230:35,31231:35,31232:35,31233:35,31234:35,31235:35,31236:35,31237:35,31238:35,31241:35,31244:35,31245:35,31249:35,31250:35,31252:35,31260:35,31263:35,31264:35,31265:35,31266:35,31267:35,31268:35,31269:35,31270:35,31271:35,31272:35,31273:35,31274:35,31275:35,31276:35,31277:35,31278:35,31279:35,31280:35,31281:35,31282:35,31283:35,31284:35,31285:35,31286:35,31287:35,31288:35,31289:35,31290:35,31291:35,31293:35,31295:35,31300:35,31301:35,31302:35,31303:35,31304:35,31313:35,31314:35,31315:35,31317:35,31318:35,31327:35,31329:35,31330:35,31332:35,31368:35,31369:35,31370:35,31375:35,31376:35,31377:35,31378:35,31379:35,31380:35,31381:35,31382:35,31383:35,31384:35,31385:35,31393:35,31394:35,31395:35,31396:35,31397:35,31398:35,31399:35,31402:35,31403:35,31404:35,31405:35,31406:35,31407:35,31409:35,31410:35,31411:35,31412:35,31413:35,31414:35,31415:35,19731:35,19732:35,19733:35,19734:35,19735:35,19736:35,19737:35,19738:35,19739:35,19746:35,19764:35,19765:35,19767:35,19768:35,19772:35,19775:35,19859:35,19860:35,19861:35,19862:35,19863:35,19864:35,19865:35,19876:35,19878:35,19882:35,19883:35,19884:35,19885:35,19886:35,19887:35,19888:35,19889:35,19902:35,19903:35,19913:35,19914:35,19917:35,19918:35,19919:35,19920:35,19922:35,19931:35,19932:35,19934:35,19935:35,19936:35
+-	pointshop	R_MVP_S_4	111,Puntos_MvP:0,31170:35,31172:35,31165:35,31172:35,31166:35,31057:35,20405:35,19938:35,19941:35,19955:35,19961:35,19962:35,19963:35,19964:35,19965:35,19966:35,19967:35,19968:35,19969:35,19970:35,19971:35,19972:35,19973:35,19974:35,19976:35,19977:35,19978:35,19979:35,19980:35,19982:35,19983:35,19984:35,19996:35,19999:35,20000:35,20001:35,20002:35,20003:35,20025:35,20026:35,20027:35,20028:35,20034:35,20036:35,20049:35,20050:35,20054:35,20057:35,20053:35,20063:35,20064:35,20067:235
+-	pointshop	R_MVP_S_5	111,Puntos_MvP:0,31162:35,31160:35,31151:35,31149:35,31121:35,31122:35,31123:35,31124:35,31125:35,31126:35,31127:35,31128:35,31096:35,31097:35,31098:35,31099:35,31100:35,31101:35,31102:35,31103:35,31104:35,31105:35,31095:35,31093:35,31092:35,31049:35,31052:35,31055:35,19824:35,19825:35,19826:35,19827:35,20068:35,20073:35,20074:35,20086:35,20087:35,20088:35,20089:35,20090:35,20091:35,20092:35,20093:35,20094:35,20095:35,20096:35,20097:35,20110:35,20114:35,20118:35,20119:35,20120:35,20121:35,20125:35,20130:35,20132:35,20133:35,20135:35,20136:35
+
+// Tiendas PvP
+-	pointshop	R_PVP_S_1	111,Puntos_PvP:0,20312:127,20458:127,20449:127,20183:127,20034:127,20325:127,20315:127,20430:127,20247:127,20177:127,19524:127,19525:127,19526:127,19527:127,19528:127,19529:127,19530:127,19531:127,19532:127,19533:127,19534:127,19535:127,19536:127,19537:127,19538:127,19539:127,19540:127,19541:127,19542:127,19543:127,19544:127,19545:127,19546:127,19547:127,19548:127,19549:127,19550:127,19551:127,19552:127,19553:127,19573:127,19574:127,19576:127,19577:127,19579:127,19585:127,19586:127,19587:127,19588:127,19589:127,19590:127,19598:127,19599:127,19600:127,19601:127,19602:127,19607:127,19617:127,19618:127,19619:127
+-	pointshop	R_PVP_S_2	111,Puntos_PvP:0,30002:127,31088:127,31251:127,20317:127,19685:127,19620:127,20195:127,20196:127,19621:127,19622:127,19623:127,19624:127,19625:127,19629:127,19630:127,19632:127,19633:127,19634:127,19635:127,19636:127,19637:127,19638:127,19639:127,19649:127,19650:127,19651:127,19655:127,19656:127,19661:127,19662:127,19666:127,19668:127,19676:127,19677:127,19678:127,19682:127,19685:127,19686:127,19689:127,19690:127,19695:127,19696:127,19701:127,19702:127,19706:127,19707:127,19709:127,19710:127,19716:127,19719:127,19721:127,19724:127,19729:127,19718:127,19728:127,19730:127
+-	pointshop	R_PVP_S_3	111,Puntos_PvP:0,20103:127,31125:127,31176:127,31178:127,31177:127,31179:127,31180:127,31181:127,31183:127,31185:127,31187:127,31188:127,31189:127,31190:127,31193:127,31195:127,31196:127,31197:127,31202:127,31203:127,31208:127,31209:127,31210:127,31211:127,31212:127,31213:127,31214:127,31215:127,31216:127,31217:127,31218:127,31219:127,31220:127,31221:127,31222:127,31223:127,31224:127,31225:127,31226:127,31227:127,31228:127,31229:127,31230:127,31231:127,31232:127,31233:127,31234:127,31235:127,31236:127,31237:127,31238:127,31241:127,31244:127,31245:127,31249:127,31250:127,31252:127,31260:127,31263:127,31264:127,31265:127,31266:127,31267:127,31268:127,31269:127,31270:127,31271:127,31272:127,31273:127,31274:127,31275:127,31276:127,31277:127,31278:127,31279:127,31280:127,31281:127,31282:127,31283:127,31284:127,31285:127,31286:127,31287:127,31288:127,31289:127,31290:127,31291:127,31293:127,31295:127,31300:127,31301:127,31302:127,31303:127,31304:127,31313:127,31314:127,31315:127,31317:127,31318:127,31327:127,31329:127,31330:127,31332:127,31368:127,31369:127,31370:127,31375:127,31376:127,31377:127,31378:127,31379:127,31380:127,31381:127,31382:127,31383:127,31384:127,31385:127,31393:127,31394:127,31395:127,31396:127,31397:127,31398:127,31399:127,31402:127,31403:127,31404:127,31405:127,31406:127,31407:127,31409:127,31410:127,31411:127,31412:127,31413:127,31414:127,31415:127,19731:127,19732:127,19733:127,19734:127,19735:127,19736:127,19737:127,19738:127,19739:127,19746:127,19764:127,19765:127,19767:127,19768:127,19772:127,19775:127,19859:127,19860:127,19861:127,19862:127,19863:127,19864:127,19865:127,19876:127,19878:127,19882:127,19883:127,19884:127,19885:127,19886:127,19887:127,19888:127,19889:127,19902:127,19903:127,19913:127,19914:127,19917:127,19918:127,19919:127,19920:127,19922:127,19931:127,19932:127,19934:127,19935:127,19936:127
+-	pointshop	R_PVP_S_4	111,Puntos_PvP:0,31170:127,31172:127,31165:127,31172:127,31166:127,31057:127,20405:127,19938:127,19941:127,19955:127,19961:127,19962:127,19963:127,19964:127,19965:127,19966:127,19967:127,19968:127,19969:127,19970:127,19971:127,19972:127,19973:127,19974:127,19976:127,19977:127,19978:127,19979:127,19980:127,19982:127,19983:127,19984:127,19996:127,19999:127,20000:127,20001:127,20002:127,20003:127,20025:127,20026:127,20027:127,20028:127,20034:127,20036:127,20049:127,20050:127,20054:127,20057:127,20053:127,20063:127,20064:127,20067:127
+-	pointshop	R_PVP_S_5	111,Puntos_PvP:0,31162:127,31160:127,31151:127,31149:127,31121:127,31122:127,31123:127,31124:127,31125:127,31126:127,31127:127,31128:127,31096:127,31097:127,31098:127,31099:127,31100:127,31101:127,31102:127,31103:127,31104:127,31105:127,31095:127,31093:127,31092:127,31049:127,31052:127,31055:127,19824:127,19825:127,19826:127,19827:127,20068:127,20073:127,20074:127,20086:127,20087:127,20088:127,20089:127,20090:127,20091:127,20092:127,20093:127,20094:127,20095:127,20096:127,20097:127,20110:127,20114:127,20118:127,20119:127,20120:127,20121:127,20125:127,20130:127,20132:127,20133:127,20135:127,20136:127
+
+// Tiendas Emperium
+-	pointshop	R_EMP_SHOP	111,Puntos_Emperium:0,14210:2,18716:5,5471:15,19181:20,18908:20,5873:20,5874:20,5875:20,5595:30,20706:30,2573:15,20707:30,2576:40,20724:40,2589:40,20727:15,20761:15,20746:15,20737:15,18910:50,18909:100
+
+prontera,157,187,4	script	Ranker	531,{
+	playbgm "248";
+	cutin "jpn_algol01",2;
+	mes "[^A020F0Ranker^000000]";
+	mes "Aquí podrás consultar todas las clasificaciones del servidor y canjear premios.";
+	mes "¿En qué te puedo ayudar?";
+	next;
+	switch(prompt("Ver Clasificación:^5533ffTienda^000000:Elegir título MvP:^FF7070Información & Premios^000000:^777777Salir^000000")) {
+		case 1:
+			mes "[^A020F0Ranker^000000]";
+			mes "¿Qué tipo de clasificación deseas consultar?";
+			next;
+			switch(prompt("^ff0000 >^000000 Diario:^ff0000 >^000000 Semanal:^ff0000 >^000000 Mensual: > ^777777Salir^000000")) {
+				case 1:
+					.@rank$ = "day";
+					break;
+				case 2:
+					.@rank$ = "week";
+					break;
+				case 3:
+					.@rank$ = "month";
+					break;
+				case 4:
+					close2;
+				case 255:
+					cutin "",255;
+					playbgm "243";
+					end;
+			}
+			mes "[^A020F0Ranker^000000]";
+			mes "Bien, por favor elige la clasificación:";
+			next;
+			switch(prompt("^5533ffOficios^000000:Cazador de MvP:Player vs. Player:Battleground:Rompedor de Emperium:Gremios:^777777Salir^000000")) {
+				case 1:
+					mes "[^A020F0Ranker^000000]";
+					mes "Por favor elige el oficio del cual deseas consultar la clasificación:";
+					next;
+					.@a = prompt("^5533ff ~^000000 Sastre & Explorador:^5533ff ~^000000 Carpintero & Escudero:^5533ff ~^000000 Escriba & Booker:^5533ff ~^000000 Encantador & Teósofo");
+					if(.@a == 255) {
+						cutin "",255;
+						playbgm "243";
+						end;
+					}
+					query_sql( "DELETE FROM `char_rank_"+.@rank$+"` WHERE `name` NOT IN ( SELECT `name` FROM `player` )" );
+					.@s = query_sql( "SELECT `name`,`"+.of_table$[.@a]+"` FROM `char_rank_"+.@rank$+"` WHERE `"+.of_table$[.@a]+"` > '0' ORDER BY `"+.of_table$[.@a]+"` DESC LIMIT "+.top,.@n$,.@p);
+					mes "^5533ff"+getoficioname(.@a)+" & "+(getoficioname(.@a)+4)+"^000000";
+					if(.@s) {
+						for (.@c = 0; .@c < .@s; .@c++)
+							mes "^777777[#"+(.@c+1)+"] - ^0000FF"+.@n$[.@c]+"^000000 - ^FF0000"+.@p[.@c]+"^000000 puntos.";
+					} else
+						mes "Clasificación vacía.";
+					close2;
+					cutin "",255;
+					playbgm "243";
+					end;
+				case 2:
+					query_sql( "DELETE FROM `char_rank_"+.@rank$+"` WHERE `name` NOT IN ( SELECT `name` FROM `player` )" );
+					.@size = query_sql( "SELECT `name`,`mvp` FROM `char_rank_"+.@rank$+"` WHERE `mvp` > '0' ORDER BY `mvp` DESC LIMIT "+ .top, .@name$, .@points );
+					mes "^5533ffCazador de MvP^000000";
+					if(.@size) {
+						for (.@c = 0; .@c < .@size; .@c++)
+							mes "^777777[#" +(.@c + 1) +"] - ^0000FF" + .@name$[.@c] +"^000000 - ^FF0000" + .@points[.@c] +"^000000 MvP.";
+					} else
+						mes "Clasificación vacía.";
+					close2;
+					cutin "",255;
+					playbgm "243";
+					end;
+				case 3:
+					mes "^5533ffPlayer vs. Player [PVP]^000000";
+					query_sql( "DELETE FROM `char_rank_"+.@rank$+"` WHERE `name` NOT IN ( SELECT `name` FROM `player` )" );
+					query_sql( "SELECT `name`,`pk` FROM `char_rank_"+.@rank$+"`  WHERE `pk` > '0' ORDER BY `pk` DESC LIMIT 5",.@n$,.@c );
+					if( getarraysize( .@n$ ) ) {
+						for( .@i = 0; .@i < getarraysize(.@n$); .@i++ )
+							mes "^777777[ "+( .@i + 1 )+". ]^000000 ^ff0000"+.@n$[.@i]+"^000000 - ^cc6600"+.@c[.@i]+" puntos.^000000";
+					} else
+						mes "Clasificación vacía.";
+					close2; cutin "",255;
+					playbgm "243";
+					end;
+				case 4:
+					mes "^FF8800Battleground [BG]^000000";
+					query_sql( "DELETE FROM `char_rank_"+.@rank$+"` WHERE `name` NOT IN ( SELECT `name` FROM `player` )" );
+					query_sql( "SELECT `name`,`bg` FROM `char_rank_"+.@rank$+"`  WHERE `bg` > '0' ORDER BY `bg` DESC LIMIT 5",.@n$,.@c );
+					if( getarraysize( .@n$ ) ) {
+						for( .@i = 0; .@i < getarraysize(.@n$); .@i++ )
+							mes "^777777[ "+( .@i + 1 )+". ]^000000 ^ff0000"+.@n$[.@i]+"^000000 - ^cc6600"+.@c[.@i]+" puntos.^000000";
+					} else
+						mes "Clasificación vacía.";
+					close2; cutin "",255;
+					playbgm "243";
+					end;
+				case 5:
+					mes "^5533ffRompedor de Emperium^000000";
+					query_sql( "DELETE FROM `char_rank_"+.@rank$+"` WHERE `name` NOT IN ( SELECT `name` FROM `player` )" );
+					query_sql( "SELECT `name`,`emperium` FROM `char_rank_"+.@rank$+"`  WHERE `emperium` > '0' ORDER BY `emperium` DESC LIMIT 5",.@n$,.@c );
+					if( getarraysize( .@n$ ) ) {
+						for( .@i = 0; .@i < getarraysize(.@n$); .@i++ )
+							mes "^777777[ "+( .@i + 1 )+". ]^000000 ^ff0000"+.@n$[.@i]+"^000000 - ^cc6600"+.@c[.@i]+" Emperiums^000000";
+					} else
+						mes "Clasificación vacía.";
+					close2; cutin "",255;
+					playbgm "243";
+					end;
+				case 6:
+					mes "^5533ffGremios^000000";
+					mes "^cc6600Pos | Nombre | Puntos^000000";
+					query_sql( "DELETE FROM `guild_rank` WHERE `name` NOT IN ( SELECT `name` FROM `guild` )" );
+					query_sql( "SELECT `name`,`point` FROM `guild_rank`  WHERE `point` > '0' ORDER BY `point` DESC LIMIT 5",.@n$,.@c );
+					if( getarraysize( .@n$ ) ) {
+						for( .@i = 0; .@i < getarraysize(.@n$); .@i++ )
+							mes "^777777[ "+( .@i + 1 )+". ]^000000 ^ff0000"+.@n$[.@i]+"^000000 - ^cc6600"+.@c[.@i]+"^000000";
+					} else
+						mes "Clasificación vacía.";
+					close2; cutin "",255;
+					playbgm "243";
+					end;
+				case 7:
+					mes "[^A020F0Ranker^000000]";
+					mes "Vuelve cuando gustes.";
+					close2;
+				case 255:
+					cutin "",255;
+					playbgm "243";
+					end;
+			}
+			break;
+		case 2:
+			mes "[^A020F0Ranker^000000]";
+			mes "Por favor elige el tipo de moneda y por ende a la tienda que accesarás.";
+			next;
+			switch(prompt("Puntos MvP ^5533ff(MvP)^000000:Puntos PvP ^5533ff(Kills)^000000:Puntos Emperium ^5533ff(WoE)^000000:^777777Salir^000000")) {
+				case 1:
+					mes "[^A020F0Ranker^000000]";
+					mes "¿Qué tiempo de tienda de Puntos MvP deseas consultar?";
+					next;
+					switch(select("Tienda de Objetos:Tienda de Hats")) {
+						case 1:
+							close2; cutin "",255;
+							playbgm "243";
+							callshop "R_MVP_SHOP",1;
+							end;
+						case 2:
+							mes "[^A020F0Ranker^000000]";
+							mes "Contamos con una gran gama de objetos, por favor elige la tienda que quieres ver.";
+							next;
+							.@m$ = "";
+							for(.@i = 1; .@i <= 5; .@i++)
+								.@m$ += "^777777 >^000000 Tienda de Hats ^FF7070#^ff8d00"+.@i+"^000000:";
+							set .@me,select(.@m$);
+							close2; cutin "",255;
+							playbgm "243";
+							callshop "R_MVP_S_"+.@me,1;
+							end;
+					}
+				case 2:
+					mes "[^A020F0Ranker^000000]";
+					mes "Contamos con una gran gama de objetos, por favor elige la tienda que quieres ver.";
+					next;
+					.@m$ = "";
+					for(.@i = 1; .@i <= 5; .@i++)
+						.@m$ += "^777777 >^000000 Tienda de Hats ^FF7070#^ff8d00"+.@i+"^000000:";
+					set .@me,select(.@m$);
+					close2; cutin "",255;
+					playbgm "243";
+					callshop "R_PVP_S_"+.@me,1;
+					end;
+				case 3:
+					close2; cutin "",255;
+					playbgm "243";
+					callshop "R_EMP_SHOP",1;
+					end;
+				case 4:
+					close2; cutin "",255;
+					playbgm "243";
+					end;
+				case 255:
+					cutin "",255;
+					playbgm "243";
+					end;
+			}
+			close2; cutin "",255;
+			playbgm "243";
+			end;
+		case 3:
+			mes "[^A020F0Ranker^000000]";
+			mes "Hola ^ff6060"+strcharinfo(0)+"^000000";
+			mes "Aquí podrás elegir el título MvP que desees y aparezca cada ves que mates a uno.";
+			next;
+			mes "[^A020F0Ranker^000000]";
+			mes "Recuerda no incluir ninguna palabra indecente hacia el servidor, la comunidad o alguna persona, incluídas malas palabras.";
+			next;
+			mes "[^A020F0Ranker^000000]";
+			mes "A sí que, ¿deseas elegirlo?";
+			next;
+			if(select("Elegir título MvP","^777777Salir^000000")==2) {
+				mes "[^A020F0Ranker^000000]";
+				mes "Vuelve cuando cambies de idea.";
+				close2;
+				cutin "",255;
+				playbgm "243";
+				end;
+			}
+			while (1) {
+				mes "[^A020F0Ranker^000000]";
+				mes "Por favor escribe el título MvP, para cancelar, escribe ^ff00000^000000";
+				next;
+				input @titulo$;
+					if(@titulo$ == "0") {
+						close2;
+						playbgm "243";
+						cutin "",255;
+						end;
+					}
+				mes "[^A020F0Ranker^000000]";
+				mes "Ahora elige el color que deseas, deben de ser 6 carácteres en código RRGGBB.";
+				mes " ";
+				mes "Por ejemplo: ^5533ff5533FF ^FF7700FF7700 ^008800008800 ^777777777777 ^CC6600CC6600 ^FF0000FF0000 ^0000FF0000FF^000000.";
+				next;
+				input @color$;
+					if(@color$=="0") {
+						close2;
+						playbgm "243";
+						cutin "",255;
+						end;
+					}
+				mes "[^A020F0Ranker^000000]";
+				mes "^"+@color$+@titulo$+"^000000";
+				next;
+				mes "[^A020F0Ranker^000000]";
+				mes "¿Deseas que ese sea tu título?";
+				next;
+				if(select("No","Si")== 2) {
+					mes "[^A020F0Ranker^000000]";
+					mes "Bien, ese será tu título a partir de hoy.";
+					title_mvp$ = @titulo$;
+					color_mvp$ = @color$;
+					title_mvp = 1;
+					close2; cutin "",255;
+					playbgm "243";
+					emotion ET_THANKS;
+					end;
+				}
+			}
+		case 4:
+			mes "[^A020F0Ranker^000000]";
+			mes "El sistema de clasificaciones en nuestra comunidad busca enfocar una gran competitividad entre los jugadores, por lo cual hay una buena gama de clasificatorias en las que podrás participar y obtener diversos premios.";
+			next;
+			mes "[^A020F0Ranker^000000]";
+			mes "Los premios están categorizados en tres lugares, y se entregan de manera diaria, semanal y mensual.";
+			next;
+			mes "[^A020F0Ranker^000000]";
+			mes "¿Qué deseas preguntarme?";
+			next;
+			while(1) {
+				switch(prompt("¿Cómo se deciden los lugares?:¿Qué premios se otorgan?:^777777Salir^000000")) {
+					case 1:
+						mes "[^A020F0Ranker^000000]";
+						mes "Es bastante obvio en realidad, cada sistema maneja puntajes distintos donde debes de superar a los demás.";
+						next;
+						mes "[^A020F0Ranker^000000]";
+						mes "Por ejemplo en el Ranking MvP lo lideran aquellos que han matado más MvP, y en el de Oficios aquellos que han conseguido más experiencia durante el tiempo designado.";
+						next;
+						mes "[^A020F0Ranker^000000]";
+						mes "Simplemente no te descuides por ser uno de los primeros lugares, ya que en un parpadear alguien te puede superar.";
+						next;
+						break;
+					case 2:
+						mes "[^A020F0Ranker^000000]";
+						mes "Los premios son iguales en cualquier clasificatoria, lo que varía es el lugar donde quedaste y el modo de tiempo de la clasificación.";
+						next;
+						while(1) {
+							switch(prompt("Premios diarios:Premios semanales:Premios mensuales:^777777Salir^000000")) {
+								case 1:
+									mes "[^A020F0Ranker^000000]";
+									mes "El 1er lugar recibe a diario:";
+									for(.@i = 0; .@i < getarraysize(.rew_da); .@i++)
+										mes " - "+.can_da[.@i]+"x <ITEM>"+getitemname(.rew_da[.@i])+"<INFO>"+.rew_da[.@i]+"</INFO></ITEM>";
+									next;
+									mes "[^A020F0Ranker^000000]";
+									mes "El 2do lugar recibe a diario:";
+									for(.@i = 0; .@i < getarraysize(.rew_da_2nd); .@i++)
+										mes " - "+.can_da_2nd[.@i]+"x <ITEM>"+getitemname(.rew_da_2nd[.@i])+"<INFO>"+.rew_da_2nd[.@i]+"</INFO></ITEM>";
+									next;
+									mes "[^A020F0Ranker^000000]";
+									mes "El 3er lugar recibe a diario:";
+									for(.@i = 0; .@i < getarraysize(.rew_da_3rd); .@i++)
+										mes " - "+.can_da_3rd[.@i]+"x <ITEM>"+getitemname(.rew_da_3rd[.@i])+"<INFO>"+.rew_da_3rd[.@i]+"</INFO></ITEM>";
+									next;
+									break;
+								case 2:
+									mes "[^A020F0Ranker^000000]";
+									mes "El 1er lugar recibe semanalmente:";
+									for(.@i = 0; .@i < getarraysize(.rew_we); .@i++)
+										mes " - "+.can_we[.@i]+"x <ITEM>"+getitemname(.rew_we[.@i])+"<INFO>"+.rew_we[.@i]+"</INFO></ITEM>";
+									next;
+									mes "[^A020F0Ranker^000000]";
+									mes "El 2do lugar recibe semanalmente:";
+									for(.@i = 0; .@i < getarraysize(.rew_we_2nd); .@i++)
+										mes " - "+.can_we_2nd[.@i]+"x <ITEM>"+getitemname(.rew_we_2nd[.@i])+"<INFO>"+.rew_we_2nd[.@i]+"</INFO></ITEM>";
+									next;
+									mes "[^A020F0Ranker^000000]";
+									mes "El 3er lugar recibe semanalmente:";
+									for(.@i = 0; .@i < getarraysize(.rew_we_3rd); .@i++)
+										mes " - "+.can_we_3rd[.@i]+"x <ITEM>"+getitemname(.rew_we_3rd[.@i])+"<INFO>"+.rew_we_3rd[.@i]+"</INFO></ITEM>";
+									next;
+									break;
+								case 3:
+									mes "[^A020F0Ranker^000000]";
+									mes "El 1er lugar recibe al mes:";
+									for(.@i = 0; .@i < getarraysize(.rew_mo); .@i++)
+										mes " - "+.can_mo[.@i]+"x <ITEM>"+getitemname(.rew_mo[.@i])+"<INFO>"+.rew_mo[.@i]+"</INFO></ITEM>";
+									next;
+									mes "[^A020F0Ranker^000000]";
+									mes "El 2do lugar recibe al mes:";
+									for(.@i = 0; .@i < getarraysize(.rew_mo_2nd); .@i++)
+										mes " - "+.can_mo_2nd[.@i]+"x <ITEM>"+getitemname(.rew_mo_2nd[.@i])+"<INFO>"+.rew_mo_2nd[.@i]+"</INFO></ITEM>";
+									next;
+									mes "[^A020F0Ranker^000000]";
+									mes "El 3er lugar recibe al mes:";
+									for(.@i = 0; .@i < getarraysize(.rew_mo_3rd); .@i++)
+										mes " - "+.can_mo_3rd[.@i]+"x <ITEM>"+getitemname(.rew_mo_3rd[.@i])+"<INFO>"+.rew_mo_3rd[.@i]+"</INFO></ITEM>";
+									next;
+									break;
+								case 4:
+									mes "[^A020F0Ranker^000000]";
+									mes "Vuelve cuando desees más información.";
+									close3;
+								case 255:
+									cutin "",255;
+									end;
+							}
+						}
+					case 3:
+						mes "[^A020F0Ranker^000000]";
+						mes "Vuelve cuando quieras.";
+						close3;
+					case 255:
+						cutin "",255;
+						end;
+				}
+			}
+		case 5:
+			close2; cutin "",255;
+			playbgm "243";
+			end;
+		case 255:
+			cutin "",255;
+			playbgm "243";
+			end;
+	}
+end;
+OnInit:
+//========================================================\\
+// -----------------  Configuración ----------------------\\
+//========================================================\\
+
+	// Máximo de resultados a mostrar
+	// en los tops. Default: 10
+	.top = 5;
+	
+	// Tipo de Bound a los objetos.
+	// Default: Bound_None
+	.Bound_Type = Bound_None;
+	
+	// Premios Mensuales
+	setarray .rew_mo[0],8501,8502,8996,616,675,671;
+	setarray .can_mo[0],   2,   1, 150,  1,  2,  2;
+	setarray .rew_mo_2nd[0],8501,8502,8996,671;
+	setarray .can_mo_2nd[0],   1,   1, 60,  2;
+	setarray .rew_mo_3rd[0],8502,8996,671;
+	setarray .can_mo_3rd[0],   1,  30,  1;
+	
+	// Premios Semanales
+	setarray .rew_we[0],8996,675,616,671;
+	setarray .can_we[0],  16,  2,  1,  1;
+	setarray .rew_we_2nd[0],8996,673,616;
+	setarray .can_we_2nd[0],  8,  1,  1;
+	setarray .rew_we_3rd[0],8996,673,616;
+	setarray .can_we_3rd[0],  4,  1,  1;
+	
+	// Premios Diarios
+	setarray .rew_da[0],8996,12211,603,673;
+	setarray .can_da[0],   3,   20,  1,  1;
+	setarray .rew_da_2nd[0],8996,603;
+	setarray .can_da_2nd[0],   2,  1;
+	setarray .rew_da_3rd[0],8996;
+	setarray .can_da_3rd[0],   1;
+
+//========================================================\\
+	setarray .of_table$[1],"sewing","carpenter","escriba","enchanter";
+	bindatcmd "dorank","Ranker::OnCommand",99,99;
+	end;
+
+OnClock1500:
+OnCommand:
+// Premios Diarios
+	query_sql( "SELECT `char_id`,`mvp` FROM `char_rank_day` WHERE `mvp` > '0' ORDER BY `mvp` DESC LIMIT 3",.@cid_da_mvp,.@p_mvp);
+	query_sql( "SELECT `char_id`,`pk` FROM `char_rank_day` WHERE `pk` > '0' ORDER BY `pk` DESC LIMIT 3",.@cid_da_pk,.@p_pk);
+	query_sql( "SELECT `char_id`,`bg` FROM `char_rank_day` WHERE `bg` > '0' ORDER BY `bg` DESC LIMIT 3",.@cid_da_bg,.@p_bg);
+	query_sql( "SELECT `char_id`,`emperium` FROM `char_rank_day` WHERE `emperium` > '0' ORDER BY `emperium` DESC LIMIT 3",.@cid_da_emp,.@p_emp);
+	query_sql( "SELECT `char_id`,`sewing` FROM `char_rank_day` WHERE `sewing` > '0' ORDER BY `sewing` DESC LIMIT 3",.@cid_da_sew,.@p_sew);
+	query_sql( "SELECT `char_id`,`carpenter` FROM `char_rank_day` WHERE `carpenter` > '0' ORDER BY `carpenter` DESC LIMIT 3",.@cid_da_car,.@p_car);
+	query_sql( "SELECT `char_id`,`escriba` FROM `char_rank_day` WHERE `escriba` > '0' ORDER BY `escriba` DESC LIMIT 3",.@cid_da_esc,.@p_esc);
+	query_sql( "SELECT `char_id`,`enchanter` FROM `char_rank_day` WHERE `enchanter` > '0' ORDER BY `enchanter` DESC LIMIT 3",.@cid_da_enc,.@p_enc);
+	announce "¡El Ranking Diario ha llegado!",0xFF7070;
+	sleep2 2500;
+	for(.@t = 0; .@t < getarraysize(.rew_da); .@t++) {
+		F_WaitRodex .@cid_da_bg[0],"Ranker","Ranking Diario","¡Felicidades TOP diario BG!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_pk[0],"Ranker","Ranking Diario","¡Felicidades TOP diario PvP!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_mvp[0],"Ranker","Ranking Diario","¡Felicidades TOP diario MvP!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_emp[0],"Ranker","Ranking Diario","¡Felicidades TOP diario Emperium!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_sew[0],"Ranker","Ranking Diario","¡Felicidades TOP diario Sastre!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_car[0],"Ranker","Ranking Diario","¡Felicidades TOP diario Carpintero!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_esc[0],"Ranker","Ranking Diario","¡Felicidades TOP diario Escriba!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_enc[0],"Ranker","Ranking Diario","¡Felicidades TOP diario Encantador!",0,.rew_da[.@t],.can_da[.@t],.Bound_Type,1;
+		sleep2 50;
+	}
+	for(.@t = 0; .@t < getarraysize(.rew_da_2nd); .@t++) {
+		F_WaitRodex .@cid_da_bg[1],"Ranker","Ranking Diario","¡Felicidades TOP diario BG!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_pk[1],"Ranker","Ranking Diario","¡Felicidades TOP diario PvP!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_mvp[1],"Ranker","Ranking Diario","¡Felicidades TOP diario MvP!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_emp[1],"Ranker","Ranking Diario","¡Felicidades TOP diario Emperium!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_sew[1],"Ranker","Ranking Diario","¡Felicidades TOP diario Sastre!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_car[1],"Ranker","Ranking Diario","¡Felicidades TOP diario Carpintero!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_esc[1],"Ranker","Ranking Diario","¡Felicidades TOP diario Escriba!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_enc[1],"Ranker","Ranking Diario","¡Felicidades TOP diario Encantador!",0,.rew_da_2nd[.@t],.can_da_2nd[.@t],.Bound_Type,1;
+		sleep2 50;
+	}
+	for(.@t = 0; .@t < getarraysize(.rew_da_3rd); .@t++) {
+		F_WaitRodex .@cid_da_bg[2],"Ranker","Ranking Diario","¡Felicidades TOP diario BG!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_pk[2],"Ranker","Ranking Diario","¡Felicidades TOP diario PvP!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_mvp[2],"Ranker","Ranking Diario","¡Felicidades TOP diario MvP!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_emp[2],"Ranker","Ranking Diario","¡Felicidades TOP diario Emperium!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_sew[2],"Ranker","Ranking Diario","¡Felicidades TOP diario Sastre!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_car[2],"Ranker","Ranking Diario","¡Felicidades TOP diario Carpintero!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_esc[2],"Ranker","Ranking Diario","¡Felicidades TOP diario Escriba!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		F_WaitRodex .@cid_da_enc[2],"Ranker","Ranking Diario","¡Felicidades TOP diario Encantador!",0,.rew_da_3rd[.@t],.can_da_3rd[.@t],.Bound_Type,1;
+		sleep2 50;
+	}
+	query_sql("TRUNCATE TABLE `char_rank_day`"); // Reinicio de Ranking Diario
+// Premios Semanales
+	sleep2 7000;
+	if(gettime(DT_DAYOFWEEK) == SATURDAY) {
+		query_sql( "SELECT `char_id`,`pk` FROM `char_rank_week` WHERE `pk` > '0' ORDER BY `pk` DESC LIMIT 3",.@cid_we_pk,.@p_pk);
+		query_sql( "SELECT `char_id`,`bg` FROM `char_rank_week` WHERE `bg` > '0' ORDER BY `bg` DESC LIMIT 3",.@cid_we_bg,.@p_bg);
+		query_sql( "SELECT `char_id`,`mvp` FROM `char_rank_week` WHERE `mvp` > '0' ORDER BY `mvp` DESC LIMIT 3",.@cid_we_mvp,.@p_mvp);
+		query_sql( "SELECT `char_id`,`emperium` FROM `char_rank_week` WHERE `emperium` > '0' ORDER BY `emperium` DESC LIMIT 3",.@cid_we_emp,.@p_emp);
+		query_sql( "SELECT `char_id`,`sewing` FROM `char_rank_week` WHERE `sewing` > '0' ORDER BY `sewing` DESC LIMIT 3",.@cid_we_sew,.@p_sew);
+		query_sql( "SELECT `char_id`,`carpenter` FROM `char_rank_week` WHERE `carpenter` > '0' ORDER BY `carpenter` DESC LIMIT 3",.@cid_we_car,.@p_car);
+		query_sql( "SELECT `char_id`,`escriba` FROM `char_rank_week` WHERE `escriba` > '0' ORDER BY `escriba` DESC LIMIT 3",.@cid_we_esc,.@p_esc);
+		query_sql( "SELECT `char_id`,`enchanter` FROM `char_rank_week` WHERE `enchanter` > '0' ORDER BY `enchanter` DESC LIMIT 3",.@cid_we_enc,.@p_enc);
+		announce "¡El Ranking Semanal ha llegado!",0xFF7070;
+		sleep2 2500;
+		for(.@t = 0; .@t < getarraysize(.rew_we); .@t++) {
+			F_WaitRodex .@cid_we_bg[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal BG!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_pk[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal PvP!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_mvp[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal MvP!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_emp[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Emperium!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_sew[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Sastre!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_car[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Capintero!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_esc[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Escriba!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_enc[0],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Encantador!",0,.rew_we[.@t],.can_we[.@t],.Bound_Type,1;
+			sleep2 50;
+		}
+		for(.@t = 0; .@t < getarraysize(.rew_we_2nd); .@t++) {
+			F_WaitRodex .@cid_we_bg[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal BG!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_pk[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal PvP!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_mvp[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal MvP!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_emp[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Emperium!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_sew[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Sastre!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_car[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Capintero!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_esc[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Escriba!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_enc[1],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Encantador!",0,.rew_we_2nd[.@t],.can_we_2nd[.@t],.Bound_Type,1;
+			sleep2 50;
+		}
+		for(.@t = 0; .@t < getarraysize(.rew_we_3rd); .@t++) {
+			F_WaitRodex .@cid_we_bg[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal BG!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_pk[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal PvP!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_mvp[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal MvP!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_emp[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Emperium!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_sew[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Sastre!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_car[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Capintero!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_esc[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Escriba!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_we_enc[2],"Ranker","Ranking Semanal","¡Felicidades TOP semanal Encantador!",0,.rew_we_3rd[.@t],.can_we_3rd[.@t],.Bound_Type,1;
+			sleep2 50;
+		}
+		query_sql("TRUNCATE TABLE `char_rank_week`"); // Reinicio de Ranking Semanal
+	}
+// Premios Mensuales
+	sleep2 7000;
+	.day = ((gettime(DT_MONTH) == FEBRUARY) ? 28 : 30);
+	if(gettime(DT_DAYOFMONTH) == .day) {
+		query_sql( "SELECT `char_id`,`pk` FROM `char_rank_month` WHERE `pk` > '0' ORDER BY `pk` DESC LIMIT 3",.@cid_mo_pk,.@p_pk);
+		query_sql( "SELECT `char_id`,`bg` FROM `char_rank_month` WHERE `bg` > '0' ORDER BY `bg` DESC LIMIT 3",.@cid_mo_bg,.@p_bg);
+		query_sql( "SELECT `char_id`,`mvp` FROM `char_rank_month` WHERE `mvp` > '0' ORDER BY `mvp` DESC LIMIT 3",.@cid_mo_mvp,.@p_mvp);
+		query_sql( "SELECT `char_id`,`emperium` FROM `char_rank_month` WHERE `emperium` > '0' ORDER BY `emperium` DESC LIMIT 3",.@cid_mo_emp,.@p_emp);
+		query_sql( "SELECT `char_id`,`sewing` FROM `char_rank_month` WHERE `sewing` > '0' ORDER BY `sewing` DESC LIMIT 3",.@cid_mo_sew,.@p_sew);
+		query_sql( "SELECT `char_id`,`carpenter` FROM `char_rank_month` WHERE `carpenter` > '0' ORDER BY `carpenter` DESC LIMIT 3",.@cid_mo_car,.@p_car);
+		query_sql( "SELECT `char_id`,`escriba` FROM `char_rank_month` WHERE `escriba` > '0' ORDER BY `escriba` DESC LIMIT 3",.@cid_mo_esc,.@p_esc);
+		query_sql( "SELECT `char_id`,`enchanter` FROM `char_rank_month` WHERE `enchanter` > '0' ORDER BY `enchanter` DESC LIMIT 3",.@cid_mo_enc,.@p_enc);
+		announce "¡El Ranking Mensual ha llegado!",0xFF7070;
+		sleep2 2500;
+		for(.@t = 0; .@t < getarraysize(.rew_mo); .@t++) {
+			F_WaitRodex .@cid_mo_bg[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual BG!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_pk[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual PvP!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_mvp[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual MvP!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_emp[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Emperium!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_sew[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Sastre!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_car[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Carpintero!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_esc[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Escriba!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_enc[0],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Encantador!",0,.rew_mo[.@t],.can_mo[.@t],.Bound_Type,1;
+			sleep2 50;
+		}
+		for(.@t = 0; .@t < getarraysize(.rew_mo_2nd); .@t++) {
+			F_WaitRodex .@cid_mo_bg[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual BG!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_pk[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual PvP!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_mvp[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual MvP!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_emp[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Emperium!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_sew[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Sastre!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_car[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Carpintero!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_esc[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Escriba!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_enc[1],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Encantador!",0,.rew_mo_2nd[.@t],.can_mo_2nd[.@t],.Bound_Type,1;
+			sleep2 50;
+		}
+		for(.@t = 0; .@t < getarraysize(.rew_mo_3rd); .@t++) {
+			F_WaitRodex .@cid_mo_bg[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual BG!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_pk[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual PvP!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_mvp[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual MvP!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_emp[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Emperium!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_sew[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Sastre!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_car[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Carpintero!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_esc[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Escriba!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			F_WaitRodex .@cid_mo_enc[2],"Ranker","Ranking Mensual","¡Felicidades TOP mensual Encantador!",0,.rew_mo_3rd[.@t],.can_mo_3rd[.@t],.Bound_Type,1;
+			sleep2 50;
+		}
+		query_sql("TRUNCATE TABLE `char_rank_month`"); // Reinicio de Ranking Mensual
+	}
+	announce "¡Los premios de los ranking han sido repartidos por RODEX, felicidades a todos los ganadores!",0xFF7070;
+	end;
+
+/** Get char name from SQL.
+ * @param char_id`
+ * @return char_name
+**/
+S_GetCharSQL:
+	query_sql("SELECT `name` FROM `player` WHERE `char_id` = '"+getarg(0)+"'",.@n$);
+	return .@n$;
+}

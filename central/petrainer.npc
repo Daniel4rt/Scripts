@@ -1,0 +1,133 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                   Pet Trainer                   ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+premium,158,32,5	script	Pet Trainer::EVOLVER_PET	10010,{
+	npctalk "¿Qué tal, "+strcharinfo(0)+"? ¿tienes alguna mascota que hayas entrenado?";
+	disable_items;
+	cutin "lydia_a",2;
+	if (countitem(8503) < 1) {
+		mes "[ ^DB0000Pet Trainer^000000 ]";
+		mes "Lo siento, pero no trabajo gratis, vuelve cuando tengas ^5533ffGold Coin^000000.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if ( getpetinfo(PET_CLASS) ) {
+		mes "[ ^DB0000Pet Trainer^000000 ]";
+		mes "Lo siento, pero no puedo llevar a cabo nada si llevas la mascota contigo.";
+		close2;
+		cutin "",255;
+		close;
+	}
+	getinventorylist;
+	.@menu$ = "";
+	for ( .@i = 0; .@i < @inventorylist_count; .@i++ ) {
+		if ( @inventorylist_card1[.@i] != 0) {
+			query_sql("SELECT `intimate`, `class`, `level`, `equip`, `name` FROM `pet` WHERE `pet_id` = '"+( .@id = @inventorylist_card2[.@i] + ( ( @inventorylist_card2[.@i] >= 0 )? 0 : 1 << 16 ) + @inventorylist_card3[.@i] * ( 1 << 16 ) )+"'", .@intimate, .@class, .@level, .@equipped, .@name$);
+			if ( .@intimate > getbattleflag("pet_support_min_friendly") ) {
+				.@menu$ += "^0000FF"+ .@name$ +" ^00CC00{"+ getmonsterinfo( .@class, 0 ) +"} ^000000["+ .@level +"] ^FF0000"+( ( .@equipped )? "*equipado" : "" )+":";
+				.@pet_id[.@c] = .@id;
+				.@egg_id[.@c] = @inventorylist_id[.@i];
+				.@pet_name$[.@c] = .@name$;
+				.@pet_class[.@c] = .@class;
+				.@pet_level[.@c] = .@level;
+				.@pet_equipped[.@c] = .@equipped;
+				.@c++;
+			}
+		}
+	}
+	if ( !.@c ) {
+		mes "[ ^DB0000Pet Trainer^000000 ]";
+		mes "Lo siento, pero para poder evolucionar tu mascota ocupas más ^ff0000lealtad ^ff7070(50 mínimo)^000000 que la actual.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	emotion ET_OK;
+	mes "[ ^DB0000Pet Trainer^000000 ]";
+	mes "Selecciona la mascota que deseas evolucionar.";
+	next;
+	.@s = select( .@menu$ ) -1;
+	mes "[ ^DB0000Pet Trainer^000000 ]";
+	mes "^DBA901Mascota Seleccionada^000000: "+ .@pet_name$[.@s];
+	mes "^DBA901Nivel^000000: "+ .@pet_level[.@s];
+	mes "^DBA901Armadura^000000: "+( ( .@pet_equipped[.@s] )? "Si" : "No" );
+	if ( getd( ".petr"+ .@pet_class[.@s] ) ) {
+		mes "^DBA901Objetos necesarios^000000:";
+		.@size = getarraysize( getd( ".petr"+ .@pet_class[.@s] ) );
+		for ( .@i = 0; .@i < .@size; .@i += 2 )
+		mes " ^ff0000*^000000"+getd( ".petr"+ .@pet_class[.@s] +"["+( .@i +1 )+"]" )+"x "+ getitemname( getd( ".petr"+ .@pet_class[.@s] +"["+ .@i +"]" ) );
+	}
+	next;
+	if ( !getd( ".pet"+ .@pet_class[.@s] ) ) {
+		mes "[ ^DB0000Pet Trainer^000000 ]";
+		mes "Lo siento esta mascota no puede evolucionar mas.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if ( .@pet_level[.@s] < .min_level ) {
+		mes "[ ^DB0000Pet Trainer^000000 ]";
+		mes "Lamentablemente esta mascota no cuenta con el nivel necesario."; 
+		close2;
+		cutin "",255;
+		end;
+	}
+	if ( .@pet_equipped[.@s] ) {
+		mes "[ ^DB0000Pet Trainer^000000 ]";
+		mes "Por favor, retira la armadura de tu mascota.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if ( getd( ".petr"+ .@pet_class[.@s] ) ) {
+		.@size = getarraysize( getd( ".petr"+ .@pet_class[.@s] ) );
+		for ( .@i = 0; .@i < .@size; .@i += 2 ) {
+			if ( countitem( getd( ".petr"+ .@pet_class[.@s] +"["+ .@i +"]" ) ) < getd( ".petr"+ .@pet_class[.@s] +"["+( .@i +1 )+"]" ) ) {
+				mes "[ ^DB0000Pet Trainer^000000 ]";
+				mes "^DBA901Para evolucionar esta mascota te hace falta^000000: "+ getd( ".petr"+ .@pet_class[.@s] +"["+( .@i +1 )+"]" ) +"x "+ getitemname( getd( ".petr"+ .@pet_class[.@s] +"["+ .@i +"]" ) ) +"";
+				close2;
+				cutin "",255;
+				end;
+			}
+		}
+		for ( .@i = 0; .@i < .@size; .@i += 2 )
+			delitem getd( ".petr"+ .@pet_class[.@s] +"["+ .@i +"]" ), getd( ".petr"+ .@pet_class[.@s] +"["+( .@i +1 )+"]" );
+	}
+	delitem 8503,1;
+	makepet .@get_pet_id = getd( ".pet"+ .@pet_class[.@s] +"["+ rand( getarraysize( getd( ".pet"+ .@pet_class[.@s] ) ) ) +"]" );
+	mes "[ ^DB0000Pet Trainer^000000 ]";
+	cutin "lydia_a",2;
+	mes "Tu "+ .@pet_name$[.@c] +" evolucionará en "+ getmonsterinfo( .@get_pet_id, 0 );
+	next;
+	mes "[ ^DB0000Pet Trainer^000000 ]";
+	mes "¡Ahora deberás nombrarle nuevamente, ya que por el proceso no recordará nada, por esa misma razón entrénalo muy bien, si logras llevarla a buen nivel te sorprenderás del apoyo que podrá darte.";
+	next;
+	mes "[ ^DB0000Pet Trainer^000000 ]";
+	mes "Mucha suerte, y nos vemos cuando quieras evolucionar a otra mascota.";
+	emotion ET_OK;
+	close2;
+	cutin "",255;
+	end;
+OnInit:
+	.min_level = 80; // minimum level 80 to change pet egg
+	//setarray getd( ".petr"+ <require pet egg> ), <require itemID 1>, <require item require 1>, <require itemID 2>, <require item require 2>, ...
+	setarray getd( ".petr"+ 3317 ), 7224,1,30633,1; // Rubylith custom pet
+	setarray getd( ".petr"+ 3318 ), 7224,1,30634,1; // Sapphilit custom pet
+	 
+	//setarray getd( ".pet"+ <require pet egg> ), <random pet egg 1>, <random pet egg 2> ....
+	setarray getd( ".pet"+ 3317 ), 3332; // ??? Angel 1
+	setarray getd( ".pet"+ 3318 ), 3330; // ??? Angel 1
+	// add more as needed
+	end;
+}

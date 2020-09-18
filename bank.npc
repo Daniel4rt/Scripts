@@ -1,0 +1,129 @@
+prontera,161,191,4	script	Banco::bank	497,{
+OnInitNPC:
+	cutin "ep13_cheshire",2;
+	mes "[^cc6600Banco^000000]";
+	set @kb_int,(gettime(6) * 31) + gettime(5);
+	set @income,0;
+	if (#BANKVAULT > 0 || #kb_int < @kb_int) {
+		set @income,(#BANKVAULT / 1000) * (@kb_int - #kb_int);
+		if (@income < 0) {
+			mes "^ff0000Algo raro le han pasado a los intereses, te dare todo tu dinero antes de que algo malo pase^000000.";
+			set Zeny,Zeny+#BANKVAULT;
+			dispbottom "Se te han devuelto "+#BANKVAULT+" Zeny.";
+			set #BANKVAULT,0;
+			close2; cutin "",255; end;
+		}
+		if (@income > 20000000)
+			set @income,20000000;
+	}
+	set #kb_int,@kb_int;
+		if(#BANKVAULT == 0)
+			mes "Podriamos abrirte una cuenta.";
+		if(@income>0)
+			mes "Intereses: ^135445" + @income + "^000000 zeny.";
+	set #BANKVAULT,#BANKVAULT + @income;
+		if(#BANKVAULT > 0) {
+			mes "Tu Cuenta: ^135445" + #BANKVAULT + "^000000 zeny.";
+		}
+	mes "¿Que deseas hacer?";
+	next;
+	if(#BANKVAULT == 0) {
+		if(select("~ Abrir una cuenta","~ ^777777Salir^000000") == 2) {
+			mes "[^cc6600Banco^000000]";
+			mes "Nos veremos luego, entonces.";
+			close2;
+			cutin "",255;
+			end;
+		}
+	}
+	switch (select("~ Depositar Dinero:~ Retirar Dinero:~ ^777777Salir^000000")) {
+		case 1:
+			mes "[^cc6600Banco^000000]";
+			mes "Por favor, digame cuanto zeny quisieras depositar.";
+			next;
+			input @kafrabank;
+			if(@kafrabank < 1000) {
+				mes "[^cc6600Banco^000000]";
+				mes "Lo sentimos, la cantidad minima de zeny que debe depositar es 1.000 zeny.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			if(@kafrabank > 5000000) {
+				mes "[^cc6600Banco^000000]";
+				mes "Lo siento. El deposito maximo que puedes hacer es 5,000,000 zeny .";
+				close2;
+				cutin "",255;
+				end;
+			}
+			if(@kafrabank > Zeny) {
+				mes "[^cc6600Banco^000000]";
+				mes "No tienes bastante zeny para esta operacion.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			set Zeny,Zeny - @kafrabank;
+			set #BANKVAULT,#BANKVAULT + @kafrabank;
+			mes "[^cc6600Banco^000000]";
+			mes "Has hecho un depósito de ^135445" + @kafrabank + "z^000000.";
+			logmes "Bank %: " + @income +"z, Depósito: "+ @kafrabank +"z, Final: "+ #BANKVAULT +"z"; 
+			close2;
+			cutin "",255;
+			end;
+		case 2:
+			if(#BANKVAULT == 0) {
+				mes "[^cc6600Banco^000000]";
+				mes "No hay suficiente Zeny en tu cuenta";
+				close2;
+				cutin "",255;
+				end;
+			}
+			mes "[^cc6600Banco^000000]";
+			mes "Tu Cuenta: ^135445" + #BANKVAULT + "^000000 zeny.";
+			mes "¿Cuánto zeny desea retirar?";
+			next;
+			input @kafrabank;
+			if(@kafrabank < 1) {
+				mes "[^cc6600Banco^000000]";
+				mes "No hay suficiente Zeny en tu cuenta.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			if(@kafrabank > 5000000) {
+				mes "[^cc6600Banco^000000]";
+				mes "La maxima cantidad que puedes retirar es de 5,000,000 zeny.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			if(@kafrabank > #BANKVAULT) {
+				mes "[^cc6600Banco^000000]";
+				mes "No tienes suficiente Zeny en tu cuenta.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			set #BANKVAULT,#BANKVAULT - @kafrabank;
+			set Zeny,Zeny + @kafrabank;
+			mes"[^cc6600Banco^000000]";
+			mes "Aquí están tus ^135445" + @kafrabank + "z^000000.";
+			logmes "Bank %: " + @income +"z, Retira: "+ @kafrabank +"z, Final: "+ #BANKVAULT +"z";
+			close2;
+			cutin "",255;
+			end;
+		case 3:
+			mes "[^cc6600Banco^000000]";
+			mes "Espero verlo nuevamente por aqui.";
+			close2;
+			cutin "",255;
+			end;
+	}
+end;
+OnCallBank:
+	dispbottom "Estamos trabajando en el botón del banco, disculpa las molestias.";
+	end;
+	attachrid(getcharid(3));
+	goto OnInitNPC;
+}

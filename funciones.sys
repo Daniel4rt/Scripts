@@ -1,0 +1,1528 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \    Uso exclusivo para Poring RO
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---          Funciones y Sistemas Vitales           ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+// * Llamado desde rathena_main.conf                   ---
+//========================================================
+
+-	script	cmd_item3	-1,{
+OnInit:
+	bindatcmd "item3","cmd_item3::OnCommand",99,99;
+	end;
+OnCommand:
+	message strcharinfo(0),"ID";
+	input .@id;
+	message strcharinfo(0),"cuantity";
+	input .@c;
+	message strcharinfo(0),"refine";
+	input .@ref;
+	message strcharinfo(0),"carta 1";
+	input .@ca;
+	message strcharinfo(0),"carta 2";
+	input .@cb;
+	message strcharinfo(0),"carta 3";
+	input .@cc;
+	message strcharinfo(0),"carta 4";
+	input .@cd;
+	message strcharinfo(0),"getd optionid 1";
+	input .@opt1$;
+	message strcharinfo(0),"val optionid 1";
+	input .@val1;
+	message strcharinfo(0),"getd optionid 2";
+	input .@opt2$;
+	message strcharinfo(0),"val optionid 2";
+	input .@val2;
+	message strcharinfo(0),"getd optionid 3";
+	input .@opt3$;
+	message strcharinfo(0),"val optionid 3";
+	input .@val3;
+	setarray .@OptID[0],getd(.@opt1$),getd(.@opt2$),getd(.@opt3$);
+	setarray .@OptVal[0],.@val1,.@val2,.@val3;
+	setarray .@OptParam[0],((.@val1 > 0)?1:0),((.@val2 > 0)?1:0),((.@val3 > 0)?1:0);
+	getitem3 .@id,.@c,1,.@ref,0,.@ca,.@cb,.@cc,.@cd,.@OptID,.@OptVal,.@OptParam;
+	message strcharinfo(0),"Done";
+	end;
+}
+
+/**
+ * Obtiene la ID de la clase a partir de su nombre textual.
+**/
+function	script	F_GetClassId	{
+	setarray .@n$,"Doram","Rebellion","Star Emperor","Soul Reaper","Kagerou","Oboro","Super Novice","Rune Knight","Royal Guard","Warlock","Sorcerer","Ranger","Minstrel","Wanderer","Arch Bishop","Sura","Mechanic","Genetic","Guillotine Cross","Shadow Chaser";
+	setarray .@id,JOB_SUMMONER,JOB_REBELLION,JOB_STAR_EMPEROR,JOB_SOUL_REAPER,JOB_KAGEROU,JOB_OBORO,JOB_SUPER_NOVICE_E,JOB_RUNE_KNIGHT_T,JOB_ROYAL_GUARD_T,JOB_WARLOCK_T,JOB_SORCERER_T,JOB_RANGER_T,JOB_MINSTREL_T,JOB_WANDERER_T,JOB_ARCH_BISHOP_T,JOB_SURA_T,JOB_MECHANIC_T,JOB_GENETIC_T,JOB_GUILLOTINE_CROSS_T,JOB_SHADOW_CHASER_T;
+	for(.@i = 0; .@i < getarraysize(.@n$); .@i++) {
+		if(getarg(0) == .@n$[.@i])
+			return .@id[.@i];
+	}
+	return 1;
+}
+
+function	script	F_DispellEnter	{
+	npcskill 289,5,135,185;
+	return;
+}
+/**
+ * Contador de MvP Card para la web
+**/
+-	script	CMVP	-1,{
+OnInit:
+	query_sql("SELECT `dropcardid` FROM `mob_db_re` WHERE `mexp` != 0 AND `dropcardid` != 0 AND `mode` > 103000000", .card);
+	bindatcmd "refreshmvp","CMVP::OnCommand",40,99;
+	bindatcmd "findmvp","CMVP::OnFindCard",99,99;
+	end;
+OnFindCard:
+	.@card = atoi(.@atcmd_parameters$[0]);
+	if(!.@card)
+		end;
+	function checkitemsql;
+	.s = 0; .s += checkitemsql(.@card,"backpack_adv");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Backpack Advanced";
+	.s = 0; .s += checkitemsql(.@card,"backpack_expert");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Backpack Expert";
+	.s = 0; .s += checkitemsql(.@card,"backpack_novice");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Backpack Novice";
+	.s = 0; .s += checkitemsql(.@card,"storage");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Storage";
+	.s = 0; .s += checkitemsql(.@card,"guild_storage");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Guild Storage";
+	.s = 0; .s += checkitemsql(.@card,"cart_items");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Cart Items";
+	.s = 0; .s += checkitemsql(.@card,"items");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Items";
+	.s = 0; .s += checkitemsql(.@card,"char_of_carroza");
+	if(.s) dispbottom "Encontradas "+.s+" x "+getitemname(.@card)+". en Carroza";
+	dispbottom "=== Finalizado ===";
+	end;
+OnCommand:
+OnClock0000:
+	query_sql("UPDATE `bc_mvps` SET `cuantity` = '0'");
+	function checkitemsql;
+	for(.i = 0; .i < getarraysize(.card); .i++) {
+		.s += checkitemsql(.card[.i],"backpack_adv");
+		.s += checkitemsql(.card[.i],"backpack_expert");
+		.s += checkitemsql(.card[.i],"backpack_novice");
+		.s += checkitemsql(.card[.i],"storage");
+		.s += checkitemsql(.card[.i],"guild_storage");
+		.s += checkitemsql(.card[.i],"cart_items");
+		.s += checkitemsql(.card[.i],"items");
+		.s += checkitemsql(.card[.i],"char_of_carroza");
+		query_sql("UPDATE `bc_mvps` SET `cuantity` = '"+.s+"' WHERE `item_id` = '"+.card[.i]+"'");
+		.s = 0;
+	}
+	end;
+	function	checkitemsql	{
+		.a = .b = .c = .d = .e = .total = .itd = 0;
+		query_sql("SELECT COUNT(*) FROM `"+getarg(1)+"` WHERE `nameid` = '"+getarg(0)+"'",.a);
+		query_sql("SELECT `nameid` FROM `"+getarg(1)+"` WHERE `card0` = '"+getarg(0)+"' OR `card1` = '"+getarg(0)+"' OR `card2` = '"+getarg(0)+"' OR `card3` = '"+getarg(0)+"'",.itd);
+		if(getiteminfo(.itd,2) != 7) { // Ignora cartas de Pet Egg
+			query_sql("SELECT COUNT(*) FROM `"+getarg(1)+"` WHERE `card0` = '"+getarg(0)+"'",.b);
+			query_sql("SELECT COUNT(*) FROM `"+getarg(1)+"` WHERE `card1` = '"+getarg(0)+"'",.c);
+			query_sql("SELECT COUNT(*) FROM `"+getarg(1)+"` WHERE `card2` = '"+getarg(0)+"'",.d);
+			query_sql("SELECT COUNT(*) FROM `"+getarg(1)+"` WHERE `card3` = '"+getarg(0)+"'",.e);
+		}
+		.total = .a + .b + .c + .d + .e;
+		sleep2 10;
+		return .total;
+	}
+}
+
+/**
+ * Hourly Box Items
+**/
+function	script	F_GetHourly	{
+	.@r = rand(10000);
+	if(.@r < 10)
+		setarray .@i,616,12246;
+	else if(.@r < 100) {
+		callfunc("F_GetRandomHat");
+		end;
+	} else if(.@r < 200) {
+		callfunc("F_SafeTicketRandom");
+		end;
+	} else if(.@r < 300) {
+		setarray .@i,1030,7451,7652,7109,7165,7023,7566,2576,2589,28901,616,5436,5447,5253,5365,5099,5554,5529,5181,5214,5520,5511,5288,5445,5272,5304,5294;
+	} else if(.@r < 500) {
+		setarray .@i,20512,12103,12214,12263,7619,14540,12106,14592,7620,12213;
+	} else if(.@r < 1000) {
+		setarray .@i,7773,7829,7828,12209,603,617,12105,14234,12211;
+	} else {
+		setarray .@i,505,547,rand(12118,12121),rand(12717,12724),678,rand(13260,13264),rand(12202,12207),12424,12298,12428,12016,12299;
+	}
+	.@r = rand(getarraysize(.@i)-1);
+	callfunc("F_LogItem",2,.@i[.@r],1);
+	getitem .@i[.@r],1;
+	return;
+}
+
+/**
+ * Controlador de Tiempo y Reloj de Adelabaran
+**/
+-	script	ControlReloj	-1,{
+OnInit:
+	if( gettime(DT_HOUR) >= 7 && gettime(DT_HOUR) < 19 )
+		day;
+	else
+		night;
+	end;
+OnClock0000:
+OnClock0100:
+OnClock0200:
+OnClock0300:
+OnClock0400:
+OnClock0500:
+OnClock0600:
+OnClock0700:
+OnClock0800:
+OnClock0900:
+OnClock1000:
+OnClock1100:
+	callsub S_Bell,"a.m.";
+	end;
+OnClock1200:
+OnClock1300:
+OnClock1400:
+OnClock1500:
+OnClock1600:
+OnClock1700:
+OnClock1800:
+OnClock1900:
+OnClock2000:
+OnClock2100:
+OnClock2200:
+OnClock2300:
+	callsub S_Bell,"p.m.";
+	end;
+S_Bell:
+	.c = 0;
+	.h = gettime(DT_HOUR);
+	if( .h == 7 )
+		day;
+	if( .h == 19 )
+		night;
+	if( .h > 12 )
+		.nh = .h - 12;
+	else if( .h == 0 )
+		.nh = 12;
+	else
+		.nh = .h;
+	announce "[Aldebaran Clock Tower - " + .nh + ":00 " + getarg(0) + "]",0,0x00CCFF;
+	initnpctimer;
+	end;
+OnTimer1000:
+OnTimer3000:
+OnTimer5000:
+OnTimer7000:
+OnTimer9000:
+OnTimer11000:
+OnTimer13000:
+OnTimer15000:
+OnTimer17000:
+OnTimer19000:
+OnTimer21000:
+OnTimer23000:
+	setarray .city$,"prontera","morocc","payon","aldebaran","geffen","izlude","hugel","premium";
+	for(.i = 0; .i < getarraysize(.city$); .i++)
+		soundeffectall "effect\\ef_angelus.wav",0,.city$[.i];
+	.c++;
+	if( .c >= .nh ){
+		stopnpctimer;
+		.c = 0;
+	}
+	end;
+}
+
+/**
+ * Ejecuta un efecto de estado obligado mediante comando
+**/
+-	script	SC_START_GM	-1,{
+OnInit:
+	bindatcmd "scstart","SC_START_GM::OnCommand",99,99;
+	end;
+OnCommand:
+	.@t = atoi(.@atcmd_parameters$[1]);
+	sc_start getd(.@atcmd_parameters$[0]),((.@t > 0) ? .@t : 60000),0;
+	end;
+}
+
+/**
+ * Función del Ranker para Emperium
+**/
+function	script	RankEmperium	{
+	set .@GID,getarg(0);
+	ranking "emperium",1,1;
+	Puntos_Emperium++;
+	dispbottom "============ [Ranker Emperium ~ Estadísticas] ============",0xFF008D;
+	dispbottom "Has obtenido [1] punto en el Ranker Emperium.",0x7070FF;
+	dispbottom "Tienes un total de ["+Puntos_Emperium+"] Puntos Emperium.",0x7070FF;
+	query_sql("SELECT COUNT(*) FROM `guild_rank` WHERE `guild_id` = '"+.@GID+"'",.@c);
+	if(.@c > 0)
+		query_sql("UPDATE `guild_rank` SET `point` = `point` + 5 WHERE `guild_id` = '"+.@GID+"'");
+	else
+		query_sql("INSERT INTO `guild_rank` (`guild_id`, `name`,`point`) VALUES ('"+.@GID+"', '"+strcharinfo(2)+"','5')");
+	return;
+}
+
+/**
+ * Función del Ranker para MvP externos mediante scripting
+**/
+function	script	F_RankerExtern	{
+	switch (getarg(0)) {
+		case 0:
+			setarray .frase$[0],"mandado al otro mundo","mutilado","sepultado","enterrado","aniquilado","sodomizado","masacrado","asesinado","ejecutado","liquidado","hecho puré","pisoteado","extinguido","derrotado","vencido","destronado","exorcisado";
+			if(title_mvp)
+				announce "<< [ "+getmonsterinfo(getarg(1),MOB_NAME)+" ] ha sido "+.frase$[rand(getarraysize(.frase$)-1)]+" por [ "+strcharinfo(0)+" ] >>",bc_all,"0x"+color_mvp$;
+			else
+				announce "<< [ "+getmonsterinfo(getarg(1),MOB_NAME)+" ] ha sido "+.frase$[rand(getarraysize(.frase$)-1)]+" por [ "+strcharinfo(0)+" ] >>",bc_all,"0xFF7070";
+			sleep2 3200;
+			if(title_mvp)
+				announce "<< ["+strcharinfo(0)+"]: "+title_mvp$+" >>",bc_all,"0x"+color_mvp$,800,16;
+			else
+				dispbottom "No cuentas con título, elígelo en el Ranker de Prontera para anunciarlo cuando mates un MvP.",0xFF5050;
+			ranking "mvp",1,1;
+			Puntos_MvP += 1;
+			dispbottom "============ [Ranker MvP ~ Estadísticas] ============",0xFF008D;
+			dispbottom "Has obtenido [1] punto en el Ranker MvP.",0x7070FF;
+			dispbottom "Tienes un total de ["+Puntos_MvP+"] puntos MvP.",0x7070FF;
+			if( getmonsterinfo( getarg(1),MOB_MVPEXP ) > 100 ) {
+				query_sql("SELECT COUNT(*) FROM `bc_mvps_death` WHERE `mob_id` = '"+getarg(1)+"'",.@c);
+				if(.@c > 0)
+					query_sql("UPDATE `bc_mvps_death` SET `cuantity` = `cuantity` + 1 WHERE `mob_id` = '"+getarg(1)+"'");
+				else
+					query_sql("INSERT INTO `bc_mvps_death` (`mob_id`,`cuantity`) VALUES ('"+getarg(1)+"','1')");
+			}
+			sleep2 1000;
+			if (checkgreenmvp(getarg(1))) {
+				dispbottom "[Material Raro]: Has obtenido 1 x "+getitemname(.@it)+".",0x00FAFE;
+				getitem .@it,1;
+				sleep2 1000;
+				if(rand(100) < 30) {
+					.@it = ((rand(1,2)==1) ? 25728 : 25730);
+					dispbottom "[Material Raro Extra]: Has obtenido 1 x "+getitemname(.@it)+".",0x00FAFE;
+					getitem .@it,1;
+				}
+			}
+			break;
+	}
+	return;
+}
+
+/**
+ * Comprueba el rango de niveles.
+ * @author DanielArt
+**/
+function	script	F_IsRangeLevel	{
+	if(	(BaseLevel > getarg(0) && (BaseLevel - getarg(0)) < getarg(1)) || (getarg(0) > BaseLevel && (getarg(0) - BaseLevel) < getarg(1)) )
+		return 1;
+	else
+		return 0;
+}
+
+/**
+ * Función de Identificación con Enhancements
+ * para 'Item Identify' de Merchant, desde source.
+ * @author DanielArt
+**/
+-	script	MC_IDENTIFY	-1,{
+OnDoSkill:
+	callfunc("F_IdentifyAll");
+	end;
+}
+
+function	script	F_IdentifyAll	{
+	if(isstorageopen()) {
+		dispbottom "Por favor cierra tu almacén antes de identificar algo.";
+		end;
+	}
+	disable_items;
+	function checkiscrimson; function checkisviciousatk; function checkisviciousmatk;
+	getinventorylist;
+	for( .@i = 0; .@i < (@inventorylist_count); .@i++ ) {
+		if ( @inventorylist_identify[.@i] == 1 )
+			continue;
+		.@options = (checkiscrimson(.@i) || checkisviciousatk(.@i) || checkisviciousmatk(.@i));
+		if ( getskilllv(40) == 1 && sp >= 10 )
+			heal 0,-10;
+		else if ( countitem(611) )
+			delitem 611,1;
+		else if ( getskilllv(224) && Zeny >= ( 100 - ( 5 + 4 * getskilllv(224) ) )* 2/5 )
+			tax ( 100 - ( 5 + 4 * getskilllv(224) ) )* 2/5,100;
+		else if ( getskilllv(37) && Zeny >= ( 100 - ( 5 + 2 * getskilllv(37) ) )* 2/5 )
+			tax ( 100 - ( 5 + 2 * getskilllv(37) ) )* 2/5,100;
+		else if ( Zeny >= 40 )
+			tax 40,10;
+		if( .@options ) {
+			delitem2 @inventorylist_id[.@i],1,0,0,0,0,0,0,0;
+			getitem3 @inventorylist_id[.@i],1,1,0,0,0,0,0,0,@OptIDMain,@OptValMain,@OptParamMain;
+		} else {
+			delitem2 @inventorylist_id[.@i],1,0,0,0,0,0,0,0;
+			getitem @inventorylist_id[.@i],1;
+		}
+		sleep2 30;
+	}
+	return 1;
+
+	function	checkiscrimson	{
+		setarray .@OPT_ELEMENT[1],RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS;
+		setarray .@crim,28604,28705,13327,28007,1839,1498,16040,13127,1680,13454,1443,2025,28106,21015,1939,1995;
+		for( .@c = 0; .@c < getarraysize(.@crim); .@c++ ) {
+			if(@inventorylist_id[getarg(0)] == .@crim[.@c]) {
+				setarray @OptIDMain[0],.@OPT_ELEMENT[rand(1,7)];
+				setarray @OptValMain[0],1;
+				setarray @OptParamMain[0],1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	function	checkisviciousatk	{
+		setarray .@SLOT_1ATK,RDMOPT_DAMAGE_PROPERTY_WATER_TARGET,RDMOPT_DAMAGE_PROPERTY_GROUND_TARGET,RDMOPT_DAMAGE_PROPERTY_FIRE_TARGET,RDMOPT_DAMAGE_PROPERTY_WIND_TARGET,RDMOPT_DAMAGE_PROPERTY_POISON_TARGET,RDMOPT_DAMAGE_PROPERTY_SAINT_TARGET,RDMOPT_DAMAGE_PROPERTY_DARKNESS_TARGET,RDMOPT_DAMAGE_PROPERTY_TELEKINESIS_TARGET,RDMOPT_DAMAGE_PROPERTY_UNDEAD_TARGET,RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS,RDMOPT_HEAL_VALUE,RDMOPT_DAMAGE_SIZE_PERFECT,RDMOPT_WEAPON_INDESTRUCTIBLE;
+		setarray .@SLOT_1ATKc,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,20,1,1;
+		setarray .@SLOT_2ATK,RDMOPT_CLASS_DAMAGE_BOSS_TARGET,RDMOPT_DAMAGE_PROPERTY_NOTHING_USER,RDMOPT_RACE_DAMAGE_UNDEAD,RDMOPT_RACE_DAMAGE_ANIMAL,RDMOPT_RACE_DAMAGE_PLANT,RDMOPT_RACE_DAMAGE_INSECT,RDMOPT_RACE_DAMAGE_FISHS,RDMOPT_RACE_DAMAGE_DEVIL,RDMOPT_RACE_DAMAGE_HUMAN,RDMOPT_RACE_DAMAGE_ANGEL,RDMOPT_RACE_DAMAGE_DRAGON,RDMOPT_RACE_IGNORE_DEF_PERCENT_UNDEAD,RDMOPT_RACE_IGNORE_DEF_PERCENT_ANIMAL,RDMOPT_RACE_IGNORE_DEF_PERCENT_PLANT,RDMOPT_RACE_IGNORE_DEF_PERCENT_INSECT,RDMOPT_RACE_IGNORE_DEF_PERCENT_FISHS,RDMOPT_RACE_IGNORE_DEF_PERCENT_DEVIL,RDMOPT_RACE_IGNORE_DEF_PERCENT_HUMAN,RDMOPT_RACE_IGNORE_DEF_PERCENT_ANGEL,RDMOPT_RACE_IGNORE_DEF_PERCENT_DRAGON;
+		setarray .@SLOT_2ATKc,20,rand(16,25),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20);
+		setarray .@SLOT_3ATK,RDMOPT_RANGE_ATTACK_DAMAGE_TARGET,RDMOPT_DEC_SP_CONSUMPTION,RDMOPT_DEC_SPELL_DELAY_TIME,RDMOPT_DEC_SPELL_CAST_TIME,RDMOPT_DAMAGE_CRI_TARGET,RDMOPT_VAR_CRITICALSUCCESSVALUE,RDMOPT_VAR_ATTPOWER,RDMOPT_VAR_STRAMOUNT,RDMOPT_VAR_AGIAMOUNT,RDMOPT_VAR_VITAMOUNT,RDMOPT_VAR_INTAMOUNT,RDMOPT_VAR_DEXAMOUNT,RDMOPT_VAR_LUKAMOUNT;
+		setarray .@SLOT_3ATKc,rand(13,20),5,rand(5,20),rand(1,20),rand(1,20),rand(10,19),rand(4,47),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10);
+		setarray .@vatk,1600,28605,2026,28107,21016,1900,1996,18121,28605,28706,13328,28008,1800,1450,16041,13128,13455,1400;
+		for( .@v = 0; .@v < getarraysize(.@vatk); .@v++ ) {
+			if(@inventorylist_id[getarg(0)] == .@vatk[.@v]) {
+				setarray @RandId[0],rand(0,(getarraysize(.@SLOT_1ATK)-1)),rand(0,(getarraysize(.@SLOT_2ATK)-1)),rand(0,(getarraysize(.@SLOT_3ATK)-1));
+				setarray @OptIDMain[0],.@SLOT_1ATK[(@RandId[0])],.@SLOT_2ATK[(@RandId[1])],.@SLOT_3ATK[(@RandId[2])];
+				setarray @OptValMain[0],.@SLOT_1ATKc[(@RandId[0])],.@SLOT_2ATKc[(@RandId[1])],.@SLOT_3ATKc[(@RandId[2])];
+				setarray @OptParamMain[0],1,1,1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	function	checkisviciousmatk	{
+		setarray .@SLOT_1MATK,RDMOPT_MDAMAGE_PROPERTY_WATER_TARGET,RDMOPT_MDAMAGE_PROPERTY_GROUND_TARGET,RDMOPT_MDAMAGE_PROPERTY_FIRE_TARGET,RDMOPT_MDAMAGE_PROPERTY_WIND_TARGET,RDMOPT_MDAMAGE_PROPERTY_POISON_TARGET,RDMOPT_MDAMAGE_PROPERTY_SAINT_TARGET,RDMOPT_MDAMAGE_PROPERTY_DARKNESS_TARGET,RDMOPT_MDAMAGE_PROPERTY_TELEKINESIS_TARGET,RDMOPT_MDAMAGE_PROPERTY_UNDEAD_TARGET,RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS,RDMOPT_HEAL_VALUE,RDMOPT_DAMAGE_SIZE_PERFECT,RDMOPT_WEAPON_INDESTRUCTIBLE;
+		setarray .@SLOT_1MATKc,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,20,1,1;
+		setarray .@SLOT_2MATK,RDMOPT_CLASS_MDAMAGE_BOSS_TARGET,RDMOPT_MDAMAGE_PROPERTY_NOTHING_USER,RDMOPT_RACE_MDAMAGE_UNDEAD,RDMOPT_RACE_MDAMAGE_ANIMAL,RDMOPT_RACE_MDAMAGE_PLANT,RDMOPT_RACE_MDAMAGE_INSECT,RDMOPT_RACE_MDAMAGE_FISHS,RDMOPT_RACE_MDAMAGE_DEVIL,RDMOPT_RACE_MDAMAGE_HUMAN,RDMOPT_RACE_MDAMAGE_ANGEL,RDMOPT_RACE_MDAMAGE_DRAGON,RDMOPT_RACE_IGNORE_MDEF_PERCENT_UNDEAD,RDMOPT_RACE_IGNORE_MDEF_PERCENT_ANIMAL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_PLANT,RDMOPT_RACE_IGNORE_MDEF_PERCENT_INSECT,RDMOPT_RACE_IGNORE_MDEF_PERCENT_FISHS,RDMOPT_RACE_IGNORE_MDEF_PERCENT_DEVIL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_HUMAN,RDMOPT_RACE_IGNORE_MDEF_PERCENT_ANGEL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_DRAGON;
+		setarray .@SLOT_2MATKc,20,rand(16,25),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20);
+		setarray .@SLOT_3MATK,RDMOPT_DEC_SP_CONSUMPTION,RDMOPT_DEC_SPELL_DELAY_TIME,RDMOPT_DEC_SPELL_CAST_TIME,RDMOPT_VAR_ATTMPOWER,RDMOPT_VAR_STRAMOUNT,RDMOPT_VAR_AGIAMOUNT,RDMOPT_VAR_VITAMOUNT,RDMOPT_VAR_INTAMOUNT,RDMOPT_VAR_DEXAMOUNT,RDMOPT_VAR_LUKAMOUNT;
+		setarray .@SLOT_3MATKc,5,rand(5,20),rand(1,20),rand(4,50),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10);
+		setarray .@vmatk,1600,2026;
+		for( .@m = 0; .@m < getarraysize(.@vmatk); .@m++ ) {
+			if(@inventorylist_id[getarg(0)] == .@vmatk[.@m]) {
+				setarray @RandId[0],rand(0,(getarraysize(.@SLOT_1MATK)-1)),rand(0,(getarraysize(.@SLOT_2MATK)-1)),rand(0,(getarraysize(.@SLOT_3MATK)-1));
+				setarray @OptIDMain[0],.@SLOT_1MATK[(@RandId[0])],.@SLOT_2MATK[(@RandId[1])],.@SLOT_3MATK[(@RandId[2])];
+				setarray @OptValMain[0],.@SLOT_1MATKc[(@RandId[0])],.@SLOT_2MATKc[(@RandId[1])],.@SLOT_3MATKc[(@RandId[2])];
+				setarray @OptParamMain[0],1,1,1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+}
+
+/**
+ * Función para entrada de Instancias.
+ * Agiliza el crear un portal de entrada.
+ * F_InstanceEntrance "Instancia","Color NPC",<quest>,<blvl>,<partymember>;
+ * @author DanielArt
+**/
+function	script	F_InstanceEntrance	{
+	.@n$ = "["+getarg(1)+strnpcinfo(1)+"^000000]";
+	.@md_name$ = getarg(0);
+	if( BaseLevel < getarg(3) ) {
+		mes .@n$;
+		mes "Necesitas al menos Nv. "+getarg(3)+", para entrar a "+.@md_name$+".";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	.@delay = checkquest(getarg(2),PLAYTIME);
+	if(.@delay == 2) {
+		mes .@n$;
+		mes "La entrada a ^5533ff"+.@md_name$+"^000000 se encuentra nuevamente abierta.";
+		close2;
+		erasequest getarg(2);
+		end;
+	} else if( .@delay == 1 || .@delay == 0 ) {
+		mes .@n$;
+		mes "Al parecer el portal no está funcionando adecuadamente, vuelve en otra ocasión.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	
+	.@party_id = getcharid(1);
+	.@p_name$ = getpartyname(.@party_id);
+	
+	if (!instance_check_party(.@party_id,getarg(4))) {
+		mes .@n$;
+		mes "Requieres estar en una party con al menos ^ff0000"+getarg(4)+" integrante(s)^000000.";
+		close;
+	}
+	mes .@n$;
+	mes "¿Deseas activar el portal?";
+	if (getcharid(0) == getpartyleader(.@party_id,2))
+		.@menu$ = "Inscribir Party.:"+.@md_name$+".:^777777Salir^000000";
+	else
+		.@menu$ = ":"+.@md_name$+".";
+	next;
+	switch(select(.@menu$)) {
+		case 1:
+			if (instance_create(.@md_name$) < 0) {
+				mes .@n$;
+				mes "Nombre de Party: "+.@p_name$;
+				mes "Tú nombre: "+strcharinfo(0);
+				mes "^0000ff"+.@md_name$+" ^000000- no se puede crear!";
+				close;
+			}
+			mes .@n$;
+			mes "La instancia "+.@md_name$+" ha sido creada correctamente.";
+			close;
+		case 2:
+			switch(instance_enter(.@md_name$)) {
+				case 0:
+					if (getcharid(0) == getpartyleader(.@party_id,2)) {
+						mapannounce strcharinfo(3),"El grupo '"+.@p_name$+"' a entrado a la instancia "+.@md_name$+".",bc_map,"0x00ff99";
+						setquest getarg(2);
+						specialeffect2 EF_WARP;
+						end;
+					}
+				case 1:
+					mes .@n$;
+					mes "Solo los miembros registrados pueden accesar a la instancia "+.@md_name$+".";
+					close;
+				case 2:
+					mes .@n$;
+					mes "La instancia "+.@md_name$+" no existe.";
+					mes "El líder de la party no ha generado la instancia aún.";
+					close;
+				case 3:
+					mes .@n$;
+					mes "El portal al parecer presenta fallas.";
+					close;
+			}
+		case 3:
+			close;	
+	}
+	return;
+}
+// Comando para debug de Guerra de Territorios.
+-	script	CMD_TER	-1,{
+OnCmd:
+	dispbottom "Gremio: "+getguildname(getterritoryowner(.@atcmd_parameters$[0]));
+	end;
+OnCmdb:
+	setterritory .@atcmd_parameters$[0],atoi(.@atcmd_parameters$[1]);
+OnInit:
+	bindatcmd "checkterritory","CMD_TER::OnCmd",99,99;
+	bindatcmd "setterritory","CMD_TER::OnCmdb",99,99;
+	end;
+}
+
+// Revisa la prohibición de diversos elementos.
+function	script	F_CheckEvent	{
+	if(checkcart() || checkriding() || ismounting() || checkmadogear())
+		return 1;
+	if(getarg(0) == 1 && checkhomcall() >= 0) {
+		if(checkhomcall() == 1)
+			return 0;
+		else
+			return 1;
+	}
+	return 0;
+}
+
+// Revisa si una carta pertenece a un MvP.
+function	script	F_IsMVPCard	{
+	query_sql("SELECT `dropcardid` FROM `mob_db_re` WHERE `mexp` != 0 AND `dropcardid` != 0 AND `mode` > 103000000", .@card);
+	for(.@i = 0; .@i < getarraysize(.@card); .@i++)
+		if(.@card[.@i] == getarg(0))
+			return 1;
+	return 0;
+}
+
+function	script	F_CardToMob	{
+	query_sql("SELECT `ID` FROM `mob_db_re` WHERE `dropcardid` = '"+getarg(0)+"'",$@mid);
+	return $@mid[0];
+}
+
+-	script	CMD_FIXPOINTS	-1,{
+OnInit:
+	bindatcmd "fixpoints","CMD_FIXPOINTS::OnCommand",99,99;
+	end;
+OnCommand:
+	callfunc "F_FixPoints";
+	dispbottom "Reseteados puntos satisfactoriamente.";
+	end;
+}
+
+function	script	F_FixPoints	{
+	resetskill;
+	//9 = novice (NO), 49 = 1st, 69 = 2nd
+	if(eaclass()&EAJL_THIRD)
+		.@sk = 49 + 69 + (JobLevel-1);
+	else if(Class == 4215 || Class == 4211 || Class == 4212)
+		.@sk = 69 + (JobLevel-1);
+	else if(eaclass()&EAJL_2)
+		.@sk = 49 + (JobLevel-1);
+	else
+		.@sk = (JobLevel-1);
+	SkillPoint = .@sk;
+	DO_POINTFIX4 = 1;
+	return;
+}
+
+function	script	F_GetInvalidExp	{
+	if(DO_RESET > 0)
+		return 0;
+	query_sql("SELECT `base_exp` FROM `player` WHERE `char_id` = '"+getarg(0)+"'",.@bexp);
+	if(.@bexp < 400000000 && BaseLevel == 175)
+		return 1;
+	if(!(eaclass()&EAJL_THIRD) && BaseLevel == 175)
+		return 1;
+	return 0;
+}
+
+function	script	F_FixLevel	{
+	if(DO_RESET >= 1)
+		return;
+	.@c = getarg(0);
+	if(.@c < 1)
+		.@c = getcharid(0);
+	query_sql("SELECT `base_exp`,`job_exp` FROM `player` WHERE `char_id` = '"+.@c+"'",.@bexp,.@jexp);
+	query_sql("SELECT `account_id` FROM `player` WHERE `char_id` = '"+.@c+"'",.@aid);
+	sleep2 1000;
+	attachrid(.@aid);
+	// Reinicia el nivel.
+	resetlvl(1,.@c);
+	sleep2 1000;
+	
+	// Obtiene el multiplicador de rates.
+	.@dob = .@bexp * 100;
+	.@doj = .@jexp * 50;
+	
+	// If para prevenir superar el valor de INT_MAX
+	if(.@dob >= 2147483647) {
+		.@dobr = .@dob - 2147483647;
+		getexp2 .@dob,0,.@c;
+		getexp2 .@dobr,0,.@c;
+	} else if(.@dob < 1 && (eaclass()&EAJL_THIRD))
+		atcommand "@blvl 100";
+	else
+		getexp2 .@dob,0,.@c;
+
+	if(.@doj >= 2147483647) {
+		.@dojr = .@doj - 2147483647;
+		getexp2 0,.@doj,.@c;
+		getexp2 0,.@dojr,.@c;
+	} else
+		getexp2 0,.@doj,.@c;
+
+	if(Q_NOBLE == 2)
+		skill 3045,1,3;
+	resetstatus;
+	callfunc "F_FixPoints";
+
+	DO_RESET = 1;
+
+	return;
+}
+
+// Revisa si un objeto es válido, sino, lo intercambia por el correcto.
+function	script	F_CheckValidItem	{
+	if(countitem(getarg(0))) {
+		.@i = countitem(getarg(0));
+		delitem getarg(0),.@i;
+		getitem getarg(1),.@i;
+		dispbottom "Se te han intercambiado algunos objetos inválidos de tu inventario.";
+	}
+	return;
+}
+
+// Core del nuevo sistema de ruleta de la suerte.
+function	script	F_SpinRoulette	{
+		if(getarg(0) < 1)
+			end;
+		if(@ROU) {
+			getitem getarg(0),1;
+			end;
+		}
+		if(!checkweight(7233,20)) {
+			dispbottom "Tienes demasiado peso para usar la ruleta.",0x000000;
+			getitem getarg(0),1;
+			end;
+		}
+		@ROU = 1;
+		setarray .@LKS_pr[1],7230,604,12210,12214,12090,603,969,608,8501,12100,8502,617,12221,12095,8221,984,607,7619,12080,12103,7620,12075,909,985;
+		.@max_r = 24;
+		.@min_r = 1;
+		.@l = 1;
+		.@r = rand(50,100);
+		for(.@i = 1; .@i < .@r; .@i++) {
+			.@l++;
+			if(.@l > .@max_r)
+				.@l = .@min_r;
+			cutin "lucky_"+.@l,4;
+			soundeffect "slot_tick.wav",0;
+			sleep2 rand(10,50);
+		}
+		switch(getarg(0)) {
+			case 671: .@cua = 3; break;
+			case 675: .@cua = 2; break;
+			case 673:
+			default:
+				.@cua = 1;
+		}
+		getitem .@LKS_pr[.@l], .@cua;
+		callfunc("F_LogItem",3,.@LKS_pr[.@l],.@cua);
+		dispbottom "Has ganado: "+.@cua+"x "+getitemname(.@LKS_pr[.@l])+".",0x000000;
+		sleep2 4000;
+		cutin "",255;
+		@ROU = 0;
+		end;
+}
+
+// Core del comando @meme
+-	script	CMD_MEME	-1,{
+OnCommand:
+	.@m = atoi(.@atcmd_parameters$[0]);
+	if(.@m < 1 || .@m > 43) {
+		dispbottom "@meme <1-43>";
+		end;
+	}
+	if(MEME_D < gettimetick(2) || MEME_D == 0) {
+		soundeffectall "meme_"+.@m+".wav",0;
+		MEME_D = gettimetick(2) + .d[.@m];
+		showscript .t$[.@m]+"!!";
+	} else {
+		dispbottom "Aún no puedes usar @meme, por favor espera unos segundos.";
+		end;
+	}
+	end;
+OnInit:
+	setarray .d[1],5,4,6,7,7,7,7,7,4,7,5,4,4,4,6,6,40,6,12,15,20,9,5,2,4,5,4,3,2,10,10,3,4,3,3,3,3,4,3,4,4,4,5;
+	setarray .t$[1],"Omae wa mou shindeiru",
+					"Nani",
+					"Acercándose el peligro viene ya",
+					"Heal, zeny, item, pls",
+					"Ohw yeah",
+					"M-marilyn monrroe",
+					"M-mAAaRilyn MonRoee Ahh",
+					"MarIlyYYYYN, OH MARILYN",
+					"Mada mada dane",
+					"Dun dun dun dududuun",
+					"Kaizoku oni, ore wa naru",
+					"Dattebayo",
+					"Wubba luba dub dub",
+					"Winter is coming",
+					"Nos destruirán a todos",
+					"¿La mayonesa es un instrumento?",
+					"Princessu Kenny kawai desu ne",
+					"Tururututuru tururututuru",
+					"-riendo como Kira-",
+					"Unlimited Blade Works",
+					"El hechicero con sus GRANDES PODEREESS",
+					"Ta too locooo",
+					"Smaaaash",
+					"Za warudo",
+					"Muda muda muda muda",
+					"LEEEEROOOOY JENKIIIINSSS",
+					"Llego el lechero",
+					"Sate sate sate",
+					"Douh",
+					"-una canción así bien sad-",
+					"y se marchó ~~",
+					"Ya nos exhibiste",
+					"Sustos que dan gusto",
+					"El macho",
+					"Jugada maravillosa",
+					"Podría ser el fin del Hombre Araña",
+					"Nos volará en mil pedazos",
+					"Ya basta Freezer",
+					"GOKUU",
+					"Mi corazón tiene pura maldad",
+					"*uta que ofertón",
+					"No encuentro fallas en su lógica",
+					"Ochinchin daitsuki desu kedo";
+	bindatcmd "meme","CMD_MEME::OnCommand",0,99;
+	end;
+}
+
+// Bloqueos de celdas para chat y vending en prontera.
+-	script	GLOBAL_CELL_PRONTERA	-1,{
+OnInit:
+	setcell "prontera",143,191,163,130,cell_nochat,1;
+	setcell "prontera",133,184,181,130,cell_novending,1;
+	setcell "prontera",132,175,147,130,cell_novending,1;
+	end;
+}
+
+function	script	F_GetRandomHat	{
+OnStart:
+	setarray .@nohat,5689,5712;
+	.@it = rand(5001,5200);
+	for(.@i = 0; .@i < getarraysize(.@nohat); .@i++)
+		if(.@it == .@nohat[.@i])
+			goto OnStart;
+	if( getiteminfo(.@it,11) < 1)
+		goto OnStart;
+	getitem .@it,1;
+	callfunc("F_LogItem",2,.@it);
+	end;
+}
+
+function	script	F_ChangeCharSex	{
+	if(callsub(S_HasChangeSex) == 1) {
+		dispbottom "Lo siento, pero tu clase no puede usar este objeto.";
+		getitem 8232,1;
+		end;
+	}
+	query_sql("SELECT `sex` FROM `player` WHERE `char_id`='"+getcharid(0)+"'",.@AC_sex$);
+	if(.@AC_sex$ == "S")
+		end;
+	else if(.@AC_sex$ == "M")
+		.@NEW_sex$ = "F";
+	else if(.@AC_sex$ == "F")
+		.@NEW_sex$ = "M";
+	.@cid = getcharid(0);
+	atcommand "@kick "+strcharinfo(0);
+	query_sql("UPDATE `player` SET `sex` = '"+.@NEW_sex$+"' WHERE `char_id`='"+.@cid+"'");
+	end;
+S_HasChangeSex:
+	switch(Class) {
+		default:
+			return 0;
+		case Job_Dancer:
+		case Job_Bard:
+		case Job_Clown:
+		case Job_Gypsy:
+		case Job_Minstrel:
+		case Job_Wanderer:
+		case Job_Kagerou:
+		case Job_Oboro:
+		case Job_Baby_Dancer:
+		case Job_Baby_Minstrel:
+		case Job_Baby_Kagerou:
+		case Job_Baby_Oboro:
+			return 1;
+	}
+	return 0;
+}
+
+function	script	F_ResurrectParty	{
+	if( getmapflag(strcharinfo(3),mf_pvp) ||
+		getmapflag(strcharinfo(3),mf_pvpnoparty) ||
+		getmapflag(strcharinfo(3),mf_pvpnoguild) ||
+		getmapflag(strcharinfo(3),mf_gvg) ||
+		getmapflag(strcharinfo(3),mf_gvgnoparty) ||
+		getmapflag(strcharinfo(3),mf_territory) ||
+		getmapflag(strcharinfo(3),mf_battleground) )
+	{
+		dispbottom " * Este objeto no puede ser utilizado en este mapa.",0x000000;
+		end;
+	}
+	recovery 1,getcharid(1),4;
+	dispbottom " * Todos tus miembros de party en el mapa han sido revividos.",0x000000;
+	end;
+}
+
+function	script	F_TempleDemonItem	{
+	if(getarg(0) < 80) {
+		setarray .@p,505,547,22566,7444,607,608;
+		setarray .@c,10,10,1,1,3,5;
+		.@i = rand(5);
+		getitem .@p[.@i],.@c[.@i];
+	} else {
+		setarray .@p,4908,4914,4917,4911,4920,4923,4909,4915,4918,4912,4921,4924,4910,4916,4919,4913,4922,4925;
+		.@i = rand(17);
+		getitem .@p[.@i],1;
+	}
+	end;
+}
+
+/**
+ * Función para grabar los mensajes de RODEX
+ * cuando el destinatario está offline.
+ * Al parecer el script command 'rodex' no puede
+ * entregar si el personaje se encuentra desconectado.
+ * @author DanielArt
+**/
+function	script	F_WaitRodex	{
+	if( getarg(0) > 0 ) {
+		switch(getarg(8)) {
+			case 1:
+				if( ischarin(getarg(0)) ) // Entrega los objetos si el personaje está conectado.
+					rodex getarg(0),getarg(1),getarg(2),getarg(3),getarg(4),getarg(5),getarg(6),getarg(7);
+				else if(getarg(0) > 0) { // Los guarda en la SQL si está desconectado
+					query_sql("INSERT INTO `mail_wait` (`char_id`,`entregado`,`sender`,`title`,`msg`,`zeny`,`item`,`cant`,`bound`) VALUES ('"+getarg(0)+"','0','"+getarg(1)+"','"+getarg(2)+"','"+getarg(3)+"','"+getarg(4)+"','"+getarg(5)+"','"+getarg(6)+"','"+getarg(7)+"')");
+					rodexmes "Se ha almacenado el correo de '"+getarg(0)+"' en la base de datos.";
+				} else
+					return;
+				query_sql("SELECT `name` FROM `player` WHERE `char_id` = '"+getarg(0)+"'",.@n$);
+				callfunc "F_LogItem",1,getarg(0),.@n$,getarg(5),getarg(6),"(NPC) Ranker";
+				return;
+			case 2: // Entrega el RODEX almacenado en la SQL.
+				query_sql("SELECT `char_id`,`sender`,`title`,`msg`,`zeny`,`item`,`cant`,`bound` FROM `mail_wait` WHERE `entregado` = '0' AND `char_id` = '"+getarg(0)+"'",.@a,.@b$,.@c$,.@d$,.@e,.@f,.@g,.@h);
+				if(getarraysize(.@a) > 0) {
+					for(.@i = 0; .@i < getarraysize(.@a); .@i++) {
+						query_sql("UPDATE `mail_wait` SET `entregado` = '1' WHERE `char_id` = '"+.@a[.@i]+"'");
+						if(getarraysize(.@a) > 0) {
+							rodex .@a[.@i],.@b$[.@i],.@c$[.@i],.@d$[.@i],.@e[.@i],.@f[.@i],.@g[.@i],.@h[.@i];
+							rodexmes "'"+.@a[.@i]+"' ha recibido su correo almacenado en la base de datos.";
+						} else
+							rodexmes "No se ha podido entregar el correo almacenado a '"+getarg(0)+"'";
+					}
+					dispbottom " * Has recibido un nuevo mensaje en RODEX.",0x000000;
+				}
+				return;
+		}
+	}
+	return;
+}
+
+-	script	delallitem	-1,{
+OnCommand:
+	.@item = atoi(.@atcmd_parameters$[0]);
+	if( .@item < 500 ) {
+		dispbottom "Item don't found.",0x000000;
+		end;
+	}
+	query_logsql("SELECT `item` FROM `prizelog` WHERE `get` = '2'",.@iy);
+	setarray .db$,"auction","cart_inventory","guild_storage","inventory","mail","mail_wait","storage","backpack_adv","backpack_expert","backpack_novice";
+	for(.@i = 0; .@i < getarraysize(.db$); .@i++) {
+		query_sql("UPDATE `"+.db$[.@i]+"` SET `nameid` = '501' WHERE `nameid` = '"+.@item+"'");
+		query_sql("UPDATE `"+.db$[.@i]+"` SET `card0` = '4001' WHERE `card0` = '"+.@item+"'");
+		query_sql("UPDATE `"+.db$[.@i]+"` SET `card0` = '4001' WHERE `card1` ='"+.@item+"'");
+		query_sql("UPDATE `"+.db$[.@i]+"` SET `card0` = '4001' WHERE `card2` =  '"+.@item+"'");
+		query_sql("UPDATE `"+.db$[.@i]+"` SET `card0` = '4001' WHERE `card3` = '"+.@item+"'");
+	}
+	dispbottom getitemname(.@item)+" changed for Red Potion and Poring Card",0x000000;
+	end;
+OnInit:
+	bindatcmd "delallitem","delallitem::OnCommand",99,99;
+	bindatcmd "delitemall","delallitem::OnCommand",99,99;
+	end;
+}
+
+/**
+ * Eventos de incremento de rates
+ **/
+-	script	EVT_DOUBLERATES	-1,{
+OnInit:
+	do {
+		sleep2 rand(18000000,36000000);
+OnWhisperGlobal:
+		if(rand(100) < 70) {
+			announce "[Momento Doble] ¡¡Empieza el Momento Doble!!",bc_all,0xD2F316;
+			sleep2 10000;
+			announce "[Momento Doble] Durante los próximos 90 minutos los rates Base & Job de Poring RO se incrementan 100%",bc_all,0xD2F316;
+			sleep2 10000;
+			setbattleflag("base_exp_rate",25000);
+			setbattleflag("job_exp_rate",25000);
+			monsterdb;
+			sleep2 5400000; // 90 min.
+			announce "[Momento Doble] ¡¡Momento Doble finalizado!!",bc_all,0xD2F316;
+			setbattleflag("base_exp_rate",12500);
+			setbattleflag("job_exp_rate",12500);
+			monsterdb;
+		}
+	} while(1);
+end;
+}
+-	script	EVT_XDROP	-1,{
+OnInit:
+
+	do {
+		sleep2 rand(23000000,40000000);
+		if(rand(100) < 50) {
+OnWhisperGlobal:
+		setarray .battlename$,	"item_rate_common","item_rate_common_boss","item_rate_common_mvp",
+								"item_rate_heal","item_rate_heal_boss","item_rate_heal_mvp",
+								"item_rate_use","item_rate_use_boss","item_rate_use_mvp",
+								"item_rate_equip","item_rate_equip_boss","item_rate_equip_mvp",
+								"item_rate_mvp","item_rate_adddrop","item_rate_treasure","finding_ore_rate";
+			announce "[+Drop] ¡¡Empieza el evento +Drop!!",bc_all,0xD2F316;
+			sleep2 10000;
+			announce "[+Drop] Durante los próximos 90 minutos los rates de drop incrementan a 30x.",bc_all,0xD2F316;
+			sleep2 10000;
+			for($@i = 0; $@i < getarraysize(.battlename$); $@i++)
+				setbattleflag(.battlename$[$@i],3000);
+			monsterdb;
+			sleep2 5400000; // 90 min.
+			announce "[+Drop] ¡¡El evento de +Drop ha finalizado!!",bc_all,0xD2F316;
+			for($@i = 0; $@i < getarraysize(.battlename$); $@i++)
+				setbattleflag(.battlename$[$@i],2000);
+			monsterdb;
+		}
+	} while(1);
+end;
+}
+-	script	EVT_CARTASDOBLES	-1,{
+OnInit:
+	do {
+		sleep2 rand(40000000,90000000);
+		if(rand(100) < 30) {
+OnWhisperGlobal:
+			announce "[Cartas Dobles] ¡¡Empieza el evento de Cartas Dobles!!",bc_all,0xD2F316;
+			sleep2 10000;
+			announce "[Cartas Dobles] Durante los próximos 90 minutos tendrás el doble de probabilidad de obtener una carta de monstruo, boss o MvP.",bc_all,0xD2F316;
+			sleep2 10000;
+			setbattleflag("item_rate_card",12000);
+			setbattleflag("item_rate_card_boss",2);
+			setbattleflag("item_rate_card_mvp",2);
+			monsterdb;
+			sleep2 5400000; // 90 min.
+			announce "[Cartas Dobles] ¡¡El evento de Cartas Dobles ha finalizado!!",bc_all,0xD2F316;
+			setbattleflag("item_rate_card",6000);
+			setbattleflag("item_rate_card_boss",1);
+			setbattleflag("item_rate_card_mvp",1);
+			monsterdb;
+		}
+	} while(1);
+end;
+}
+
+-	script	atcmd_hide	-1,{
+OnInit:
+	bindatcmd "hide",strnpcinfo(3)+"::OnAtcommand",99,99;
+	end;
+OnAtcommand:
+
+	if(checkoption(OPTION_INVISIBLE) == 1){
+		specialeffect2 587;
+		specialeffect2 589;
+		setoption OPTION_INVISIBLE,0;
+	} else {	
+		specialeffect2 587;
+		specialeffect2 589;
+		setoption OPTION_INVISIBLE,1;
+	}
+	end;
+}
+
+/**
+ * Sistema de Votos y Donaciones
+**/
+-	script	CMD_V4P	-1,{
+OnVotePoints:
+	callfunc("F_GetCashPoints",getcharid(3),0);
+	end;
+OnCashDona:
+	callfunc("F_GetCashPoints",getcharid(3),1);
+	end;
+OnInit:
+	bindatcmd "v4p","CMD_V4P::OnVotePoints",0,99;
+	bindatcmd "dona","CMD_V4P::OnCashDona",0,99;
+	end;
+}
+
+function	script	F_GetCashPoints	{
+	switch(getarg(1)) {
+		case 0:
+			query_sql("SELECT `points` FROM `cp_v4p_voters` WHERE `account_id` = '"+getarg(0)+"' LIMIT 1",.@v4p);
+			break;
+		case 2:
+			query_sql("SELECT `points` FROM `cp_v4p_voters` WHERE `account_id` = '"+getarg(0)+"' LIMIT 1",.@v4p);
+		case 1:
+			query_sql("SELECT `cash` FROM `bc_paypal` WHERE `account_id` = '"+getarg(0)+"' AND `received` = '0' AND `valid` = '1'",.@cash);
+			break;
+	}
+	if(.@v4p > 0 && (getarg(1) == 0 || getarg(1) == 2)) {
+		query_sql("UPDATE `cp_v4p_voters` SET `points` = '0' WHERE `account_id` = '"+getarg(0)+"'");
+		#CASHPOINTS += .@v4p;
+		dispbottom "* Se han añadido tus "+.@v4p+" puntos de votación a tus Cash Points. Total Actual: "+#CASHPOINTS+".",0x000000;
+		.@v4p = 0;
+		return;
+	}
+	if(.@cash > 0 && (getarg(1) == 1 || getarg(1) == 2)) {
+		for(.@i = 0; .@i < getarraysize(.@cash); .@i++)
+			#DONAPOINTS += .@cash;
+		query_sql("UPDATE `bc_paypal` SET `received` = '1' WHERE `account_id` = '"+getarg(0)+"' AND `valid` = '1'");
+		dispbottom "* Se han añadido "+.@cash+" puntos de donación a tus Donation Points. Total Actual: "+#DONAPOINTS+".",0x000000;
+	}
+	if(#KAFRAPOINTS > 0) {
+		#CASHPOINTS += #KAFRAPOINTS;
+		#KAFRAPOINTS = 0;
+	}
+	return;
+}
+
+function	script	F_GetCid4Nid	{
+	query_sql("SELECT `char_id` FROM `npc_"+getarg(1)+"` WHERE `npc_id`='"+getarg(0)+"'",.@cid);
+	return .@cid;
+}
+
+-	script	cmd_scend	-1,{
+OnCommand:
+	sc_end SC_ALL;
+	end;
+OnInit:
+	bindatcmd "scend",strnpcinfo(3)+"::OnCommand",99,99;
+	end;
+}
+
+function	script	F_CheckNid2Cid	{
+	query_sql("SELECT `char_id` FROM `npc_"+getarg(1)+"` WHERE `npc_id`='"+getarg(0)+"'",.@cid);
+	if(.@cid != getcharid(0))
+		return 1;
+	return 0;
+}
+
+function	script	F_BirthdayGift	{
+	setarray .@id[0],12263,12264,20386;
+	for(.@i = 0; .@i < getarraysize(.@id); .@i++) {
+		getitembound .@id[.@i],(.@id[.@i] == 20386 ? 1:3),Bound_Account;
+		callfunc "F_LogItem",2,.@id[.@i];
+		sleep2 800;
+	}
+}
+
+-	script	cmd_quest	-1,{
+OnCommand:
+	.@q = atoi(.@atcmd_parameters$[1]);
+	if(.@atcmd_numparameters < 2 || !.@q || .@q < 1) {
+		dispbottom "@quest <set-del> <quest_id>";
+		end;
+	}
+	if(.@atcmd_parameters$[0] == "set") {
+		if(checkquest(.@q) == 1) {
+			dispbottom "@quest - esta quest ya está poseída.";
+			end;
+		}
+		dispbottom "@quest - se ha otorgado la quest "+.@q;
+		setquest .@q;
+		end;
+	} else if(.@atcmd_parameters$[0] == "del") {
+		if(checkquest(.@q) == -1) {
+			dispbottom "@quest - no posees esta quest.";
+			end;
+		}
+		dispbottom "@quest - se ha eliminado la quest "+.@q;
+		erasequest .@q;
+		end;
+	}
+	dispbottom "@quest <set-del> <quest_id>";
+	end;
+OnInit:
+	bindatcmd "quest",strnpcinfo(3)+"::OnCommand",99,99;
+	end;
+}
+
+-	script	cmd_back	-1,{
+OnCommand:
+	showscript "Back !!";
+	specialeffect2 12;
+	if(getmapflag(strcharinfo(3),mf_pvp) || getmapflag(strcharinfo(3),mf_gvg) || getmapflag(strcharinfo(3),mf_battleground)) {
+		dispbottom "@back no puede usarse en el mapa actual.";
+		end;
+	}
+	if(countitem(602) > 0) {
+		delitem 602,1;
+		specialeffect2 72;
+		progressbar "008800",3;
+		specialeffect2 30;
+		warp "SavePoint",0,0;
+		end;
+	}
+	if(Zeny < (16*BaseLevel)) {
+		dispbottom "@back ha fallado, zeny insuficiente.";
+		end;
+	}
+	specialeffect2 72;
+	progressbar "008800",(BaseLevel / 10);
+	tax (16*BaseLevel),100;
+	specialeffect2 30;
+	warp "SavePoint",0,0;
+	end;
+OnInit:
+	bindatcmd "back","cmd_back::OnCommand",0,99;
+	end;
+}
+
+function	script	npc_talk	{
+	.@argcount = getargcount();
+	.@npc_name$ = strnpcinfo(1);
+	for(.@i = 0; .@i < .@argcount; .@i++) {
+		mes "^0055FF[ "+.@npc_name$+" ]^000000";
+		.@message$ = getarg(.@i);
+		mes .@message$;
+		npctalk .@message$;
+	}
+	return;
+}
+
+-	script	itemdescs	-1,{
+OnInit:
+	bindatcmd "ii2",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "itemdesc",strnpcinfo(3)+"::OnAtcommand";
+	end;
+OnAtcommand:
+  mes "^3355FF[ Descripción de Objetos ]^000000";
+  .@item = atoi(.@atcmd_parameters$[0]);
+  if( .@item < 500 ) {
+	mes " - Objeto no encontrado.";
+	close;
+  }
+  mes " *^FF7070Ver descripción:^000000"," <ITEM>"+getitemname(.@item)+"<INFO>"+.@item+"</INFO></ITEM>"," ";
+  mes " *^5533ffVer base de datos:^000000","<URL> Ver en Poring DB<INFO>http://poringro.net/objeto/"+.@item+",800,600</INFO></URL>"," ";
+  close;
+}
+
+function	script	F_getitemname	{
+	.@itemid = getarg(0);
+	.@name$ = getitemname( .@itemid );
+	if( .@name$ == "null" )
+		return "^FF0000[Desconocido-"+.@itemid+"]^000000";
+	.@type = getiteminfo( .@itemid,2 );
+	if( .@type == IT_ARMOR || .@type == IT_WEAPON ){
+		.@name$ = .@name$ +" ["+getitemslots( .@itemid )+"]";
+	}
+	return "<ITEM>"+.@name$+"<INFO>"+.@itemid+"</INFO></ITEM>";
+}
+
+function	script	epoch_time	{
+	.@time = getarg(0);
+	.@hour = ( .@time / 3600 );
+	.@min = ( .@time % 3600 ) / 60 ;
+	.@sec = ( ( .@time % 3600 ) % 60 ) % 60;
+	
+	return sprintf( "%02d:%02d:%02d",.@hour,.@min,.@sec );
+}
+
+function	script	F_SafeTicketRandom	{
+	setarray .@a[1],8517,8518,8519,8520,8521,6234,6235,6457,6239,6232,6228,6229,6233,6230,6231,6456,8522;
+	if(rand(100) < 80)
+		.@i = .@a[rand(1,14)];
+	else
+		.@i = .@a[rand(1,17)];
+	callfunc "F_LogItem",2,.@i;
+	getitem .@i,1;
+	end;
+}
+
+function	script	F_LogItem	{
+	.@time$ = gettimestr("%Y-%m-%d %H:%M:%S",21);
+	switch (getarg(0)) {
+		case 1: // npc_prize: NPC
+			query_logsql("INSERT INTO `prizelog` (`char_id`,`name`,`get`,`item`,`c`,`sended_at`,`gm`) VALUES "+
+			"('"+getarg(1)+"','"+escape_sql(getarg(2))+"','1','"+getarg(3)+"','"+getarg(4)+"','"+.@time$+"','"+escape_sql(getarg(5))+"') ");
+			break;
+		case 2: // npc_prize: ITEM
+			query_logsql("INSERT INTO `prizelog` (`char_id`,`name`,`get`,`item`,`c`,`sended_at`,`gm`) VALUES "+
+			"('"+getcharid(3)+"','"+escape_sql(strcharinfo(0))+"','1','"+getarg(1)+"','1','"+.@time$+"','(Item) Box') ");
+			break;
+		case 3: // npc_prize: RULETA
+			query_logsql("INSERT INTO `prizelog` (`char_id`,`name`,`get`,`item`,`c`,`sended_at`,`gm`) VALUES "+
+			"('"+getcharid(3)+"','"+escape_sql(strcharinfo(0))+"','1','"+getarg(1)+"','"+getarg(2)+"','"+.@time$+"','Lucky Roulette') ");
+			break;
+	}
+	return;
+}
+
+function	script	F_LogEnhance	{
+	switch (getarg(0)) {
+		case 0:
+			query_logsql("INSERT INTO `enhancelog` (`account_id`,`char_id`,`nameid`,`enchant_id`,`date`) VALUES ('"+getcharid(0)+"','"+getcharid(1)+"','"+getarg(1)+"','"+getarg(2)+"','"+gettimestr("%Y-%m-%d %H:%M:%S",21)+"')");
+			break;
+		case 1:
+			query_logsql("INSERT INTO `enhancelog` (`account_id`,`char_id`,`nameid`,`refine`,`date`) VALUES ('"+getcharid(0)+"','"+getcharid(1)+"','"+getarg(1)+"','"+getarg(2)+"','"+gettimestr("%Y-%m-%d %H:%M:%S",21)+"')");
+			break;
+		default:
+			dispbottom "Ha ocurrido un error, por favor repórtalo a un Game Master.";
+			end;
+	}
+	return;
+}
+
+-	script	ONLINE_SQL	-1,{
+OnPCLoginEvent:
+	if(checkvending(strcharinfo(0)) >= 2)
+		end; // Si el usuario se conecta con autotrade no cuenta el login.
+	query_sql("UPDATE `autentication` SET `online`='1' WHERE `account_id`='"+getcharid(3)+"'");
+	end;
+OnPCLogoutEvent:
+	query_sql("UPDATE `autentication` SET `online`='0' WHERE `account_id`='"+getcharid(3)+"'");
+	end;
+}
+
+function	script	F_CheckMac	{
+	query_sql("SELECT `online` FROM `autentication` WHERE `last_unique_id` = '"+get_unique_id(getcharid(0))+"' AND `online` > '0'", .@c);
+	if(getarraysize(.@c) > 1) {
+		macmes "The user "+strcharinfo(0,getcharid(0))+" is double-login at same PC.";
+		return 1;
+	} else
+		return 0;
+}
+
+function	script	F_CheckMacChar	{
+	query_sql("SELECT `online` FROM `autentication` WHERE `last_unique_id` = '"+get_unique_id(getarg(0))+"' AND `online` > '0'", .@c);
+	if(getarraysize(.@c) > 1) {
+		macmes "The user "+strcharinfo(0,getarg(0))+" is double-login at same PC.";
+		return 1;
+	} else
+		return 0;
+}
+
+function	script	F_CheckMacBirthday	{
+	query_sql("SELECT COUNT(*) FROM `char_birth_year` WHERE `mac` = '"+getarg(0)+"'",.@c);
+	if(.@c > 0)
+		return 1;
+	else
+		return 0;
+}
+
+-	script	cmd_cutin	-1,{
+OnCutinCmd:
+	if(.@atcmd_parameters$[0] != "") {
+		cutin .@atcmd_parameters$[0],(atoi(.@atcmd_parameters$[1]) ? atoi(.@atcmd_parameters$[1]) : 3);
+		sleep2 2000;
+		cutin "",255;
+	} else {
+		dispbottom "@cutin <filename> <position>";
+		dispbottom " - Positions:";
+		dispbottom "0 - bottom left corner";
+		dispbottom "1 - bottom middle";
+		dispbottom "2 - bottom right corner";
+		dispbottom "3 - middle of screen in a movable window with an empty title bar";
+		dispbottom "4 - middle of screen without the window header, but still movable";
+	}
+	end;
+OnInit:
+	bindatcmd "cutin",strnpcinfo(3)+"::OnCutinCmd",99,99;
+	end;
+}
+
+/**
+ * @link
+ * Comando para compartir links de internet
+ * @author DanielArt
+**/
+-	script	cmd_link	-1,{
+OnCommand:
+	.@type$ = .@atcmd_parameters$[0];
+	if(.@type$ == "create") {
+		.@l$ = .@atcmd_parameters$[1];
+		if(.@l$ != "") {
+			if(!compare(.@l$,"http") || !compare(.@l$,"://")) {
+				dispbottom "@link - El formato del enlace no es correcto.";
+				end;
+			}
+			query_sql("SELECT `id` FROM `share_link` WHERE `link`='"+.@l$+"'",.@id);
+			if(.@id) {
+				dispbottom "@link - El enlace ingresado ya existe con la ID #"+.@id;
+				end;
+			}
+			query_sql("INSERT INTO `share_link` (char_id, link, created_at) VALUES ('"+getcharid(0)+"','"+escape_sql(.@l$)+"','"+gettimestr("%Y-%m-%d %H:%M:%S",21)+"')");
+			query_sql("SELECT `id` FROM `share_link` WHERE `link`='"+.@l$+"'",.@id);
+			dispbottom "@link - Enlace guardado, la ID para compartirlo es: < "+.@id+" >";
+			end;
+		}
+	} else if(.@type$ == "get") {
+		.@LID = atoi(.@atcmd_parameters$[1]);
+		if(.@LID) {
+			.@sql = query_sql("SELECT `link` FROM `share_link` WHERE `id`='"+.@LID+"'",.@share$);
+			if(!.@sql) {
+				dispbottom "@link - ID inválida.";
+				end;
+			}
+			mes "[^5533ff@link^000000]";
+			mes "ID: ^008800#"+.@LID+"^000000.";
+			mes " ^5533ff*^000000<URL> Clic para abrir enlace.<INFO>"+.@share$[0]+",800,600</INFO></URL>"," ";
+			mes "^777777 *Nota: Si el explorador no abre, es necesario que reinicies tu cliente.^000000";
+			close;
+		}
+	} else if(.@type$ == "reset" && getgroupid() == 99) {
+		query_sql("TRUNCATE TABLE `share_link`");
+		dispbottom "@link - La base de datos 'share_link' ha sido vaciada.";
+		end;
+	}
+	dispbottom "@link - Ayuda.";
+	dispbottom "------------------------------";
+	dispbottom "@link create <link>";
+	dispbottom " - Te permite crear una ID para ver el link que escribas y compartirlo.";
+	dispbottom "@link get <id>";
+	dispbottom " - Te permite acceder al link almacenado en la <id> proporcionada.";
+	if(getgroupid() == 99) {
+		dispbottom "@link reset";
+		dispbottom " - Reinicia toda la base de datos de 'share_link'.";
+	}
+	end;
+OnInit:
+	bindatcmd "link",strnpcinfo(3)+"::OnCommand",0,99;
+	end;
+}
+
+function	script	F_SoundServer	{
+	//if(addrid(0))
+		//soundeffect getarg(0),0;
+	return;
+}
+
+-	script	CMD_SOUND	-1,{
+OnCommand:
+	if(.@atcmd_parameters$[0] != "null")
+		F_SoundServer .@atcmd_parameters$[0];
+	end;
+OnInit:
+	bindatcmd "soundserver","CMD_SOUND::OnCommand",99,99;
+	end;
+}
+
+-	script	OnPCDieViewMap	-1,{
+OnPCDieEvent:
+	if( getcharid(1) )
+	{
+		getmapxy( .map$, .x, .y, UNITTYPE_PC );
+		getpartymember getcharid(1), 1;
+		getpartymember getcharid(1), 2;
+		
+		copyarray .@paid[0], $@partymemberaid[0], $@partymembercount;
+		copyarray .@caid[0], $@partymembercid[0], $@partymembercount;
+		
+		for( .@i = 0; .@i < getarraysize(.@paid); .@i ++ )
+		{
+			if( isloggedin( .@paid[.@i], .@caid[.@i] ) )
+			{
+				attachrid( .@paid[.@i] );
+				.@id = rand(500);
+				if( strcharinfo(3) == .map$ )
+					viewpoint 0, .x, .y, .@id, 0xFF0000;
+				detachrid;
+			}
+			
+		}
+	}
+	end;
+}
+
+-	script	day_monster	-1,{
+end;
+
+OnInit:
+	bindatcmd "mdia",strnpcinfo(3)+"::OnAtcommand",99,99;
+	bindatcmd "rdia",strnpcinfo(3)+"::OnAtcommand",99,99;
+	bindatcmd "mobs",strnpcinfo(3)+"::OnAtcommand",0,99;
+	setarray .rname$,"Formless","Undead","Brute","Plant","Insect","Fish","Demon","Demi-Human","Angel","Dragon";
+	setarray .mobid,1001,1002,1004,1005,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1018,1019,1020,1023,1024,1025,1026,1028,1029,1030,1031,1032,1033,1034,1035,1036,1037,1040,1041,1042,1044,1045,1047,1048,1049,1050,1051,1052,1053,1054,1055,1056,1057,1058,1060,1061,1062,1063,1064,1065,1066,1067,1068,1069,1070,1071,1072,1073,1074,1076,1077,1088,1089,1090,1091,1092,1093,1094,1095,1096,1097,1099,1100,1101,1102,1103,1104,1105,1106,1107,1108,1109,1110,1111,1113,1114,1116,1117,1118,1119,1121,1122,1123,1124,1125,1126,1127,1128,1129,1130,1131,1132,1133,1134,1135,1138,1139,1140,1141,1143,1144,1145,1146,1148,1149,1151,1152,1153,1154,1155,1156,1158,1160,1161,1163,1164,1165,1166,1167,1169,1170,1174,1175,1176,1177,1178,1179,1180,1182,1185,1186,1188,1189,1191,1192,1193,1194,1195,1196,1197,1199,1200,1201,1202,1203,1204,1205,1206,1207,1208,1209,1211,1212,1213,1214,1215,1216,1219,1242,1243,1245,1246,1248,1249,1250,1253,1254,1255,1256,1257,1258,1259,1260,1261,1262,1263,1264,1265,1266,1267,1268,1269,1270,1271,1273,1274,1275,1276,1277,1278,1279,1280,1281,1282,1283,1289,1290,1291,1292,1293,1294,1295,1296,1297,1298,1299,1300,1301,1302,1303,1304,1305,1306,1307,1308,1309,1310,1311,1313,1314,1315,1316,1317,1318,1319,1320,1321,1322,1323,1365,1366,1367,1368,1369,1370,1371,1372,1374,1375,1376,1377,1378,1379,1380,1381,1382,1383,1384,1385,1386,1387,1390,1391,1392,1400,1401,1402,1403,1404,1405,1406,1408,1409,1410,1412,1413,1415,1416,1417,1493,1494,1495,1497,1498,1499,1500,1503,1504,1505,1506,1507,1508,1509,1510,1512,1513,1514,1515,1516,1517,1519,1520,1582,1584,1586,1587,1613,1614,1615,1616,1617,1618,1619,1620,1621,1622,1627,1628,1629,1631,1632,1633,1664,1665,1666,1667,1668,1669,1670,1671,1672,1673,1675,1676,1677,1678,1679,1680,1681,1682,1686,1687,1692,1693,1694,1695,1696,1699,1703,1713,1714,1715,1717,1718,1736,1737,1738,1752,1753,1754,1755,1769,1770,1772,1773,1774,1775,1776,1777,1778,1780,1781,1782,1783,1784,1789;
+OnClock0000:
+	.@id = rand(0,getarraysize(.mobid)-1);
+	$MobType = .mobid[.@id];
+	announce "[Monstruo del Día]: ¡Doble experiencia cazando '"+getmonsterinfo($MobType,0)+"'!",bc_all,0x00FF8D;
+	$RaceType = rand(0,9);
+	announce "[Raza del Día]: ¡Doble experiencia cazando monstruos raza '"+.rname$[$RaceType]+"'!",bc_all,0x00FF2D;
+	end;
+OnNPCKillEvent:
+	if(killedrid != $MobType)
+		end;
+	else {
+		if(login_mdia)
+			dispbottom "[ Monstruo del Día ]: Experiencia ganada. Base: "+callfunc("F_InsertComma",strmobinfo(6,killedrid))+" Job: "+callfunc("F_InsertComma",strmobinfo(7,killedrid)),0x00FF8D;
+		.@b += strmobinfo(6,killedrid);
+		.@j += strmobinfo(7,killedrid);
+	}
+	sleep2 1500;
+	if( getmonsterinfo( killedrid, MOB_RACE ) != $RaceType )
+		end;
+	else {
+		if(login_mdia)
+			dispbottom "[ Raza del Día ]: Experiencia ganada. Base: "+callfunc("F_InsertComma",strmobinfo(6,killedrid))+" Job: "+callfunc("F_InsertComma",strmobinfo(7,killedrid)),0x00FF2D;
+		.@b += strmobinfo(6,killedrid);
+		.@j += strmobinfo(7,killedrid);
+	}
+	BaseExp += .@b;
+	JobExp += .@j;
+	end;
+OnAtcommand:
+	if(.@atcmd_command$ == "@mobs") {
+		dispbottom "== Experiencia doble al cazar:",0x00FF8D;
+		dispbottom "- Monstruo del día: '"+getmonsterinfo($MobType,MOB_NAME)+"'",0x00FF8D;
+		dispbottom "- Raza del día: '"+.rname$[$RaceType]+"' ",0x00FF2D;
+	} else if(.@atcmd_command$ == "@rdia") {
+		.@ra = atoi(.@atcmd_parameters$[0]);
+		if(.@ra < 0 || .@ra > 9) {
+			dispbottom "@rdia - Ingresa una raza del 1 al 9.";
+			dispbottom "0  = Formless";
+			dispbottom "1  = Undead";
+			dispbottom "2  = Brute";
+			dispbottom "3  = Plant";
+			dispbottom "4  = Insect";
+			dispbottom "5  = Fish";
+			dispbottom "6  = Demon";
+			dispbottom "7  = Demi-Human";
+			dispbottom "8  = Angel";
+			dispbottom "9  = Dragon.";
+		} else {
+			$RaceType = .@ra;
+			announce "[Raza del Día]: ¡Doble experiencia cazando monstruos raza '"+.rname$[$RaceType]+"'!",bc_all,0x00FF2D;
+		}
+	} else if(.@atcmd_command$ == "@mdia") {
+		if(.@atcmd_parameters$[0] == "random") {
+			.@id = rand(0,getarraysize(.mobid));
+			$MobType = .mobid[.@id];
+			announce "[Monstruo del Día]: ¡Doble experiencia cazando '"+getmonsterinfo($MobType,0)+"'!",bc_all,0x00FF8D;
+		} else {
+			.@mobid = atoi(.@atcmd_parameters$[0]);
+			if( strmobinfo(3,.@mobid) ) {
+				$MobType = .@mobid;
+				announce "[Monstruo del Día]: ¡Doble experiencia cazando '"+getmonsterinfo($MobType,0)+"'!",bc_all,0x00FF8D;
+			} else
+				dispbottom "@mdia - La ID de este monstruo es inválida, usa '@mdia random' para elegir un monstruo al azar.";
+		}
+	}
+	end;
+}
+
+-	script	publicidad	-1,{
+OnInit:
+	initnpctimer;
+	end;
+OnTimer900000:
+	setarray .pubSTR$[0],	"¡En equipo todo es más fácil, organiza una 'party' (ALT+Z) y entrena con otros jugadores!",
+							"Los servicios de Kafra Corp. siempre serán más económicos con quienes tengan menos nivel",
+							"¿Quieres subir más rápido de nivel? ¡Visita Paradise Eden Group en '@go 16'!",
+							"¿Te quedas corto de SP?, cómprale las exclusivas Mana Potion que el Mercader Errante vende, lo interesante, será encontrarlo.",
+							"¡Todos los días hay Premios Diarios distintos! Conectate al menos '1 hora' al día para recibirlo.",
+							" Si usas '@commands' podrás conocer la lista de herramientas y su explicación!",
+							"Si necesitas Equipo básico, podrás encontrarlo en el sótano de la Oficina Central (@go 15)",
+							"¡Las Terceras Clases cuentan con la posibilidad de cambiar su vestimienta!, En '@go 15' con el Dress Room.",
+							"Cuando necesites Vender o Comprar algún objeto, habla por el canal de 'ventas'",
+							"¡El trabajo en Equipo, siempre es factor de éxito! Organiza una party y entre con otras personas.",
+							"¿Necesitas Soporte?: Contacta al Equipo de Asistencia y a los Ayudantes en el canal de 'soporte'",
+							"¡Visita la Oficina Central (@go 15) y descubre un mundo de posibilidades!",
+							"Si perteneces a uno de los 4 Clanes, podrás ver más detalles con CTRL + G.",
+							"Al morir uno de los miembros de tu party se mostrará una marca en el minimapa en el lugar donde hayas caído.",
+							"Puedes guardar rapido y fácil tus GamePlay desde el sistema Replay del Juego (Usa CTRL+X).",
+							"Si cazas al 'Monstruo del Día' podrás recibir el DOBLE DE EXPERIENCIA, ¡Aprovecha!",
+							"Si cazas a la 'Raza del Día' podrás recibir el DOBLE DE EXPERIENCIA, ¡Aprovecha!",
+							"El Grupo Eden tiene una amplia cantidad de misiones para tí y tus amigos en' @go 16'",
+							"¡Los oficios jamás producirán equipo que desbalancee a Poring RO, se enfocan principalmente en utilidad y diversión!",
+							"Siempre que necesites soporte podrás encontrar respuesta en el canal de 'soporte'",
+							"Si no te gustan los gremios; ¡incorporate a uno de los 4 Clanes disponibles en '@go 15' y obten los beneficios!",
+							"Al alcanzar Nivel 50, dirígete a la Oficina Central en Prontera para elegir uno de los 4 oficios secundarios.",
+							"¿Deseas crear objetos útiles y raros? ¡conviértete en carpintero!",
+							"¿Deseas crear mochilas, papel y utencilios? ¡conviértete en sastre!",
+							"¿Deseas tener un espíritu que te acompañe y juntar madera para los demás? ¡conviértete en carpintero!",
+							"¿Deseas escribir poderosos y valiosos contratos? ¡conviértete en escriba!",
+							"¿Deseas encantar todo tu equipo y el de los demás? ¡conviértete en encantador!",
+							"Los Illusion Dungeons están reservados a los líderes del territorio donde se encuentran.",
+							"Lucha con los demás gremios por obtener el liderazgo de un territorio en la ¡Guerra de Territorios!",
+							"Recuerda escribir @daily cuando hayas jugado una hora continua para obtener tu premio diario.",
+							"Recuerda ser competitivo, hay premios en los rankings de manera diaria, semanal y mensual.",
+							"Puedes mostrar un fabuloso mensaje cuando mates a un MvP, configurándolo con el Ranker en Prontera.",
+							"No ocupas estar metido en una sala para participar en las Battleground, solo escribe @joinbg y vota por tu modo preferido.",
+							"Recuerda usar @votar en su momento para que elijas tu evento favorito.",
+							"Para acceder a los Illusion Dungeon, debes tener permiso del gremio que gobierne el territorio correspondiente.",
+							"Garantizamos 0% corrupción debido a que Poring RO es un proyecto personal sin fines de lucro, con total seriedad y empeño posible.",
+							"¿Tienes dudas del objeto de alguien que ganó en un evento?, consúltalo con el Gato Premiador, él te mostrará todo.",
+							"Recuerda que utilizando el comando @noheal evitarás que la Healer de cualquier ciudad te autocure al pasar.",
+							"Recuerda que puedes consultar tus misiones usando la combinación de teclas ALT+U.",
+							"Recuerda consultar tu RODEX de vez en cuando, allí recibirás todos tus premios (Usa CTRL+M).";
+	.pubMSG = rand(0,getarraysize(.pubSTR$) - 1);
+	announce "[Tip]: "+.pubSTR$[.pubMSG],bc_all,0x80FF00,0,14,0,0;
+	stopnpctimer;
+	initnpctimer;
+	end;
+}

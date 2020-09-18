@@ -1,0 +1,337 @@
+-	script	MAIN_TRANSFER	-1,{
+OnInit:
+	setarray .table$,"name","class","base","job","top_head","top_ref","top_card","mid_head","mid_card","low_head","low_card","armor","armor_ref","armor_card","weapon","weapon_ref","weapon_card0","weapon_card1","weapon_card2","weapon_card3","weapon_enchant","shield","shield_ref","shield_card","boots","boots_ref","boots_card","garment","garment_ref","garment_card","acc1","acc1_card","acc2","acc2_card","is3rd",
+	"with_enchant","top_enchant1","top_enchant2","mid_enchant1","mid_enchant2","low_enchant1","low_enchant2","armor_enchant1","armor_enchant2","armor_enchant3","weapon_enchant1","weapon_enchant2","weapon_enchant3","garment_enchant1","garment_enchant2","garment_enchant3","shield_enchant1","shield_enchant2","boots_enchant1","boots_enchant2","boots_enchant3","acc_a_enchant1","acc_a_enchant2","acc_a_enchant3","acc_b_enchant1","acc_b_enchant2","acc_b_enchant3";
+	bindatcmd "transfer","MAIN_TRANSFER::OnCommand",6,99;
+	end;
+OnCommand:
+	.@pass = atoi(.@atcmd_parameters$[0]);
+	if(.@pass != 1236) {
+		dispbottom "Contraseña incorrecta.";
+		end;
+	}
+	function citem;
+	mes "[^cc6600Transferencia^000000]";
+	mes "Procederemos a realizar la transferencia, por favor lee atentamente cada solicitud para asegurarse de elegir la correcta.";
+	next;
+	mes "[^cc6600Transferencia^000000]";
+	mes "Primeramente ingresa correctamente el nombre del personaje que recibirá la transferencia.";
+	next;
+	input .@n$;
+	mes "[^cc6600Transferencia^000000]";
+	mes "Ahora ingresa el nombre de la clase.";
+	next;
+	input .@t$;
+	if(callfunc("F_GetClassId",.@t$) == 1) {
+		mes "La clase es incorrecta, cancelando.";
+		close;
+	}
+	.@a[1] = callfunc("F_GetClassId",.@t$);
+	next;
+	for(.@i = 2; .@i < getarraysize(.table$); .@i++) {
+		mes "[^cc6600Transferencia^000000]";
+		mes "Por favor ingresa: ^5533ff"+.table$[.@i]+"^000000.";
+		next;
+		input .@b;
+		if(getitemname(.@b) != "null")
+			citem .@b;
+		.@a[.@i] = .@b;
+
+		// Rompe la secuencia cuando no se requieren encantamientos para el equipo.
+		if(.table$[.@i] == "with_enchant" && .@b == 0)
+			break;
+	}
+	mes "[^cc6600Transferencia^000000]";
+	query_sql("INSERT INTO `char_transfer` (`name`) VALUE ('"+.@n$+"')");
+	for(.@c = 1; .@c < getarraysize(.table$); .@c++)
+		query_sql("UPDATE `char_transfer` SET `"+.table$[.@c]+"` = '"+.@a[.@c]+"' WHERE `name` = '"+.@n$+"'");
+	mes "Datos guardados.";
+	close;
+OnInitTransfer:
+	// Une la account_id del personaje con el script.
+	if($@AIDTRA548 < 1) {
+		dispbottom "* Un error ha ocurrido, repórtalo a un administrador.",0x000000;
+		end;
+	}
+	query_sql("SELECT `name`,`class`,`base`,`job`,`top_head`,`top_ref`,`top_card` FROM `char_transfer`",.@n$,.@cl,.@bl,.@jl,.@ti,.@tr,.@tc);
+	query_sql("SELECT `mid_head`,`mid_card`,`low_head`,`low_card` FROM `char_transfer`",.@mi,.@mc,.@li,.@lc);
+	query_sql("SELECT `armor`,`armor_ref`,`armor_card` FROM `char_transfer`",.@ai,.@ar,.@ac);
+	
+	// Variables de encantamiento
+	query_sql("SELECT `with_enchant`,`top_enchant1`,`top_enchant2` FROM `char_transfer`",.@z,.@zte1,.@zte2);
+	query_sql("SELECT `mid_enchant1`,`mid_enchant2`,`low_enchant1`,`low_enchant2` FROM `char_transfer`",.@zme1,.@zme2,.@zle1,.@zle2);
+	query_sql("SELECT `armor_enchant1`,`armor_enchant2`,`armor_enchant3` FROM `char_transfer`",.@zae1,.@zae2,.@zae3);
+	query_sql("SELECT `weapon_enchant1`,`weapon_enchant2`,`weapon_enchant3` FROM `char_transfer`",.@zwe1,.@zwe2,.@zwe3);
+	query_sql("SELECT `garment_enchant1`,`garment_enchant2`,`garment_enchant3` FROM `char_transfer`",.@zge1,.@zge2,.@zge3);
+	query_sql("SELECT `shield_enchant1`,`shield_enchant2`,`boots_enchant1`,`boots_enchant2`,`boots_enchant3` FROM `char_transfer`",.@zse1,.@zse2,.@zbe1,.@zbe2,.@zbe3);
+	query_sql("SELECT `acc_a_enchant1`,`acc_a_enchant2`,`acc_a_enchant3` FROM `char_transfer`",.@zaca1,.@zaca2,.@zaca3);
+	query_sql("SELECT `acc_b_enchant1`,`acc_b_enchant2`,`acc_b_enchant3` FROM `char_transfer`",.@zacb1,.@zacb2,.@zacb3);
+	attachrid($@AIDTRA548);
+	$@AIDTRA548 = 0;
+
+	// Funciones iniciales
+	function checkiscrimson;
+	function checkisviciousatk;
+	function checkisviciousmatk;
+	function levelmode;
+
+	// Revisa que el nombre del personaje corresponda.
+	for(.@i = 0; .@i < getarraysize(.@n$); .@i++) {
+		if(strcharinfo(0) == .@n$[.@i])
+			@a = .@i; // ID Global para la identificación en el Array.
+	}
+	if(@a < 1) {
+		dispbottom " * El nombre de tu personaje no corresponde con nuestra base de datos para transferencias.",0x000000;
+		end;
+	}
+	
+	if(BaseLevel > 1 || JobLevel > 1) {
+		dispbottom " * Superas el nivel requerido para la transferencia.",0x000000;
+		end;
+	}
+
+	pcblockmove getcharid(3),1;
+	query_sql("SELECT `weapon`,`weapon_ref`,`weapon_card0`,`weapon_card1`,`weapon_card2`,`weapon_card3`,`weapon_enchant` FROM `char_transfer`",.@wi,.@wr,.@wc,.@wc2,.@wc3,.@wc4,.@wE);
+	query_sql("SELECT `shield`,`shield_ref`,`shield_card` FROM `char_transfer`",.@si,.@sr,.@sc);
+	query_sql("SELECT `boots`,`boots_ref`,`boots_card` FROM `char_transfer`",.@bi,.@br,.@bc);
+	query_sql("SELECT `garment`,`garment_ref`,`garment_card`,`acc1`,`acc1_card`,`acc2`,`acc2_card`,`is3rd` FROM `char_transfer`",.@gi,.@gr,.@gc,.@aci1,.@acc1,.@aci2,.@acc2,.@no3er);
+
+	dispbottom " * Realizando transferencia, por favor sé paciente.",0x000000;
+	// Funciones para la subida de nivel correcta con cambio de clase para cada JOB.
+	atcommand "@blvl 9";
+	atcommand "@jlvl 9";
+	sleep2 3000;
+	@MAXBASE = (.@bl[@a] - (.@no3er[@a] ? 0 : 90));
+	@MAXJOB = (.@jl[@a]);
+	if(!.@no3er[@a]) {
+		@MAXBASE -= 9;
+		@MAXJOB -= 1;
+	}
+	switch(.@cl[@a]) {
+		default:
+			dispbottom "* Un error ha ocurrido, repórtalo a un administrador.",0x000000;
+			end;
+		case 4218: // Doram
+			atcommand "@job 4218";
+			atcommand "@blvl "+@MAXBASE;
+			atcommand "@jlvl "+@MAXJOB;
+			sleep2 3000;
+			break;
+		case 4215: // Rebellion
+			jobchange 24;
+			atcommand "@blvl 89";
+			atcommand "@jlvl 99";
+			sleep2 3000;
+			if(.@no3er[@a] < 1) {
+				jobchange 4215;
+				atcommand "@blvl "+@MAXBASE;
+				atcommand "@jlvl "+@MAXJOB;
+				sleep2 3000;
+			}
+			break;
+		case 4239://Star Emperor
+			levelmode 4046,4047,4239;
+			break;
+		case 4240://Soul Reaper
+			levelmode 4046,4049,4240;
+			break;
+		case 4211:
+		case 4212://KA/OB
+			jobchange 25;
+			atcommand "@blvl 89";
+			atcommand "@jlvl 99";
+			sleep2 3000;
+			if(.@no3er[@a] < 1) {
+				jobchange (Sex?"4211":"4212");
+				atcommand "@blvl "+@MAXBASE;
+				atcommand "@jlvl "+@MAXJOB;
+				sleep2 3000;
+			}
+			break;
+		case 4190://Super Novice Extended
+			jobchange 23;
+			atcommand "@blvl 89";
+			atcommand "@jlvl 99";
+			sleep2 3000;
+			if(.@no3er[@a] < 1) {
+				jobchange 4190;
+				atcommand "@blvl "+@MAXBASE;
+				atcommand "@jlvl "+@MAXJOB;
+				sleep2 3000;
+			}
+			break;
+		case 4060://Rune Knight Trans
+			levelmode 4002,4008,4060;
+			getitem 5746,1;
+			sleep2 500;
+			break;
+		case 4073://Royal Guard Trans
+			levelmode 4002,4015,4073;
+			getitem 5757,1;
+			sleep2 500;
+			break;
+		case 4061://Warlock Trans
+			levelmode 4003,4010,4061;
+			getitem 5753,1;
+			sleep2 500;
+			break;
+		case 4074://Sorcerer Trans
+			levelmode 4003,4017,4074;
+			getitem 5756,1;
+			sleep2 500;
+			break;
+		case 4062://Ranger Trans
+			levelmode 4004,4013,4062;
+			getitem 5748,1;
+			sleep2 500;
+			break;
+		case 4075://Minstrel/Wanderer Trans
+			levelmode 4004,(Sex?"4020":"4021"),(Sex?"4075":"4076");
+			getitem (Sex?"5751":"5758"),1;
+			sleep2 500;
+			break;
+		case 4063://Arch Bishop Trans
+			levelmode 4005,4009,4063;
+			getitem 5747,1;
+			sleep2 500;
+			break;
+		case 4077://Sura Trans
+			levelmode 4027,4016,4077;
+			getitem 5754,1;
+			sleep2 500;
+			break;
+		case 4064://Mechanic Trans
+			levelmode 4006,4011,4064;
+			getitem 5760,1;
+			sleep2 500;
+			break;
+		case 4078://Genetic Trans
+			levelmode 4006,4019,4078;
+			getitem 5752,1;
+			sleep2 500;
+			break;
+		case 4065://Guillotine Cross Trans
+			levelmode 4007,4013,4065;
+			getitem 5755,1;
+			sleep2 500;
+			break;
+		case 4079://Shadow Chaser Trans
+			levelmode 4007,4018,4079;
+			getitem 5750,1;
+			sleep2 500;
+			break;
+	}
+
+	//Obtención de Objetos.
+	if(.@ti[@a] > 0)
+		getitem2 .@ti[@a],1,1,.@tr[@a],0,.@tc[@a],0,(.@z[@a]?.@zte2[@a]:0),(.@z[@a]?.@zte1[@a]:0);
+	sleep2 1000;
+	if(.@mi[@a] > 0)
+		getitem2 .@mi[@a],1,1,0,0,.@mc[@a],0,(.@z[@a]?.@zme2[@a]:0),(.@z[@a]?.@zme1[@a]:0);
+	sleep2 1000;
+	if(.@li[@a] > 0)
+		getitem2 .@li[@a],1,1,0,0,.@lc[@a],0,(.@z[@a]?.@zle2[@a]:0),(.@z[@a]?.@zle1[@a]:0);
+	sleep2 1000;
+	if(.@ai[@a] > 0)
+		getitem2 .@ai[@a],1,1,.@ar[@a],0,.@ac[@a],(.@z[@a]?.@zae3[@a]:0),(.@z[@a]?.@zae2[@a]:0),(.@z[@a]?.@zae1[@a]:0);
+	sleep2 1000;
+	if(.@wi[@a] > 0) {
+		if(.@wE[@a] && (checkiscrimson(.@wi[@a]) || checkisviciousatk(.@wi[@a]) || checkisviciousmatk(.@wi[@a])))
+			getitem3 .@wi[@a],1,1,.@wr[@a],0,.@wc[@a],( (.@z[@a] && .@zwe3[@a])? .@zwe3[@a]:.@wc2[@a]),( (.@z[@a] && .@zwe2[@a])? .@zwe2[@a]:.@wc3[@a]),( (.@z[@a] && .@zwe1[@a])? .@zwe1[@a]:.@wc4[@a]),@TransferOptID,@TransferOptVal,@TransferOptParam;
+		else
+			getitem2 .@wi[@a],1,1,.@wr[@a],0,.@wc[@a],( (.@z[@a] && .@zwe3[@a])? .@zwe3[@a]:.@wc2[@a]),( (.@z[@a] && .@zwe2[@a])? .@zwe2[@a]:.@wc3[@a]),( (.@z[@a] && .@zwe1[@a])? .@zwe1[@a]:.@wc4[@a]);
+	}
+	sleep2 1000;
+	if(.@si[@a] > 0)
+		getitem2 .@si[@a],1,1,.@sr[@a],0,.@sc[@a],0,(.@z[@a]?.@zse2[@a]:0),(.@z[@a]?.@zse1[@a]:0);
+	sleep2 1000;
+	if(.@bi[@a] > 0)
+		getitem2 .@bi[@a],1,1,.@br[@a],0,.@bc[@a],(.@z[@a]?.@zbe3[@a]:0),(.@z[@a]?.@zbe2[@a]:0),(.@z[@a]?.@zbe1[@a]:0);
+	sleep2 1000;
+	if(.@gi[@a] > 0)
+		getitem2 .@gi[@a],1,1,.@gr[@a],0,.@gc[@a],(.@z[@a]?.@zge3[@a]:0),(.@z[@a]?.@zge2[@a]:0),(.@z[@a]?.@zge1[@a]:0);
+	sleep2 1000;
+	if(.@aci1[@a] > 0)
+		getitem2 .@aci1[@a],1,1,0,0,.@acc1[@a],(.@z[@a]?.@zaca3[@a]:0),(.@z[@a]?.@zaca2[@a]:0),(.@z[@a]?.@zaca1[@a]:0);
+	sleep2 1000;
+	if(.@aci2[@a] > 0)
+		getitem2 .@aci2[@a],1,1,0,0,.@acc2[@a],(.@z[@a]?.@zacb3[@a]:0),(.@z[@a]?.@zacb2[@a]:0),(.@z[@a]?.@zacb1[@a]:0);
+	sleep2 1000;
+	dispbottom "* Tus objetos han sido entregados exitósamente.",0x000000;
+	pcblockmove getcharid(3),0;
+	end;
+	function	levelmode	{
+		jobchange getarg(0);
+		atcommand "@blvl 41";
+		atcommand "@jlvl 49";
+		sleep2 3000;
+		jobchange getarg(1);
+		atcommand "@blvl 49";
+		atcommand "@jlvl 69";
+		sleep2 3000;
+		if(.@no3er[@a] < 1) {
+			jobchange getarg(2);
+			atcommand "@blvl "+@MAXBASE;
+			atcommand "@jlvl "+@MAXJOB;
+			sleep2 3000;
+		}
+		return;
+	}
+	function	checkiscrimson	{
+		setarray .@TransferOpt_ELEMENT,RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS;
+		setarray .@crim,28604,28705,13327,28007,1839,1498,16040,13127,1680,13454,1443,2025,28106,21015,1939,1995;
+		for( .@c = 0; .@c < getarraysize(.@crim); .@c++ ) {
+			if(getarg(0) == .@crim[.@c]) {
+				setarray @TransferOptID[0],.@TransferOpt_ELEMENT[rand(6)];
+				setarray @TransferOptVal[0],1;
+				setarray @TransferOptParam[0],1;
+				return 1;
+			} else return 0;
+		}
+	}
+	function	checkisviciousatk	{
+		setarray .@SLOT_1ATK,RDMOPT_DAMAGE_PROPERTY_WATER_TARGET,RDMOPT_DAMAGE_PROPERTY_GROUND_TARGET,RDMOPT_DAMAGE_PROPERTY_FIRE_TARGET,RDMOPT_DAMAGE_PROPERTY_WIND_TARGET,RDMOPT_DAMAGE_PROPERTY_POISON_TARGET,RDMOPT_DAMAGE_PROPERTY_SAINT_TARGET,RDMOPT_DAMAGE_PROPERTY_DARKNESS_TARGET,RDMOPT_DAMAGE_PROPERTY_TELEKINESIS_TARGET,RDMOPT_DAMAGE_PROPERTY_UNDEAD_TARGET,RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS,RDMOPT_HEAL_VALUE,RDMOPT_DAMAGE_SIZE_PERFECT,RDMOPT_WEAPON_INDESTRUCTIBLE;
+		setarray .@SLOT_1ATKc,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,20,1,1;
+		setarray .@SLOT_2ATK,RDMOPT_CLASS_DAMAGE_BOSS_TARGET,RDMOPT_DAMAGE_PROPERTY_NOTHING_USER,RDMOPT_RACE_DAMAGE_UNDEAD,RDMOPT_RACE_DAMAGE_ANIMAL,RDMOPT_RACE_DAMAGE_PLANT,RDMOPT_RACE_DAMAGE_INSECT,RDMOPT_RACE_DAMAGE_FISHS,RDMOPT_RACE_DAMAGE_DEVIL,RDMOPT_RACE_DAMAGE_HUMAN,RDMOPT_RACE_DAMAGE_ANGEL,RDMOPT_RACE_DAMAGE_DRAGON,RDMOPT_RACE_IGNORE_DEF_PERCENT_UNDEAD,RDMOPT_RACE_IGNORE_DEF_PERCENT_ANIMAL,RDMOPT_RACE_IGNORE_DEF_PERCENT_PLANT,RDMOPT_RACE_IGNORE_DEF_PERCENT_INSECT,RDMOPT_RACE_IGNORE_DEF_PERCENT_FISHS,RDMOPT_RACE_IGNORE_DEF_PERCENT_DEVIL,RDMOPT_RACE_IGNORE_DEF_PERCENT_HUMAN,RDMOPT_RACE_IGNORE_DEF_PERCENT_ANGEL,RDMOPT_RACE_IGNORE_DEF_PERCENT_DRAGON;
+		setarray .@SLOT_2ATKc,20,rand(16,25),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20);
+		setarray .@SLOT_3ATK,RDMOPT_RANGE_ATTACK_DAMAGE_TARGET,RDMOPT_DEC_SP_CONSUMPTION,RDMOPT_DEC_SPELL_DELAY_TIME,RDMOPT_DEC_SPELL_CAST_TIME,RDMOPT_DAMAGE_CRI_TARGET,RDMOPT_VAR_CRITICALSUCCESSVALUE,RDMOPT_VAR_ATTPOWER,RDMOPT_VAR_STRAMOUNT,RDMOPT_VAR_AGIAMOUNT,RDMOPT_VAR_VITAMOUNT,RDMOPT_VAR_INTAMOUNT,RDMOPT_VAR_DEXAMOUNT,RDMOPT_VAR_LUKAMOUNT;
+		setarray .@SLOT_3ATKc,rand(13,20),5,rand(5,20),rand(1,20),rand(1,20),rand(10,19),rand(4,47),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10);
+		setarray .@vatk,1600,28605,2026,28107,21016,1900,1996,18121,28605,28706,13328,28008,1800,1450,16041,13128,13455,1400;
+		for( .@v = 0; .@v < getarraysize(.@vatk); .@v++ ) {
+			if(getarg(0) == .@vatk[.@v]) {
+				setarray @RandId[0],rand(0,(getarraysize(.@SLOT_1ATK)-1)),rand(0,(getarraysize(.@SLOT_2ATK)-1)),rand(0,(getarraysize(.@SLOT_3ATK)-1));
+				setarray @TransferOptID[0],.@SLOT_1ATK[(@RandId[0])],.@SLOT_2ATK[(@RandId[1])],.@SLOT_3ATK[(@RandId[2])];
+				setarray @TransferOptVal[0],.@SLOT_1ATKc[(@RandId[0])],.@SLOT_2ATKc[(@RandId[1])],.@SLOT_3ATKc[(@RandId[2])];
+				setarray @TransferOptParam[0],1,1,1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	function	checkisviciousmatk	{
+		setarray .@SLOT_1MATK,RDMOPT_MDAMAGE_PROPERTY_WATER_TARGET,RDMOPT_MDAMAGE_PROPERTY_GROUND_TARGET,RDMOPT_MDAMAGE_PROPERTY_FIRE_TARGET,RDMOPT_MDAMAGE_PROPERTY_WIND_TARGET,RDMOPT_MDAMAGE_PROPERTY_POISON_TARGET,RDMOPT_MDAMAGE_PROPERTY_SAINT_TARGET,RDMOPT_MDAMAGE_PROPERTY_DARKNESS_TARGET,RDMOPT_MDAMAGE_PROPERTY_TELEKINESIS_TARGET,RDMOPT_MDAMAGE_PROPERTY_UNDEAD_TARGET,RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS,RDMOPT_HEAL_VALUE,RDMOPT_DAMAGE_SIZE_PERFECT,RDMOPT_WEAPON_INDESTRUCTIBLE;
+		setarray .@SLOT_1MATKc,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,20,1,1;
+		setarray .@SLOT_2MATK,RDMOPT_CLASS_MDAMAGE_BOSS_TARGET,RDMOPT_MDAMAGE_PROPERTY_NOTHING_USER,RDMOPT_RACE_MDAMAGE_UNDEAD,RDMOPT_RACE_MDAMAGE_ANIMAL,RDMOPT_RACE_MDAMAGE_PLANT,RDMOPT_RACE_MDAMAGE_INSECT,RDMOPT_RACE_MDAMAGE_FISHS,RDMOPT_RACE_MDAMAGE_DEVIL,RDMOPT_RACE_MDAMAGE_HUMAN,RDMOPT_RACE_MDAMAGE_ANGEL,RDMOPT_RACE_MDAMAGE_DRAGON,RDMOPT_RACE_IGNORE_MDEF_PERCENT_UNDEAD,RDMOPT_RACE_IGNORE_MDEF_PERCENT_ANIMAL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_PLANT,RDMOPT_RACE_IGNORE_MDEF_PERCENT_INSECT,RDMOPT_RACE_IGNORE_MDEF_PERCENT_FISHS,RDMOPT_RACE_IGNORE_MDEF_PERCENT_DEVIL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_HUMAN,RDMOPT_RACE_IGNORE_MDEF_PERCENT_ANGEL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_DRAGON;
+		setarray .@SLOT_2MATKc,20,rand(16,25),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20);
+		setarray .@SLOT_3MATK,RDMOPT_DEC_SP_CONSUMPTION,RDMOPT_DEC_SPELL_DELAY_TIME,RDMOPT_DEC_SPELL_CAST_TIME,RDMOPT_VAR_ATTMPOWER,RDMOPT_VAR_STRAMOUNT,RDMOPT_VAR_AGIAMOUNT,RDMOPT_VAR_VITAMOUNT,RDMOPT_VAR_INTAMOUNT,RDMOPT_VAR_DEXAMOUNT,RDMOPT_VAR_LUKAMOUNT;
+		setarray .@SLOT_3MATKc,5,rand(5,20),rand(1,20),rand(4,50),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10);
+		setarray .@vmatk,1600,2026;
+		for( .@m = 0; .@m < getarraysize(.@vmatk); .@m++ ) {
+			if(getarg(0) == .@vmatk[.@m]) {
+				setarray @RandId[0],rand(0,(getarraysize(.@SLOT_1MATK)-1)),rand(0,(getarraysize(.@SLOT_2MATK)-1)),rand(0,(getarraysize(.@SLOT_3MATK)-1));
+				setarray @TransferOptID[0],.@SLOT_1MATK[(@RandId[0])],.@SLOT_2MATK[(@RandId[1])],.@SLOT_3MATK[(@RandId[2])];
+				setarray @TransferOptVal[0],.@SLOT_1MATKc[(@RandId[0])],.@SLOT_2MATKc[(@RandId[1])],.@SLOT_3MATKc[(@RandId[2])];
+				setarray @TransferOptParam[0],1,1,1;
+				return 1;
+			} else return 0;
+		}
+	}
+	function	citem	{
+		mes "[^cc6600Transferencia^000000]";
+		mes "¿Estás segur"+(Sex?"o":"a")+" de elegir","<ITEM>"+getitemname(getarg(0))+"<INFO>"+getarg(0)+"</INFO></ITEM>?";
+		next;
+		if(select("Así es:No es así, reiniciar todo") == 2)
+			close;
+		else return;
+	}
+}

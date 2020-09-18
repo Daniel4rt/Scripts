@@ -1,0 +1,166 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---           Guerra de Territorios: Core           ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	script	Yd_Manager::Yd_Manager	-1,{
+	end;
+OnWarStart:
+	if( strnpcinfo(0) == "Yd_Manager")
+		end;
+	TerritoryOn strnpcinfo(2);
+
+OnStartField:
+	if(strnpcinfo(2) == "pay_fild08")
+		setarray .@e,141,152;
+	else if(strnpcinfo(2) == "tur_dun01")
+		setarray .@e,166,133;
+	else if(strnpcinfo(2) == "gef_dun01")
+		setarray .@e,104,122;
+	else if(strnpcinfo(2) == "ice_dun01")
+		setarray .@e,150,248;
+	else if(strnpcinfo(2) == "ein_fild05")
+		setarray .@e,261,180;
+	else if(strnpcinfo(2) == "cmd_fild02")
+		setarray .@e,93,79;
+	else
+		end;
+	if(strnpcinfo(2) == "pay_fild08")
+		donpcevent "::OnRecvFieldPay";
+	else if(strnpcinfo(2) == "tur_dun01")
+		donpcevent "::OnRecvFieldTur";
+	else if(strnpcinfo(2) == "gef_dun01")
+		donpcevent "::OnRecvFieldGef";
+	else if(strnpcinfo(2) == "ice_dun01")
+		donpcevent "::OnRecvFieldIce";
+	else if(strnpcinfo(2) == "ein_fild05")
+		donpcevent "::OnRecvFieldEin";
+	else if(strnpcinfo(2) == "cmd_fild02")
+		donpcevent "::OnRecvFieldCmd";
+	else
+		end;
+	.@GID = getterritoryowner(strnpcinfo(2));
+	if (!mobcount(strnpcinfo(2),"War#"+strnpcinfo(2)+"::OnWarBreak"))
+		smob strnpcinfo(2),.@e[0],.@e[1],"Emperium",20088,0,1,.@GID,0,0,0,0,0,0,0,1,0,0,"War#"+strnpcinfo(2)+"::OnWarBreak";
+	end;
+
+OnWarBreak:
+	.@GID = getcharid(2);
+	if (.@GID <= 0) {
+		set .@notice$,"El personaje "+strcharinfo(0)+" ("+getcharid(0)+") ha roto el emperium en el territorio: "+strnpcinfo(2)+" sin una guild. Ninguna información será guardada y el emperium será respawneado.";
+ 		logmes .@notice$; debugmes .@notice$;
+		donpcevent "War#"+strnpcinfo(2)+"::OnStartField";
+		atcommand "@jailfor 1h "+strcharinfo(0);
+		end;
+	}
+	callfunc "RankEmperium",.@GID;
+	setterritory strnpcinfo(2),.@GID;
+	if(strnpcinfo(2) == "pay_fild08")
+		setarray .@e,141,152;
+	else if(strnpcinfo(2) == "tur_dun01")
+		setarray .@e,166,133;
+	else if(strnpcinfo(2) == "gef_dun01")
+		setarray .@e,104,122;
+	else if(strnpcinfo(2) == "ice_dun01")
+		setarray .@e,150,248;
+	else if(strnpcinfo(2) == "ein_fild05")
+		setarray .@e,261,180;
+	else if(strnpcinfo(2) == "cmd_fild02")
+		setarray .@e,93,79;
+	else
+		end;
+	warpguild strnpcinfo(2),.@e[0],.@e[1],.@GID;
+	sleep 500;
+	if( warcheck() )
+		donpcevent "War#"+strnpcinfo(2)+"::OnStartField";
+	sleep 7000;
+	announce "El territorio [ " + getterritoryname(strnpcinfo(2)) + " ] ha sido conquistado por el gremio [" + getguildname(.@GID) + "].",bc_all|bc_woe;
+	end;
+
+OnWarEnd:
+	if( strnpcinfo(0) == "Yd_Manager")
+		end;
+	TerritoryOff strnpcinfo(2);
+	killmonster strnpcinfo(2),"War#"+strnpcinfo(2)+"::OnWarBreak";
+	end;
+
+OnGuildBreak:
+	if( strnpcinfo(0) == "Yd_Manager")
+		end;
+	setterritory strnpcinfo(2),0;
+	announce "El territorio [ " + getterritoryname(strnpcinfo(2)) + " ] ha sido abandonado.",0;
+	donpcevent strnpcinfo(0)+"::OnRecvField";
+	end;
+
+OnRecvField:
+OnWarInit:
+	if( strnpcinfo(0) == "Yd_Manager")
+		end;
+	.@GID = getterritoryowner(strnpcinfo(2));
+	if(.@GID == 0 && warcheck()) {
+		if(strnpcinfo(2) == "pay_fild08")
+			setarray .@e,141,152;
+		else if(strnpcinfo(2) == "tur_dun01")
+			setarray .@e,166,133;
+		else if(strnpcinfo(2) == "gef_dun01")
+			setarray .@e,104,122;
+		else if(strnpcinfo(2) == "ice_dun01")
+			setarray .@e,150,248;
+		else if(strnpcinfo(2) == "ein_fild05")
+			setarray .@e,261,180;
+		else if(strnpcinfo(2) == "cmd_fild02")
+			setarray .@e,93,79;
+		else
+			end;
+		donpcevent "War#"+strnpcinfo(2)+"::OnStartField";
+		end;
+	} else {
+		if(strnpcinfo(2) == "pay_fild08")
+			donpcevent "::OnRecvFieldPay";
+		else if(strnpcinfo(2) == "tur_dun01")
+			donpcevent "::OnRecvFieldTur";
+		else if(strnpcinfo(2) == "gef_dun01")
+			donpcevent "::OnRecvFieldGef";
+		else if(strnpcinfo(2) == "ice_dun01")
+			donpcevent "::OnRecvFieldIce";
+		else if(strnpcinfo(2) == "ein_fild05")
+			donpcevent "::OnRecvFieldEin";
+		else if(strnpcinfo(2) == "cmd_fild02")
+			donpcevent "::OnRecvFieldCmd";
+		else
+			end;
+	}
+
+OnTouch:
+	if(warcheck() && (strnpcinfo(2) == "pay_fild08" ||
+					  strnpcinfo(2) == "tur_dun01" ||
+					  strnpcinfo(2) == "gef_dun01" ||
+					  strnpcinfo(2) == "ice_dun01" ||
+					  strnpcinfo(2) == "ein_fild05" ||
+					  strnpcinfo(2) == "cmd_fild02"
+	)) {
+		if(!getcharid(2)) {
+			sleep3 1000;
+			warp "prontera",156,172;
+			sleep3 2100;
+			dispbottom "Por el momento no puedes ingresar a este mapa sin ser parte de un gremio.",0x000000;
+		} else {
+			query_sql("SELECT `emblem_id` FROM `guild` WHERE `guild_id` = '"+getcharid(2)+"'",.@e);
+			if(.@e < 1) {
+				sleep3 1000;
+				warp "prontera",156,172;
+				sleep3 2100;
+				dispbottom "No puedes ingresar sin un emblema de gremio.",0x000000;
+			}
+		}
+	}
+	end;
+}

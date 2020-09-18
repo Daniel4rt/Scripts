@@ -1,0 +1,61 @@
+prontera,164,170,2	script	Máquina de Tickets#evt	562,{
+	mes "[^CC0000Tickets Eventos^000000]";
+	mes "^777777La pantalla muestra el mensaje:^000000";
+	mes "¿Has venido a cambiar tus ^0000ccEvent Ticket^000000?";
+	mes " ","^777777 - selecciona una opción:^000000";
+	next;
+	switch(select("Cambiar mi Event Ticket:¿Qué es un Event Ticket?:^777777Salir^000000")) {
+		case 1:
+			if(countitem(7711) < 1) {
+				mes "^777777No has depositado nada, la máquina se ha apagado.^000000";
+				close;
+			}
+			mes "[^CC0000Tickets Eventos^000000]";
+			mes "¡Perfecto!";
+			mes "^777777Has depositado tu Event Ticket en la máquina...^000000";
+			close2;
+			delitem 7711,1;
+			setarray .@it_1,1030,7451,7652,7109,7165,7023,7566,2576,2589,28901,616,5436,5447,5253,5365,5099,5554,5529,5181,5214,5520,5511,5288,5445,5272,5304,5294;
+			setarray .@it_2,9062,20512,12103,12214,12263,7619,14540,12106,14592,7620,12213;
+			setarray .@it_3,9001,7773,7829,7828,12209,603,617,12105,14234,12211;
+			setarray .@it_4,741,505,547,rand(12118,12121),rand(12717,12724),678,rand(13260,13264),rand(12202,12207),12424,12298,12428,12016,12299;
+			.@a = rand(100);
+			if(.@a <= 100) {
+				.@i = 4;
+				.@c = rand(10,20);
+			}
+			if(.@a <= 70) {
+				.@i = 3;
+				.@c = rand(10,15);
+			}
+			if(.@a <= 40) {
+				.@i = 2;
+				.@c = 1;
+			}
+			if(.@a <= 10) {
+				.@i = .@c = 1;
+			}	
+			.@id = getd(".@it_"+.@i+"["+rand(getarraysize(getd(".@it_"+.@i)))+"]");
+			getitem .@id,.@c;
+			F_LogItem 1,getcharid(0),strcharinfo(0),.@id,.@c,"(NPC) Máquina de Tickets";
+			end;
+		case 2:
+			mes "[^CC0000Tickets Eventos^000000]";
+			mes "Los Event Ticket son unos objetos que podrás intercambiar aquí por diferentes premios.";
+			next;
+			mes "[^CC0000Tickets Eventos^000000]";
+			mes "Los premios que recibirás aquí són muy variables, puede que tengas mucha suerte y recibas un gran premio o tener una suerte mediocre y recibir algo no tan bueno.";
+			next;
+			mes "[^CC0000Tickets Eventos^000000]";
+			mes "Es como una loteria en la que podrás recibir:";
+			mes "- Consumibles";
+			mes "- Algun elemento decorativo único";
+			mes "- Medallas de Battlegrounds";
+			mes "¡y algún premio sorpresa más!";
+			close;
+		case 3:
+			mes "^777777La máquina se ha apagado.^000000";
+			close;
+	}
+	end;
+}

@@ -1,0 +1,768 @@
+//============================================================
+//= Illusion Moonlight Quest NPC
+//============================================================
+pay_d03_i,143,46,4	script	Illusion Moonlight Manager#moonlight	4_M_PAY_SOLDIER,{
+function level_check;
+function check_quest;
+function on_reward;
+function check_cd;
+level_check();
+check_quest();
+check_cd(.cooldown_id);
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "You seem strong enough, do you want to do a task for me?";
+next;
+if(select("Yes:No") == 2){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "I see, then come back when you change your mind.";
+	close;
+}
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Recently the bothered spirits population inside the Moonlight dungeon is getting bigger and bigger.";
+mes "I need to reduce the population or else it would ruin the balance in there.";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "I have several tasks available, please choose one.";
+next;
+.@menu_size = getarraysize(.task_name$);
+for ( .@i = 0; .@i < .@menu_size; .@i++ ){
+	.@menu$ = .@menu$ + ""+.task_name$[.@i]+"" + ":";
+}
+.@i = select(.@menu$) -1;
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes ""+.mes_chat$[.@i]+"";
+		mes "I want you to eliminate it to maintain the balance.";
+		mes "Please hunt ^0000FF"+.hunt_list$[.@i]+"^000000.";
+		setquest .quest_id[.@i];
+		end;
+		
+		
+
+function	level_check	{
+if(BaseLevel < .min_level){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "How about me?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Do you want to die? You aren't strong enough you need to be atleast ^0000FFLevel 100^000000 for this job.";
+	end;
+	}
+return;
+}
+
+function	check_cd	{
+	.@cooldown = checkquest(getarg(0),PLAYTIME);
+	if (.@cooldown == 0 || .@cooldown == 1) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "You can only do the quest once a day.";
+		mes "The quest will reset in ^0000FF4:00 A.M^000000";
+		end;
+	} else if (.@cooldown == 2) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "Are you willing to go to the dungeon for me again?";
+		erasequest getarg(0);
+		end;
+	}
+	return;
+}
+
+function	on_reward	{
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Thank you for doing this task for me.";
+	mes "The Quest resets at 4:00AM.";
+	getitem getarg(0),getarg(1);
+	erasequest getarg(2);
+	setquest getarg(3);
+	end;
+}
+
+
+function	check_quest	{
+	callsub M_Hunt_One,.quest_id[0],.hunt_list$[0];
+	callsub M_Hunt_Two,.quest_id[1],.hunt_list$[1];
+	callsub M_Hunt_Three,.quest_id[2],.hunt_list$[2];
+	callsub M_Hunt_Four,.quest_id[3],.hunt_list$[3];
+	}
+
+M_Hunt_One:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+M_Hunt_Two:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+M_Hunt_Three:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000. Come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+M_Hunt_Four:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000. Come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+
+OnInit:
+.min_level = 100;
+.reward_id = 25271;
+.reward_amount = 1;
+.cooldown_id = 80005;
+setarray .task_name$, "The Egoist Wizard", "The Naive Hero", "The Fox and The Archer", "The Resentful Humans";
+setarray .quest_id, 80001, 80002, 80003, 80004;
+setarray .mes_chat$, "Seems to be a strong wizard with a high sense of pride has appeared in the dungeon.",
+"A regretful naive hero's spirit just appeared in the dungeon and causing havoc inside it.",
+"Recently the population of nine-tails and skeleton archers are increasing inside.",
+"A wondering spirit and a regretful one.. I want you to lay them to rest.";
+setarray .hunt_list$, "The Truthful Wizard", "The Furious Hero", "20 Furious Ninetails and 20 Resentful Archer Skeleton", "20 Resentful Munak and 20 Resentful Bongun";
+end;
+}
+
+//============================================================
+//= Illusion Vampire Quest NPC
+//============================================================
+gef_d01_i,109,230,4	script	Illusion Vampire Manager#vampire	4_ENERGY_BLUE,{
+function level_check;
+function check_quest;
+function on_reward;
+function check_cd;
+level_check();
+check_quest();
+check_cd(.cooldown_id);
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "You seem strong enough, do you want to do a task for me?";
+next;
+if(select("Yes:No") == 2){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "I see, then come back when you change your mind.";
+	close;
+}
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Recently the bothered spirits population inside the Moonlight dungeon is getting bigger and bigger.";
+mes "I need to reduce the population or else it would ruin the balance in there.";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "I have several tasks available, please choose one.";
+next;
+.@menu_size = getarraysize(.task_name$);
+for ( .@i = 0; .@i < .@menu_size; .@i++ ){
+	.@menu$ = .@menu$ + ""+.task_name$[.@i]+"" + ":";
+}
+.@i = select(.@menu$) -1;
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes ""+.mes_chat$[.@i]+"";
+		mes "I want you to go hunt in the Vampire Illusion Dungeon for me.";
+		mes "Please hunt ^0000FF"+.hunt_list$[.@i]+"^000000.";
+		setquest .quest_id[.@i];
+		end;
+		
+		
+
+function	level_check	{
+if(BaseLevel < .min_level){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "How about me?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Do you want to die? You aren't strong enough you need to be atleast ^0000FFLevel 100^000000 for this job.";
+	end;
+	}
+return;
+}
+
+function	check_cd	{
+	.@cooldown = checkquest(getarg(0),PLAYTIME);
+	if (.@cooldown == 0 || .@cooldown == 1) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "You can only do the quest once a day.";
+		mes "The quest will reset in ^0000FF4:00 A.M^000000";
+		end;
+	} else if (.@cooldown == 2) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "Are you willing to go to the dungeon for me again?";
+		erasequest getarg(0);
+		end;
+	}
+	return;
+}
+
+function	on_reward	{
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Thank you for doing this task for me.";
+	mes "The Quest resets at 4:00AM.";
+	getitem getarg(0),getarg(1);
+	erasequest getarg(2);
+	setquest getarg(3);
+	end;
+}
+
+
+function	check_quest	{
+	callsub V_Hunt_One,.quest_id[0],.hunt_list$[0];
+	callsub V_Hunt_Two,.quest_id[1],.hunt_list$[1];
+	callsub V_Hunt_Three,.quest_id[2],.hunt_list$[2];
+	}
+
+V_Hunt_One:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+V_Hunt_Two:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+V_Hunt_Three:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000. Come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+
+OnInit:
+.min_level = 100;
+.reward_id = 25255;
+.reward_amount = 1;
+.cooldown_id = 80009;
+setarray .task_name$, "The Forsaken Mage", "The Bat and Dangerous Mushroom", "The Resentful Undeads";
+setarray .quest_id, 80006, 80007, 80008;
+setarray .mes_chat$, "Seems to be the ghost of the Forsaken Mage is roaming around in the Vampire dungeon.",
+"A lot of bats and a very poisonous mushroom is appearing the dungeon.",
+"These never resting souls needs to be worked on else they will roam around forever.";
+setarray .hunt_list$, "Bomi", "20 Matt Drainliar and 20 Ghastly Black Mushroom", "20 Restless Zombie and 20 Restless Ghoul";
+end;
+}
+
+
+//============================================================
+//= Illusion Frozen Quest NPC
+//============================================================
+ice_d03_i,151,30,4	script	Illusion Frozen Manager#frozen	4_ENERGY_RED,{
+function level_check;
+function check_quest;
+function on_reward;
+function check_cd;
+level_check();
+check_quest();
+check_cd(.cooldown_id);
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "You seem strong enough, do you want to do a task for me?";
+next;
+if(select("Yes:No") == 2){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "I see, then come back when you change your mind.";
+	close;
+}
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Recently the bothered spirits population inside the Moonlight dungeon is getting bigger and bigger.";
+mes "I need to reduce the population or else it would ruin the balance in there.";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "I have several tasks available, please choose one.";
+next;
+.@menu_size = getarraysize(.task_name$);
+for ( .@i = 0; .@i < .@menu_size; .@i++ ){
+	.@menu$ = .@menu$ + ""+.task_name$[.@i]+"" + ":";
+}
+.@i = select(.@menu$) -1;
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes ""+.mes_chat$[.@i]+"";
+		mes "I want you to go hunt in the Frozen Illusion Dungeon for me.";
+		mes "Please hunt ^0000FF"+.hunt_list$[.@i]+"^000000.";
+		setquest .quest_id[.@i];
+		end;
+		
+		
+
+function	level_check	{
+if(BaseLevel < .min_level){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "How about me?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Do you want to die? You aren't strong enough you need to be atleast ^0000FFLevel 100^000000 for this job.";
+	end;
+	}
+return;
+}
+
+function	check_cd	{
+	.@cooldown = checkquest(getarg(0),PLAYTIME);
+	if (.@cooldown == 0 || .@cooldown == 1) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "You can only do the quest once a day.";
+		mes "The quest will reset in ^0000FF4:00 A.M^000000";
+		end;
+	} else if (.@cooldown == 2) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "Are you willing to go to the dungeon for me again?";
+		erasequest getarg(0);
+		end;
+	}
+	return;
+}
+
+function	on_reward	{
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Thank you for doing this task for me.";
+	mes "The Quest resets at 4:00AM.";
+	getitem getarg(0),getarg(1);
+	erasequest getarg(2);
+	setquest getarg(3);
+	end;
+}
+
+
+function	check_quest	{
+	callsub F_Hunt_One,.quest_id[0],.hunt_list$[0];
+	callsub F_Hunt_Two,.quest_id[1],.hunt_list$[1];
+	callsub F_Hunt_Three,.quest_id[2],.hunt_list$[2];
+	}
+
+F_Hunt_One:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+F_Hunt_Two:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+F_Hunt_Three:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000. Come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+
+OnInit:
+.min_level = 100;
+.reward_id = 25271;
+.reward_amount = 1;
+.cooldown_id = 80013;
+setarray .task_name$, "The Diamond like Iceicle", "The Totem and The Caveman", "The Ice Giant";
+setarray .quest_id, 80010, 80011, 80012;
+setarray .mes_chat$, "I'm in dire need of samples from the diamond like monster in the Illusion Frozen Dungeon.",
+"A lot of adventurers are getting injured because of these two beast.",
+"The Titans of the Frozen are needed to be hunt down. They are causing great problems in the Dungeon.";
+setarray .hunt_list$, "20 Solid Iceicle", "20 Furious Gazetti and 20 Furious Snowier", "20 Ice Titan";
+end;
+}
+
+//============================================================
+//= Illusion Abyss Quest NPC
+//============================================================
+tur_d04_i,89,180,7	script	Illusion Abyss Manager#abyss	4_BARYO_CHIEF,{
+function level_check;
+function check_quest;
+function on_reward;
+function check_cd;
+level_check();
+check_quest();
+check_cd(.cooldown_id);
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "You seem strong enough, do you want to do a task for me?";
+next;
+if(select("Yes:No") == 2){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "I see, then come back when you change your mind.";
+	close;
+}
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "Recently the bothered spirits population inside the Moonlight dungeon is getting bigger and bigger.";
+mes "I need to reduce the population or else it would ruin the balance in there.";
+next;
+mes "[ ^0000FFIllusion Manager^000000 ]";
+mes "I have several tasks available, please choose one.";
+next;
+.@menu_size = getarraysize(.task_name$);
+for ( .@i = 0; .@i < .@menu_size; .@i++ ){
+	.@menu$ = .@menu$ + ""+.task_name$[.@i]+"" + ":";
+}
+.@i = select(.@menu$) -1;
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes ""+.mes_chat$[.@i]+"";
+		mes "I want you to go hunt in the Abyss Illusion Dungeon for me.";
+		mes "Please hunt ^0000FF"+.hunt_list$[.@i]+"^000000.";
+		setquest .quest_id[.@i];
+		end;
+		
+		
+
+function	level_check	{
+if(BaseLevel < .min_level){
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Hey, I'm looking for someone to hire to hunt in the Illusion dungeon for me. Do you know anyone?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "How about me?";
+	next;
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Do you want to die? You aren't strong enough you need to be atleast ^0000FFLevel 100^000000 for this job.";
+	end;
+	}
+return;
+}
+
+function	check_cd	{
+	.@cooldown = checkquest(getarg(0),PLAYTIME);
+	if (.@cooldown == 0 || .@cooldown == 1) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "You can only do the quest once a day.";
+		mes "The quest will reset in ^0000FF4:00 A.M^000000";
+		end;
+	} else if (.@cooldown == 2) {
+		mes "[ ^0000FFIllusion Manager^000000 ]";
+		mes "Are you willing to go to the dungeon for me again?";
+		erasequest getarg(0);
+		end;
+	}
+	return;
+}
+
+function	on_reward	{
+	mes "[ ^0000FFIllusion Manager^000000 ]";
+	mes "Thank you for doing this task for me.";
+	mes "The Quest resets at 4:00AM.";
+	getitem getarg(0),getarg(1);
+	erasequest getarg(2);
+	setquest getarg(3);
+	end;
+}
+
+
+function	check_quest	{
+	callsub A_Hunt_One,.quest_id[0],.hunt_list$[0];
+	callsub A_Hunt_Two,.quest_id[1],.hunt_list$[1];
+	}
+
+A_Hunt_One:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+A_Hunt_Two:
+	if (checkquest(getarg(0)) > -1) {
+		if (checkquest(getarg(0),HUNTING) == 0 || checkquest(getarg(0),HUNTING) == 1){
+			mes "[ ^0000FFIllusion Manager^000000 ]";
+			mes "Did you forget what you need to do?";
+			mes "I need you to hunt me ^0000FF"+getarg(1)+"^000000 and come back to me when you're done.";
+			close;
+		} else if(checkquest(getarg(0),HUNTING) == 2){
+		on_reward(.reward_id,.reward_amount,getarg(0),.cooldown_id);
+		end;
+		}
+	}
+	return;
+	
+
+OnInit:
+.min_level = 100;
+.reward_id = 25271;
+.reward_amount = 1;
+.cooldown_id = 80016;
+setarray .task_name$, "The Diamond like Iceicle", "The Totem and The Caveman";
+setarray .quest_id, 80014, 80015;
+setarray .mes_chat$, "We need to trim down the population of these monsters.",
+"We need to trim down the population of these monsters.";
+setarray .hunt_list$, "20 Omnimous Permeter and 20 20 Omnimous Assaulter", "20 Omnimous Heater and 20 Omnimous Freezer";
+end;
+}
+//==========================================================================
+//QUEST ILLUSION STONES
+//==========================================================================
+ein_d02_i,161,181,4	script	Nasarian Warrior#t1	10290,{
+	if (BaseLevel < 140) {
+		// Quest IDs: 104198-104201
+		// Quest cooldown IDs: 104229-104232
+		setarray .@names$[0],
+			"Hardworking Pitman","Red Teddy Bear","Soul Fragment","Shining Teddy Bear";
+		setarray .@exp[0],
+			4500000,4500000,4500000,4500000;
+		mes "You must be a fierce Nasarin warrior to accept these missions.";
+		for(set .@quest,104198; .@quest<=104201; set .@quest,.@quest+1) {
+			set .@hunting, checkquest(.@quest,HUNTING);
+			if (.@hunting == 0 || .@hunting == 1) {
+				next;
+				mes ":: You cannot proceed in";
+				mes ":: ^0000FF"+.@names$[.@quest-104198]+" Hunting^000000.";
+				mes ":: The registration to the mission";
+				mes ":: is cancelled.";
+				erasequest .@quest;
+				close;
+			} else if (.@hunting == 2) {
+				next;
+				mes ":: You added information";
+				mes ":: about the mission";
+				mes ":: ^0000FF"+.@names$[.@quest-104198]+" Hunting^000000";
+				mes ":: on the mission board.";
+				mes ":: You've got a";
+				mes ":: salutary experience.";
+				erasequest .@quest;
+				getexp .@exp[.@quest-104198],0;
+				close;
+			}
+		}
+		close;
+	}
+	mes "[Nasarian Warrior]";
+	mes "my soul will never stop fighting.";
+	next;
+	switch(select("^8B4513Illusion of Teddy Bear^000000")) {
+	case 1:
+		mes "^8B4513Illusion of Teddy Bear^000000.";
+		mes "Which monster will you hunt or have you finished hunting?";
+		next;
+		switch(select("^0000FFHardworking Pitman^000000:^0000FFRed Teddy Bear^000000:^0000FFSoul Fragment^000000:^0000FFShining Teddy Bear^000000")) {
+			case 1: callsub L_Quest,104198,"Hardworking Pitman",4500000,"?????","There is a monster that only can be found on ^8B4513Illusion of Teddy Bear^000000.";
+			case 2: callsub L_Quest,104199,"Red Teddy Bear",4500000,"?????","There is a monster that only can be found on ^8B4513Illusion of Teddy Bear^000000.";
+			case 3: callsub L_Quest,104200,"Soul Fragment",4500000,"????","There is a monster that only can be found on ^8B4513Illusion of Teddy Bear^000000.";
+			case 4: callsub L_Quest,104201,"Shining Teddy Bear",4500000,"????","There is a monster that only can be found on ^8B4513Illusion of Teddy Bear^000000.";
+		}
+	}
+	end;
+
+//callsub L_Quest,<quest ID>,"<monster name>",<reward EXP>,"<description>"{,"s"};
+L_Quest:
+	set .@quest1, getarg(0);
+	set .@quest2, .@quest1+31;
+	set .@playtime, checkquest(.@quest2,PLAYTIME);
+	if (.@playtime == 0 || .@playtime == 1) {
+		mes "[Nasarian Warrior]";
+		mes "You need to wait 23 hours before you can take this mission again.";
+		close;
+	}
+	set .@hunting, checkquest(.@quest1,HUNTING);
+	if (.@hunting == 0 || .@hunting == 1) {
+		mes "[Nasarian Warrior]";
+		mes "Have you finished hunting "+getarg(1)+getarg(5,"")+" yet?";
+		close;
+	} else if (.@hunting == 2) {
+		mes "[Nasarian Warrior]";
+		mes "You have completed the hunting.";
+		mes "Please accept this reward as a compensation.";
+		getitem 25271,1;
+		erasequest .@quest1;
+		if (.@playtime > -1) erasequest .@quest2;
+		setquest .@quest2;
+
+		getexp getarg(2),.@jexp;
+		close;
+	}/* else if (.@hunting == 3) {
+//		recall_completequest .@quest1
+		erasequest .@quest1;
+		mes "[Nasarian Warrior]";
+		mes "You have re-accepted the "+getarg(1)+" Hunting mission.";
+		close;
+	}*/ else {
+		mes "[Nasarian Warrior]";
+		mes getarg(4);
+		next;
+		mes "[Nasarian Warrior]";
+		mes "Hunt "+getarg(1)+" monsters there and post your success on this board.";
+		next;
+		if(select("I'll hunt them.:No thanks.") == 1) {
+			mes "[Soldier Shin]";
+			mes "When you have completed the mission, post it on this board and collect your Illusion Stone.";
+			if (.@playtime > -1) erasequest .@quest2;
+			setquest .@quest1;
+		}
+		close;
+	}
+}
+
+//==========================================================================
+//ENTRADA/SALIDA ILLUSION DUNGEON *****MODIFICAR COORDENADAS *********
+//==========================================================================
+
+//======= NPC ENTRADA ========
+
+ein_dun01,118,32,5	script	Ghostly Spectrum#99ct	10045,{
+	mes "[Mysterious Presence]";
+	mes "You can feel a mysterious presence nearby.";
+	if( BaseLevel < 140 ){
+		mes "Seems to be like your soul is not strong enough to awaken the spirits of this place, come back once you are ^0000FFLevel 140^000000.";
+		close;
+	}
+	mes "The sound of a hundred people crying can be heard while the time lapses....";
+	next;
+	mes "[Mysterious Presence]";
+	mes "It Might not be a good idea to keep going this way, this could be a no return trip.";
+	next;
+	.@menu = select("Retreat:Go near the origin of the noise");
+	switch(.@menu){
+		case 1:
+			break;
+		case 2:
+		case 3:
+			if( .@menu == 2 ){
+				.@map$ = "ein_d02_i";
+				.@x = 167;
+				.@y = 187;
+			}
+			mes "[Mysterious Presence]";
+			mes "A chilling sensation runs down your back. A cracking sound breaks the silence and a little container drops on the floor.";
+			next;
+			mes "[Mysterious Presence]";
+			mes "Seems to be a Dimensional Vessel, rumors say that if you drop ^0000FF10,000z^000000 in, you'll be warped to another place, be careful.";
+			next;
+			switch( select( "Quit:Put 10,000z in:Why would i do this?!" ) ){
+				case 1:
+					break;
+				case 2:
+					if( Zeny < 10000 ){
+						mes "[Mysterious Presence]";
+						mes "Seems like i have to be rich to use pretty things";
+						close;
+					}
+					Zeny -= 10000;
+					mes "[Mysterious Presence]";
+					mes "You begin to lose track of time and space and your sight starts turning blurry.";
+					close2;
+					warp .@map$, .@x, .@y;
+					end;
+				case 3:
+					mes "[Mysterious Presence]";
+					mes "A weird echoing and desappointed voice travels trough your ears....";
+					emotion ET_SPIT;
+					close;
+			}
+			break;
+	}
+	mes "[Mysterious Presence]";
+	mes "Phew...You've made a good choice. This place is brutal so you should probably get back to a safe area.";
+	close;
+}
+
+//======= NPC SALIDA =========
+
+ein_d02_i,161,187,4	script	Ghostly Spectrum#90ct1	10045,{
+mes .n$;
+mes "Do you wish to come back?";
+if(select("Yes:No") - 1) close;
+next;
+mes .n$;
+mes "You start warping out of the dimensional crack ";
+next;
+warp "ein_dun01",113,31;
+}
+

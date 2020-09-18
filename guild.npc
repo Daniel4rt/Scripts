@@ -1,0 +1,550 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---               Guild & Clan Manager              ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+premium,169,38,4	script	Guild Manager::GLD_CLAN	601,{
+	cutin "jpn_cynthia01",2;
+	mes "[^ff8800Guild Manager^000000]";
+	mes "Bienvenid"+(Sex?"o":"a")+" ^5533ff"+strcharinfo(0)+"^000000,","aquí podrás administrar cualquier cosa relacionada con gremios y clanes.";
+	mes " ";
+	mes "¿En qué te puedo ayudar?";
+	next;
+	switch(select("^777777 ~^000000 Gremios:^777777 ~^000000 Clanes:^777777 ~ Salir^000000")) {
+		case 1:
+			mes "[^ff8800Guild Manager^000000]";
+			mes "En esta sección podrás administrar lo que sea sobre los gremios.";
+			next;
+			if(getcharid(5)) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Pero lamentablemente no te puedo informar nada mientras estés en un clan.";
+				close2;
+				cutin "",255;
+				end;
+			} else {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "¿En qué te puedo ayudar?";
+				.@gid = getcharid(2);
+				next;
+				if(!.@gid) {
+					switch(select("Crear un gremio:^777777Salir^000000")) {
+						case 1:
+							getpartymember getcharid(1),0;
+							getpartymember getcharid(1),1;
+							getpartymember getcharid(1),2;
+							if($@partymembercount == 3) {
+								for(.@j = 1; .@j < 3; .@j++){
+									if(isloggedin($@partymemberaid[.@j], $@partymembercid[.@j])) {
+										if(getcharid(2,$@partymembername$[.@j])) {
+											mes "[^ff8800Guild Manager^000000]";
+											mes $@partymembername$[.@j]+" ya está en un gremio.";
+											close2;
+											cutin "",255;
+											end;
+										}
+										if(getcharid(5,$@partymembername$[.@j])) {
+											mes "[^ff8800Guild Manager^000000]";
+											mes $@partymembername$[.@j]+" está en un clan.";
+											close2;
+											cutin "",255;
+											end;
+										}
+										setarray .@pty_cid[.@j],$@partymembercid[.@j];
+										setarray .@pty_aid[.@j],$@partymemberaid[.@j];
+									} else {
+										mes "[^ff8800Guild Manager^000000]";
+										mes "Los compañeros de tu party deben de estar en línea y no se permite crear un gremio con double login.";
+										close2;
+										cutin "",255;
+										end;
+									}
+								}
+								if(getpartyleader(getcharid(1),2) == getcharid(0) && Zeny >= 200000 && countitem(8503) >= 10) {
+									mes "[^ff8800Guild Manager^000000]";
+									mes "De acuerdo, ^5533ff"+strcharinfo(0,.@pty_cid[1])+"^000000 y ^ff8800"+strcharinfo(0,.@pty_cid[2])+"^000000 formarán parte de tu gremio.";
+									next;
+									mes "[^ff8800Guild Manager^000000]";
+									mes "Por favor ingresa el nombre que llevará tu gremio.";
+									next;
+									while(1) {
+										input .@GuildName$;
+										query_sql("SELECT `name` FROM `guild` WHERE `name`='"+escape_sql(.@GuildName$)+"'",.@SqlName$);
+										for(.@i = 0; .@i < getarraysize(.@SqlName$); .@i++) {
+											if( .@SqlName$[.@i] == .@GuildName$ )
+												.@c++;
+										}
+										if(.@c < 1) {
+											mes "[^ff8800Guild Manager^000000]";
+											mes "¿Los datos están correctos?";
+											mes " ";
+											mes " ~ ^008800Gremio:^000000 "+.@GuildName$;
+											mes " ~ ^000088Lider:^000000 "+strcharinfo(0);
+											mes " ~ ^880000Miembros:^000000 "+strcharinfo(0,.@pty_cid[1])+" y "+strcharinfo(0,.@pty_cid[2]);
+											next;
+											if(select("Datos correctos.","^777777Cancelar^000000") == 2) {
+											mes "[^ff8800Guild Manager^000000]";
+											mes "Vuelve cuando estés totalmente segur"+(Sex?"o":"a");
+												close2;
+												cutin "",255;
+												end;
+											}
+											mes "[^ff8800Guild Manager^000000]";
+											mes "Por favor espera un momento mientras se procesan los datos.";
+											sleep2 1000;
+											mes " * Creando gremio...";
+											if( !isloggedin(.@pty_aid[1],.@pty_cid[1]) || !isloggedin(.@pty_aid[2],.@pty_cid[2])) {
+												mes "^FF0000 ~ Uno de tus miembros no está en línea, imposible continuar.^000000";
+												close2;
+												emotion ET_SORRY;
+												cutin "",255;
+												end;
+											}
+											tax 200000,100;
+											delitem 8503,10;
+											pcblockmove getcharid(3),1;
+											progressbar "008800",3;
+											mes " * Creando gremio...";
+											guild_create .@GuildName$,getcharid(0);
+											progressbar "008800",5;
+											mes " * Definiendo variables...";
+											.@gid = getcharid(2);
+											progressbar "008800",1;
+											mes " * Añadiendo miembros...";
+											if(isloggedin(.@pty_aid[1],.@pty_cid[1])) {
+												message strcharinfo(0,.@pty_cid[1]),"Has sido añadido al gremio: "+.@GuildName$;
+												guild_addmember .@gid,.@pty_cid[1];
+											}
+											progressbar "008800",1;
+											if(isloggedin(.@pty_aid[2],.@pty_cid[2])) {
+												message strcharinfo(0,.@pty_cid[2]),"Has sido añadido al gremio: "+.@GuildName$;
+												guild_addmember .@gid,.@pty_cid[2];
+											}
+											progressbar "008800",3;
+											pcblockmove getcharid(3),0;
+											next;
+											mes "[^ff8800Guild Manager^000000]";
+											mes "Gracias por tu paciencia, el gremio ha sido creado con éxito.";
+											announce "El gremio [ "+.@GuildName$+" ] acaba de ser fundado por [ "+strcharinfo(0)+" ].",bc_all,0x58FF00;
+											close2;
+											cutin "",255;
+											emotion ET_THANKS;
+											end;
+										} else {
+											mes "[^ff8800Guild Manager^000000]";
+											mes "Lo siento pero ese nombre ya está en uso.";
+											next;
+											mes "[^ff8800Guild Manager^000000]";
+											mes "Intenta con otro.";
+											next;
+											.@c = 0;
+										}
+									}
+								} else {
+									mes "[^ff8800Guild Manager^000000]";
+									mes "Para crear un gremio generalmente se usa un ^ff8800Emperium^000000, pero yo poseo miles de ellos, así que ^ff0000no lo permito^000000.";
+									next;
+									mes "[^ff8800Guild Manager^000000]";
+									mes "Si quieres crear un gremio simplemente forma una party con tres personas, incluyéndote y siendo el lider.";
+									next;
+									mes "[^ff8800Guild Manager^000000]";
+									mes "Habla nuevamente conmigo, y crearé tu gremio por el módico precio de ^ff8800200,000^000000z & ^5533ff10x Gold Coin^000000.";
+									close2;
+									cutin "",255;
+									end;
+								}
+							} else {
+								mes "[^ff8800Guild Manager^000000]";
+								mes "Para crear un gremio generalmente se usa un ^ff8800Emperium^000000, pero yo poseo miles de ellos, así que ^ff0000no lo permito^000000.";
+								next;
+								mes "[^ff8800Guild Manager^000000]";
+								mes "Si quieres crear un gremio simplemente forma una party con ^ff0000tres^000000 personas, incluyéndote y siendo el lider.";
+								next;
+								mes "[^ff8800Guild Manager^000000]";
+								mes "Habla nuevamente conmigo, y crearé tu gremio por el módico precio de ^ff8800200,000^000000z  & ^5533ff10x Gold Coin^000000.";
+								close2;
+								cutin "",255;
+								end;
+							}
+						case 2:
+							mes "[^ff8800Guild Manager^000000]";
+							mes "Nos vemos luego.";
+							close2;
+							cutin "",255;
+							end;
+					}
+				} else {
+					if(getguildmaster(.@gid) == strcharinfo(0)) {
+						switch(select("Abrir almacén de gremio:Banco del gremio:^ff0000Contraseña del almacén^000000:^008800Contraseña del banco^000000:^777777Salir^000000")) {
+							case 1:
+								callsub S_GuildStorage;
+							case 2:
+								callsub S_GuildBank;
+							case 3:
+								callsub S_Password,1,"storage_pwd","almacén";
+							case 4:
+								callsub S_Password,2,"vault_pwd","banco";
+							case 5:
+								mes "[^ff8800Guild Manager^000000]";
+								mes "Vuelve cuando quieras.";
+								close2;
+								cutin "",255;
+								end;
+						}
+					} else {
+						switch(select("Abrir almacén de gremio:Banco del gremio:^777777Salir^000000")) {
+							case 1:
+								callsub S_GuildStorage;
+							case 2:
+								callsub S_GuildBank;
+							case 3:
+								mes "[^ff8800Guild Manager^000000]";
+								mes "Vuelve cuando quieras.";
+								close2;
+								cutin "",255;
+								end;
+						}
+					}
+				}
+			}
+		case 2:
+			if(getcharid(5)) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "¿Deseas abandonar tu clan actual?";
+				next;
+				if(select("Abandonar mi clan","Aún no") == 2) {
+					mes "[^ff8800Guild Manager^000000]";
+					mes "Sabia decisión.";
+					close2;
+					cutin "",255;
+					end;
+				}
+				if(clan_leave()) {
+					sc_end SC_SWORDCLAN;
+					sc_end SC_ARCWANDCLAN;
+					sc_end SC_GOLDENMACECLAN;
+					sc_end SC_CROSSBOWCLAN;
+					mes "[^ff8800Guild Manager^000000]";
+					mes "Haz abandonado tu clan con éxito.";
+					close2;
+					cutin "",255;
+					end;
+				} else {
+					mes "[^ff8800Guild Manager^000000]";
+					mes "Ha ocurrido un error.";
+					close2;
+					cutin "",255;
+					end;
+				}
+			}
+			if(getcharid(2)) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Lo siento pero no puedes elegir un Clan perteneciendo a un Gremio.";
+				close2;
+				cutin "",255;
+				emotion ET_SORRY;
+				end;
+			}
+			mes "[^ff8800Guild Manager^000000]";
+			mes "Veo que te interesan los clanes, dime, ¿en qué te puedo ayudar?";
+			next;
+			while(1) {
+				switch (select("Elegir un clan:^ff0000¿Qué son los clanes?^000000:^777777Salir^000000")) {
+					case 1:
+						mes "[^ff8800Guild Manager^000000]";
+						mes "Elige un clan, y te daré información sobre él.";
+						next;
+						switch(select("^ff0000Sword Clan:^0000ffArc Wand Clan:^ff8800Golden Mace Clan:^008800Crossbow Clan^000000")) {
+							case 1:
+								callsub S_ClanJoinInfo,1,"ff0000Sword Clan","está diseñado especialmente para espadachines","STR + 1","VIT + 1","Máx. HP + 30","Máx. SP + 10";
+							case 2:
+								callsub S_ClanJoinInfo,2,"0000ffArc Wand Clan","casi todos los magos de ataque se unen a él","INT + 1","DEX + 1","Máx. HP + 30","Máx. SP + 10";
+							case 3:
+								callsub S_ClanJoinInfo,3,"ff8800Golden Mace Clan","se focaliza en aquellos que buscan ser soporte.","INT + 1","LUK + 1","Máx. HP + 30","Máx. SP + 10";
+							case 4:
+								callsub S_ClanJoinInfo,4,"008800Crossbow Clan","está especializado en los arqueros de cualquier tipo","DEX + 1","AGI + 1","Máx. HP + 30","Máx. SP + 10";
+						}
+					case 2:
+						mes "[^ff8800Guild Manager^000000]";
+						mes "Los clanes cumplen la función para aquellos usuarios que no poseen una guild o desean jugar de manera un poco solitaria.";
+						next;
+						mes "[^ff8800Guild Manager^000000]";
+						mes "Al unirte a un clan, te unes a una alianza sin límite, cada uno tiene sus particularidades.";
+						next;
+						mes "[^ff8800Guild Manager^000000]";
+						mes "No puedes pertenecer a un gremio y a un clan al mismo tiempo.";
+						next;
+						mes "[^ff8800Guild Manager^000000]";
+						mes "Los clanes no pueden participar en las batallas de gremios, como War of Emperium, así que son libres de salirse cuando quieras.";
+						next;
+						mes "[^ff8800Guild Manager^000000]";
+						mes "También, si estás ausente por ^ff88002 semanas^000000 serás sacado automáticamente del clan.";
+						next;
+						mes "[^ff8800Guild Manager^000000]";
+						mes "¿En qué más te puedo ayudar?";
+						next;
+						break;
+					case 3:
+						mes "[^ff8800Guild Manager^000000]";
+						mes "Nos vemos después.";
+						close2;
+						cutin "",255;
+						end;
+				}
+			}
+		case 3:
+	}
+	close2;
+	cutin "",255;
+	end;
+S_ClanJoinInfo:
+	mes "[^ff8800Guild Manager^000000]";
+	mes "El ^"+getarg(1)+"^000000 "+getarg(2)+".";
+	next;
+	mes "[^ff8800Guild Manager^000000]";
+	mes "Al unirte a él, recibirás:";
+	mes " ^ff0000*"+getarg(3);
+	mes " *"+getarg(4);
+	mes " *"+getarg(5);
+	mes " *"+getarg(6)+"^000000";
+	next;
+	mes "[^ff8800Guild Manager^000000]";
+	mes "¿Deseas unirte al ^"+getarg(1)+"^000000?";
+	next;
+	if(select("Unirme.","No, gracias.") == 2) {
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Vuelve cuando te decidas.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	.@cid = getcharid(0);
+	switch(getarg(0)) {
+		case 1:
+			if( clan_join(SWORDCLAN,.@cid) )
+				sc_start2 SC_SWORDCLAN, -1, 0, SWORDCLAN;
+			else
+				.@e++;
+			break;
+		case 2:
+			if( clan_join(ARCWANDCLAN,.@cid) )
+				sc_start2 SC_ARCWANDCLAN, -1, 0, ARCWANDCLAN;
+			else
+				.@e++;
+			break;
+		case 3:
+			if( clan_join(GOLDENMACECLAN,.@cid) )
+				sc_start2 SC_GOLDENMACECLAN, -1, 0, GOLDENMACECLAN;
+			else
+				.@e++;
+			break;
+		case 4:
+			if( clan_join(CROSSBOWCLAN,.@cid) )
+				sc_start2 SC_CROSSBOWCLAN, -1, 0, CROSSBOWCLAN;
+			else
+				.@e++;
+			break;
+		default:
+			close2;
+			cutin "",255;
+			end;
+	}
+	if(.@e) {
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Al parecer por el momento, no te puedes unir, intenta después.";
+		close2;
+		emotion ET_SORRY;
+		cutin "",255;
+		end;
+	}
+	mes "[^ff8800Guild Manager^000000]";
+	mes "Te haz unido satisfactoriamente al ^"+getarg(1)+"^000000.";
+	next;
+	mes "[^ff8800Guild Manager^000000]";
+	mes "Serás sacado automáticamente del clan si en ^0088002 semanas^000000 no muestras presencia.";
+	close2;
+	cutin "",255;
+	end;
+S_Password:
+	query_sql("SELECT `"+getarg(1)+"` FROM `guild` WHERE `guild_id`='"+.@gid+"'", .@sto_pwd);
+	mes "[^ff8800Guild Manager^000000]";
+	mes "La contraseña del ^5533ff"+getarg(2)+"^000000 bloqueará el acceso a quien que no la conozca.";
+	mes " ";
+	mes "Estado: "+(.@sto_pwd ? "^008800Activado" : "^ff0000Desactivado")+"^000000";
+	next;
+	if(select((.@sto_pwd ? "Quitar contraseña" : "Añadir contraseña"),"^777777Salir^000000") == 2) {
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Nos vemos cuando quieras.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if(.@sto_pwd) {
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Por favor ingresa la contraseña actual para eliminarla.";
+		input .@del_pwd;
+		if(.@del_pwd != .@sto_pwd) {
+			mes "[^ff8800Guild Manager^000000]";
+			mes "La contraseña no es la actual.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		query_sql("UPDATE `guild` SET `"+getarg(1)+"`='0' WHERE `guild`='"+.@gid+"'");
+		mes "[^ff8800Guild Manager^000000]";
+		mes "La contraseña ha sido borrada exitosamente.";
+		close2;
+		cutin "",255;
+		end;
+	} else {
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Por favor coloca tu contraseña, entre el 1000 - 9999.";
+		next;
+		input .@pwd;
+		if(.@pwd < 1000 || .@pwd > 9999) {
+			mes "[^ff8800Guild Manager^000000]";
+			mes "Contraseña inválida, intenta en otra ocasión y con otro número.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Verifica tu contraseña.";
+		next;
+		input .@pwd_verify;
+		if(.@pwd != .@pwd_verify) {
+			mes "[^ff8800Guild Manager^000000]";
+			mes "Las contraseñas no coinciden.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		query_sql("UPDATE `guild` SET `"+getarg(1)+"`='"+.@pwd+"' WHERE `guild_id`='"+.@gid+"'");
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Tu contraseña ha sido guardada exitosamente.";
+		close2;
+		cutin "",255;
+		end;
+	}
+S_Security:
+	query_sql("SELECT `"+getarg(0)+"_pwd` FROM `guild` WHERE `guild_id`='"+getcharid(2)+"'", .@password);
+	if(.@password) {
+		mes "[^ff8800Guild Manager^000000]";
+		mes "El ^5533ff"+getarg(1)+" del gremio^000000 se encuentra protegido por contraseña, por favor dígítala para accesar.";
+		next;
+		input .@self_pwd;
+		if(.@self_pwd != .@password) {
+			mes "[^ff8800Guild Manager^000000]";
+			mes "La contraseña es incorrecta.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[^ff8800Guild Manager^000000]";
+		mes "Contraseña correcta.";
+		mes " ";
+		mes " ^008800* Procesando . . .^000000";
+		return;
+	} else
+		return;
+S_GuildBank:
+	callsub S_Security,"vault","banco";
+	query_sql("SELECT `vault` FROM `guild` WHERE `guild_id`='"+getcharid(2)+"'", .@v);
+	mes "[^ff8800Guild Manager^000000]";
+	mes " ^0000ff<<^000000 Banco del Gremio ^0000ff>>^000000";
+	mes " ";
+	mes " ^777777~^000000 Saldo: ^008800"+callfunc("F_InsertComma",.@v)+"^000000z";
+	next;
+	switch(select(" ^777777>^000000 Depositar Zeny: ^777777<^000000 Retirar Zeny:^777777Salir^000000")) {
+		case 1:
+			mes "[^ff8800Guild Manager^000000]";
+			mes "¿Cuánto deseas depositar?";
+			mes " ";
+			mes " ^777777~^000000 Saldo: ^008800"+callfunc("F_InsertComma",.@v)+"^000000z";
+			next;
+			input .@deposit;
+			if(.@deposit < 0 || Zeny < .@deposit) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Has ingresado una cantidad inválida.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			Zeny -= .@deposit;
+			.@t = .@deposit + .@v;
+			.@query = query_sql("UPDATE `guild` SET `vault`='"+.@t+"' WHERE `guild_id`='"+getcharid(2)+"'");
+			if(.@query == -1) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Lo siento pero tu Zeny no se ha depositado debido a un error con la base de datos, tenlo de vuelta e infórmalo a un Game Master.";
+				Zeny += .@deposit;
+				close3;
+			} else {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Has depositado ^ff0000"+callfunc("F_InsertComma",.@deposit)+"^000000z exitosamente.";
+				mes " ";
+				mes " ^777777~^000000 Saldo: ^008800"+callfunc("F_InsertComma",.@t)+"^000000z";
+				close3;
+			}
+		case 2:
+			if(.@v < 1) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Lo siento, pero en el banco de tu gremio, no hay ningún solo Zeny.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			mes "[^ff8800Guild Manager^000000]";
+			mes "¿Cuánto Zeny deseas retirar?";
+			mes " ";
+			mes " ^777777~^000000 Saldo: ^008800"+callfunc("F_InsertComma",.@v)+"^000000z";
+			next;
+			input .@withdraw;
+			if(.@v < .@withdraw) {
+				mes "[^ff8800Guild Manager^000000]";
+				mes "Lo siento, pero el gremio no dispone de esa cantidad de dinero.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			.@t = .@v - .@withdraw;
+			query_sql("UPDATE `guild` SET `vault`='"+.@t+"' WHERE `guild_id`='"+getcharid(2)+"'");
+			Zeny += .@withdraw;
+			mes "[^ff8800Guild Manager^000000]";
+			mes "Has retirado ^ff0000"+callfunc("F_InsertComma",.@withdraw)+"^000000z exitosamente.";
+			mes " ";
+			mes " ^777777~^000000 Saldo: ^008800"+callfunc("F_InsertComma",.@t)+"^000000z";
+			close2;
+			cutin "",255;
+			end;
+		case 3:
+			mes "[^ff8800Guild Manager^000000]";
+			mes "Vuelve cuando gustes.";
+			close2;
+			cutin "",255;
+			end;
+	}
+S_GuildStorage:
+	callsub S_Security,"storage","almacén";
+	switch(guildopenstorage()){
+		case 1:
+			mes "[^ff8800Guild Manager^000000]";
+			mes "Lo siento, pero algún miembro de tu gremio está usando el almacén en este momento.";
+			close2;
+			cutin "",255;
+			end;
+		case 2:
+			mes "[^ff8800Guild Manager^000000]";
+			mes "No te puedo abrir el almacén por el simple hecho de que no tienes gremio.";
+		default:
+			close2;
+			cutin "",255;
+			end;
+	}
+}

@@ -1,0 +1,138 @@
+prontera,146,176,5	script	Identificadora	10099,{
+	cutin "jp_medusa_f1",2;
+	disable_items;
+	function itemcheck; function checkiscrimson; function checkisviciousatk; function checkisviciousmatk;
+	mes "[^777777 Identificadora ^000000]";
+	mes "¿Qué tal?, yo puedo identificarte todo tu inventario, tomo en cuenta tus habilidades, descuento y Magnifier en tu inventario.";
+	mes "También identifico tus ^ff7070Crimson^000000 y ^5533ffVicious^000000.";
+	next;
+	if(select("Identificar:No, gracias") == 2) {
+		mes "[^777777 Identificadora ^000000]";
+		mes "Vale, tu te lo pierdes.";
+		close3;
+	}
+	mes "[^777777 Identificadora ^000000]";
+	mes "He identificado todos los objetos que tenías en tu inventario, regresa cuando quieras.";
+	getinventorylist;
+	for( .@i = 0; .@i < (@inventorylist_count); .@i++ ) {
+		if ( @inventorylist_identify[.@i] == 1 )
+			continue;
+		.@options = (checkiscrimson(.@i) || checkisviciousatk(.@i) || checkisviciousmatk(.@i));
+		itemcheck;
+		if( .@options ) {
+			delitem2 @inventorylist_id[.@i],1,0,0,0,0,0,0,0;
+			getitem3 @inventorylist_id[.@i],1,1,0,0,0,0,0,0,@OptID,@OptVal,@OptParam;
+		} else {
+			delitem2 @inventorylist_id[.@i],1,0,0,0,0,0,0,0;
+			getitem @inventorylist_id[.@i],1;
+		}
+		sleep2 30;
+	}
+	close3;
+	function	checkiscrimson	{
+		setarray .@OPT_ELEMENT[1],RDMOPT_WEAPON_ATTR_WATER,
+								RDMOPT_WEAPON_ATTR_GROUND,
+								RDMOPT_WEAPON_ATTR_FIRE,
+								RDMOPT_WEAPON_ATTR_WIND,
+								RDMOPT_WEAPON_ATTR_POISON,
+								RDMOPT_WEAPON_ATTR_SAINT,
+								RDMOPT_WEAPON_ATTR_DARKNESS;
+		setarray .@crim,28604,28705,13327,28007,1839,1498,16040,13127,1680,13454,1443,2025,28106,21015,1939,1995;
+		for( .@c = 0; .@c < getarraysize(.@crim); .@c++ ) {
+			if(@inventorylist_id[getarg(0)] == .@crim[.@c]) {
+				setarray @OptID[0],.@OPT_ELEMENT[rand(1,7)];
+				setarray @OptVal[0],1;
+				setarray @OptParam[0],1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	function	checkisviciousatk	{
+		setarray .@SLOT_1ATK,RDMOPT_DAMAGE_PROPERTY_WATER_TARGET,RDMOPT_DAMAGE_PROPERTY_GROUND_TARGET,RDMOPT_DAMAGE_PROPERTY_FIRE_TARGET,RDMOPT_DAMAGE_PROPERTY_WIND_TARGET,RDMOPT_DAMAGE_PROPERTY_POISON_TARGET,RDMOPT_DAMAGE_PROPERTY_SAINT_TARGET,RDMOPT_DAMAGE_PROPERTY_DARKNESS_TARGET,RDMOPT_DAMAGE_PROPERTY_TELEKINESIS_TARGET,RDMOPT_DAMAGE_PROPERTY_UNDEAD_TARGET,RDMOPT_WEAPON_ATTR_WATER,RDMOPT_WEAPON_ATTR_GROUND,RDMOPT_WEAPON_ATTR_FIRE,RDMOPT_WEAPON_ATTR_WIND,RDMOPT_WEAPON_ATTR_POISON,RDMOPT_WEAPON_ATTR_SAINT,RDMOPT_WEAPON_ATTR_DARKNESS,RDMOPT_HEAL_VALUE,RDMOPT_DAMAGE_SIZE_PERFECT,RDMOPT_WEAPON_INDESTRUCTIBLE;
+		setarray .@SLOT_1ATKc,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,20,1,1;
+		setarray .@SLOT_2ATK,RDMOPT_CLASS_DAMAGE_BOSS_TARGET,
+							RDMOPT_DAMAGE_PROPERTY_NOTHING_USER,
+							RDMOPT_RACE_DAMAGE_UNDEAD,
+							RDMOPT_RACE_DAMAGE_ANIMAL,
+							RDMOPT_RACE_DAMAGE_PLANT,
+							RDMOPT_RACE_DAMAGE_INSECT,
+							RDMOPT_RACE_DAMAGE_FISHS,
+							RDMOPT_RACE_DAMAGE_DEVIL,
+							RDMOPT_RACE_DAMAGE_HUMAN,
+							RDMOPT_RACE_DAMAGE_ANGEL,
+							RDMOPT_RACE_DAMAGE_DRAGON,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_UNDEAD,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_ANIMAL,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_PLANT,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_INSECT,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_FISHS,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_DEVIL,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_HUMAN,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_ANGEL,
+							RDMOPT_RACE_IGNORE_DEF_PERCENT_DRAGON;
+		setarray .@SLOT_2ATKc,20,rand(16,25),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20);
+		setarray .@SLOT_3ATK,RDMOPT_RANGE_ATTACK_DAMAGE_TARGET,RDMOPT_DEC_SP_CONSUMPTION,RDMOPT_DEC_SPELL_DELAY_TIME,RDMOPT_DEC_SPELL_CAST_TIME,RDMOPT_DAMAGE_CRI_TARGET,RDMOPT_VAR_CRITICALSUCCESSVALUE,RDMOPT_VAR_ATTPOWER,RDMOPT_VAR_STRAMOUNT,RDMOPT_VAR_AGIAMOUNT,RDMOPT_VAR_VITAMOUNT,RDMOPT_VAR_INTAMOUNT,RDMOPT_VAR_DEXAMOUNT,RDMOPT_VAR_LUKAMOUNT;
+		setarray .@SLOT_3ATKc,rand(13,20),5,rand(5,20),rand(1,20),rand(1,20),rand(10,19),rand(4,47),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10);
+		setarray .@vatk,1600,28605,2026,28107,21016,1900,1996,18121,28605,28706,13328,28008,1800,1450,16041,13128,13455,1400;
+		for( .@v = 0; .@v < getarraysize(.@vatk); .@v++ ) {
+			if(@inventorylist_id[getarg(0)] == .@vatk[.@v]) {
+				setarray @RandId[0],rand(0,(getarraysize(.@SLOT_1ATK)-1)),rand(0,(getarraysize(.@SLOT_2ATK)-1)),rand(0,(getarraysize(.@SLOT_3ATK)-1));
+				setarray @OptID[0],.@SLOT_1ATK[(@RandId[0])],.@SLOT_2ATK[(@RandId[1])],.@SLOT_3ATK[(@RandId[2])];
+				setarray @OptVal[0],.@SLOT_1ATKc[(@RandId[0])],.@SLOT_2ATKc[(@RandId[1])],.@SLOT_3ATKc[(@RandId[2])];
+				setarray @OptParam[0],1,1,1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	function	checkisviciousmatk	{
+		setarray .@SLOT_1MATK,RDMOPT_MDAMAGE_PROPERTY_WATER_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_GROUND_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_FIRE_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_WIND_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_POISON_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_SAINT_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_DARKNESS_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_TELEKINESIS_TARGET,
+							RDMOPT_MDAMAGE_PROPERTY_UNDEAD_TARGET,
+							RDMOPT_WEAPON_ATTR_WATER,
+							RDMOPT_WEAPON_ATTR_GROUND,
+							RDMOPT_WEAPON_ATTR_FIRE,
+							RDMOPT_WEAPON_ATTR_WIND,
+							RDMOPT_WEAPON_ATTR_POISON,
+							RDMOPT_WEAPON_ATTR_SAINT,
+							RDMOPT_WEAPON_ATTR_DARKNESS,
+							RDMOPT_HEAL_VALUE,
+							RDMOPT_DAMAGE_SIZE_PERFECT,
+							RDMOPT_WEAPON_INDESTRUCTIBLE;
+		setarray .@SLOT_1MATKc,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,20,1,1;
+		setarray .@SLOT_2MATK,RDMOPT_CLASS_MDAMAGE_BOSS_TARGET,RDMOPT_MDAMAGE_PROPERTY_NOTHING_USER,RDMOPT_RACE_MDAMAGE_UNDEAD,RDMOPT_RACE_MDAMAGE_ANIMAL,RDMOPT_RACE_MDAMAGE_PLANT,RDMOPT_RACE_MDAMAGE_INSECT,RDMOPT_RACE_MDAMAGE_FISHS,RDMOPT_RACE_MDAMAGE_DEVIL,RDMOPT_RACE_MDAMAGE_HUMAN,RDMOPT_RACE_MDAMAGE_ANGEL,RDMOPT_RACE_MDAMAGE_DRAGON,RDMOPT_RACE_IGNORE_MDEF_PERCENT_UNDEAD,RDMOPT_RACE_IGNORE_MDEF_PERCENT_ANIMAL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_PLANT,RDMOPT_RACE_IGNORE_MDEF_PERCENT_INSECT,RDMOPT_RACE_IGNORE_MDEF_PERCENT_FISHS,RDMOPT_RACE_IGNORE_MDEF_PERCENT_DEVIL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_HUMAN,RDMOPT_RACE_IGNORE_MDEF_PERCENT_ANGEL,RDMOPT_RACE_IGNORE_MDEF_PERCENT_DRAGON;
+		setarray .@SLOT_2MATKc,20,rand(16,25),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,30),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20),rand(1,20);
+		setarray .@SLOT_3MATK,RDMOPT_DEC_SP_CONSUMPTION,RDMOPT_DEC_SPELL_DELAY_TIME,RDMOPT_DEC_SPELL_CAST_TIME,RDMOPT_VAR_ATTMPOWER,RDMOPT_VAR_STRAMOUNT,RDMOPT_VAR_AGIAMOUNT,RDMOPT_VAR_VITAMOUNT,RDMOPT_VAR_INTAMOUNT,RDMOPT_VAR_DEXAMOUNT,RDMOPT_VAR_LUKAMOUNT;
+		setarray .@SLOT_3MATKc,5,rand(5,20),rand(1,20),rand(4,50),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10),rand(1,10);
+		setarray .@vmatk,1600,2026;
+		for( .@m = 0; .@m < getarraysize(.@vmatk); .@m++ ) {
+			if(@inventorylist_id[getarg(0)] == .@vmatk[.@m]) {
+				setarray @RandId[0],rand(0,(getarraysize(.@SLOT_1MATK)-1)),rand(0,(getarraysize(.@SLOT_2MATK)-1)),rand(0,(getarraysize(.@SLOT_3MATK)-1));
+				setarray @OptID[0],.@SLOT_1MATK[(@RandId[0])],.@SLOT_2MATK[(@RandId[1])],.@SLOT_3MATK[(@RandId[2])];
+				setarray @OptVal[0],.@SLOT_1MATKc[(@RandId[0])],.@SLOT_2MATKc[(@RandId[1])],.@SLOT_3MATKc[(@RandId[2])];
+				setarray @OptParam[0],1,1,1;
+				return 1;
+			} else return 0;
+		}
+	}
+	function	itemcheck	{
+		if ( getskilllv(40) == 1 && sp >= 10 )
+			heal 0,-10;
+		else if ( countitem(611) )
+			delitem 611,1;
+		else if ( getskilllv(224) && Zeny >= ( 100 - ( 5 + 4 * getskilllv(224) ) )* 2/5 )
+			tax ( 100 - ( 5 + 4 * getskilllv(224) ) )* 2/5,100;
+		else if ( getskilllv(37) && Zeny >= ( 100 - ( 5 + 2 * getskilllv(37) ) )* 2/5 )
+			tax ( 100 - ( 5 + 2 * getskilllv(37) ) )* 2/5,100;
+		else if ( Zeny >= 40 )
+			tax 40,10;
+		return;
+	}
+}

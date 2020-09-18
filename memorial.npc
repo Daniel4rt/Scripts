@@ -1,0 +1,298 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---           	  Entra a Instancias               ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+prontera,168,178,4	script	Memorial Dungeons::insinfo	10056,{
+	cutin "verus_ian01",2;
+	mes "[^cc6600Memorial Dungeons^000000]";
+	if(!Q_MEMORIAL) {
+		mes "Veo que te he llamado un poco la atención supongo.";
+		next;
+		mes "[^cc6600Memorial Dungeons^000000]";
+		mes "Mi desempeño en la ciudad de Prontera es brindarle a los aventureros los accesos más rápidos a los ^ff7070Memorial Dungeons^000000.";
+		next;
+		mes "[^cc6600Memorial Dungeons^000000]";
+		mes "Los cuales se destacan por su complejidad, equipo fantástico y enemigos formidables.";
+		next;
+		mes "[^cc6600Memorial Dungeons^000000]";
+		mes "Para que no sea necesario viajar a cada punto de los dungeons, podrás hablar conmigo y te llevaré a tí, y a tu grupo lo más rápido posible.";
+		next;
+		if(select("Estoy con todas las energías, ¡vamos!:Volveré en otra ocasión") == 2) {
+			mes "[^cc6600Memorial Dungeons^000000]";
+			mes "De acuerdo, no te fuerces, no cualquier persona puede con el reto.";
+			close3;
+		}
+		mes "[^cc6600Memorial Dungeons^000000]";
+		mes "Me parece perfecto, en cuanto esté preparado con todo mi papeleo aparecerá un ícono arriba de mi, deberías saber que es bastante dificil solicitar acceso a tantas instancias.";
+		close3;
+	}
+/*
+		mes "[^cc6600Memorial Dungeons^000000]";
+		mes "¿Qué dices? ¿Estás listo?";
+		next;
+		mes "[^cc6600Memorial Dungeons^000000]";
+		mes "Me parece perfecto, habla conmigo nuevamente.";
+		close2;
+		Q_MEMORIAL = 1;
+		cutin "",255;
+		end;
+	}
+	if(!getcharid(1)) {
+		mes "Es bueno verle nuevamente, pero no puedo atenderlo si no pertenece a una ^ff7070party^000000.";
+		close3;
+	}
+	query_sql("DELETE FROM `party_instance` WHERE `party_id` NOT IN ( SELECT `party_id` FROM `party` )");
+	sleep2 50;
+	query_sql("SELECT `instance` FROM `party_instance` WHERE `party_id` = '"+getcharid(1)+"'",.@in);
+	mes "Que bueno verte nuevamente, ¿en qué te puedo ayudar?";
+	next;
+	switch(select((.@in ? "Entrar a ^5533ff"+.mn$[.@in]+"^000000" : "Muestrame los ^ff7070Memorial Dungeon^000000 disponibles")+":^777777Salir^000000")) {
+		case 1:
+			if(getgroupid() < 99)
+				close3;
+			mes "[^cc6600Memorial Dungeons^000000]";
+			if(.@in) {
+				if(.mode[.@in]) {
+					if (getcharid(0) != getpartyleader(.@party_id,2)) {
+						mes "Lo siento, pero solo el lider del party puede entrar a esta instancia, ya que es para un solo jugador.";
+						close3;
+					}
+				}
+				callsub S_CheckQuest,.@in;
+				if(checkquest(.questid[.@in],PLAYTIME) == 0 || .checkquest(.questid[.@in],PLAYTIME) == 1) {
+					if(.item[.@in]) {
+						if(countitem(.item[.@in]) < 1) {
+							mes "Lo siento pero requieres un <ITEM>"+getitemname(.item[.@in])+"<INFO>"+.item[.@in])+"</INFO></ITEM> para poder entrar.";
+							close3;
+						}
+						delitem .item[.@in],1;
+					}
+					switch( instance_enter(.mn$[.@in]) ) {
+						case IE_OK:
+							if (isbegin_quest(.questid[.@in]) == 0)
+								setquest .questid[.@in];
+							mapannounce instance_mapname(.m$[.@in]),""+strcharinfo(0)+", miembro de la party "+getpartyname(getcharid(1))+" ha entrado en la instancia "+.mn$[.@in]+".", bc_map,0x00FF99;
+							specialeffect2 EF_WARP;
+							end;
+						case IE_NOMEMBER:
+							mes "Lo siento, pero no he detectado que pertenescas a algúna party.";
+							close3;
+						case IE_NOINSTANCE:
+							mes "No recuerdo haber abierto alguna entrada Memorial Dungeon para ti.";
+							close3;
+						case IE_OTHER:
+							mes "Un error ha ocurrido con la entrada al Memorial Dungeon, por favor repórtalo a un Game Master.";
+							close3;
+					}
+				}
+				end;
+			}
+			mes "Por favor elige el Memorial Dungeon al que deseas crear un acceso para tu grupo.";
+			.@m$ = "";
+			for(.@i = 1; .@i < getarraysize(.mn$); .@i++)
+				.@m$ += "[Nv.^FF8800"+.reqlvl[.@i]+"^000000] "+.mn$[.@i]+":";
+			next;
+			.@s = select(.@m$);
+			callsub S_CheckQuest,.@s,1;
+			callsub S_CheckQuest,.@s,2;
+			mes "[^cc6600Memorial Dungeons^000000]";
+			mes "Veo que has seleccionado .";
+			mes "¿Has tomado una decisión?";
+			next;
+			if(select("Crear una entrada:Lo pensaré mejor") == 2) {
+				mes "[^cc6600Memorial Dungeons^000000]";
+				mes "Una sabia decisión.";
+				close3;
+			}
+			if (!instance_check_party(getcharid(1),.reqp[.@s])) {
+				mes "[^cc6600Memorial Dungeons^000000]";
+				mes "Lo siento pero necesitas al menos ^ff8800"+.reqp[.@s]+"^000000 miembro(s) en tu party para poder entrar a:";
+				mes "^008800"+.mn$[.@s]+"^000000.";
+				close3;
+			}
+			if(BaseLevel < .reqlvl[.@s]) {
+				mes "[^cc6600Memorial Dungeons^000000]";
+				mes "Una disculpa, pero para poder entrar a:";
+				mes "^008800"+.mn$[.@s]+"^000000";
+				mes "Requieres tener Nv.^ff8800"+.reqlvl[.@s]+"^000000 como mínimo para poder accesar.";
+				close3;
+			}
+			if(checkquest(.questid[.@s],PLAYTIME) == 2)
+				erasequest .questid[.@s];
+			query_sql("SELECT COUNT(*) FROM `party_instance` WHERE `party_id` = '"+getcharid(1)+"'",.@c);
+			if(.@c)
+				query_sql("DELETE FROM `party_instance` WHERE `party_id` = '"+getcharid(1)+"'"):
+			.@dosql = query_sql("INSERT INTO `party_instance` (`party_id`,`instance`) VALUES ('"+getcharid(1)+"','"+.@s+"')");
+			if(instance_create(.mn$[.@s]) < 0) {
+				mes "[^cc6600Memorial Dungeons^000000]";
+				mes "Al parecer no puedo crear una entrada a esta Instancia por el momento, verifica que no haya error con tu party o ya exista alguna instancia creada.";
+			} else if(.@dosql < 0) {
+				mes "[^cc6600Memorial Dungeons^000000]";
+				mes "No se ha podido conectar a la base de datos del juego, por favor repórtalo a un Game Master.";
+			} else {
+				mes "[^cc6600Memorial Dungeons^000000]";
+				mes "He creado el acceso a ^008800"+.mn$[.@s]+"^000000 satisfactoriamente, mucha suerte en tu aventura.";
+			}
+			close3;
+		case 2:
+			mes "[^cc6600Memorial Dungeons^000000]";
+			mes "De acuerdo, no te fuerces, no cualquier persona puede con el reto.";
+			close3;
+	}
+OnInit:
+	query_sql("TRUNCATE TABLE `party_instance`");
+	callsub(S_AddInstance,1,"Endless Tower","1@tower",0,1,60200,60);
+	callsub(S_AddInstance,2,"Sealed Catacomb","1@cata",0,1,3040,70);
+	callsub(S_AddInstance,3,"Orc's Memory","1@orcs",0,1,12059,30);
+	callsub(S_AddInstance,4,"Nidhoggur's Nest","1@nyd",0,1,3135,70,0,"ins_nyd",131,1);
+	callsub(S_AddInstance,5,"Mistwood Maze","1@mist",0,1,7211,70);
+	callsub(S_AddInstance,6,"Culvert","1@pump",0,1,12254,50,6436);
+	callsub(S_AddInstance,7,"Octopus Cave","1@cash",0,1,4197,50,6442);
+	callsub(S_AddInstance,8,"Bangungot Hospital 2F","1@ma_h",0,1,9224,100,0,"malaya_bang",40,1);
+	callsub(S_AddInstance,9,"Buwaya Cave","1@ma_c",0,1,4229,130);
+	callsub(S_AddInstance,10,"Bakonawa Lake","1@ma_b",0,1,12278,140,0,"malaya_bakona1",7,1,"malaya_bakona2",15,1);
+	callsub(S_AddInstance,11,"Wolfchev's Laboratory","1@lhz",0,1,5112,150,0,"lght_duk01",7,1);
+	callsub(S_AddInstance,12,"Old Glast Heim","1@gl_k",2,1,12317,100);
+	callsub(S_AddInstance,13,"Eclage Interior","1@ecl",0,1,45119,130,0,"ep14_2_mylord",29,0);
+	callsub(S_AddInstance,14,"Sara's Memories","1@sara",0,1,15002,99,0,"saramemory",1,3);
+	callsub(S_AddInstance,15,"Geffen Magic Tournament","1@gef",0,1,9316,90);
+	callsub(S_AddInstance,16,"Horror Toy Factory","1@xm_d",0,1,12331,140);
+	callsub(S_AddInstance,17,"Faceworm Nest","1@face",0,1,,);
+	callsub(S_AddInstance,18,"Ghost Palace","1@spa",0,1,,);
+	callsub(S_AddInstance,19,"Fenrir and Sarah","1@glast",0,1,,);
+	callsub(S_AddInstance,20,"Devil's Tower","1@tnm1",0,1,,);
+	callsub(S_AddInstance,21,"Central Laboratory","1@lab",0,1,,);
+	callsub(S_AddInstance,22,"Last room","1@uns",0,1,,);
+	callsub(S_AddInstance,23,"Nightmarish Jitterbug","1@jtb",0,1,,);
+	callsub(S_AddInstance,24,"Monster Challenge","1@def01",0,1,,);
+	callsub(S_AddInstance,25,"Monster Dojo","1@dojo",0,1,,);
+	callsub(S_AddInstance,26,"LV1 Elite MVP Ladder","1@ldr",0,1,,);
+	callsub(S_AddInstance,27,"LV2 Elite MVP Ladder","2@ldr",0,1,,);
+	callsub(S_AddInstance,28,"LV3 Elite MVP Ladder","3@ldr",0,1,,);
+	callsub(S_AddInstance,29,"LV4 Elite MVP Ladder","4@ldr",0,1,,);
+	callsub(S_AddInstance,30,"Infinite Space","1@infi",0,1,,);
+	callsub(S_AddInstance,31,"Trail Of Turtle","1@turtle",0,1,,);
+	callsub(S_AddInstance,32,"Temple Of Fire","1@fire",0,1,,);
+	callsub(S_AddInstance,33,"T-Disease Hive","1@undead",0,1,,);
+	callsub(S_AddInstance,34,"Wolfchev's Mini Laboratory","2@lhz",0,1,,);
+	callsub(S_AddInstance,35,"Molten Core","1@mag",0,1,,);
+	callsub(S_AddInstance,36,"Endless Cellar","1@new",0,1,60201,80);
+	callsub(S_AddInstance,37,"Morse's Cave","1@rev",0,1,,);
+	callsub(S_AddInstance,38,"Room of Consciousness","1@mir",0,1,,);
+	callsub(S_AddInstance,39,"Sky Fortress","1@sthb",0,1,,);
+	callsub(S_AddInstance,40,"Temple of Demon God","1@eom",0,1,,);
+	callsub(S_AddInstance,41,"Isle of Bios","1@dth1",0,1,,);
+	callsub(S_AddInstance,42,"Assault on the Airship","1@air1",1,1,15050,125);
+	callsub(S_AddInstance,43,"Old Glast Heim Hard","1@gl_kh",0,1,,);
+	callsub(S_AddInstance,44,"Charleston Crisis","1@mcd",0,1,,);
+	callsub(S_AddInstance,45,"Lasagna Bandits","1@begi",0,1,,);
+	callsub(S_AddInstance,46,"Laboratory Basement","lhz_dun_n",0,1,,);
+	end;
+S_AddInstance:
+	// Nombre de la Instancia
+	setarray .mn$[getarg(0)],getarg(1);
+
+	// Nombre del mapa
+	setarray .m$[getarg(0)],getarg(2);
+
+	// Modo de la instancia. 1= solo, 0=multi
+	setarray .mode[getarg(0)],getarg(3);
+
+	// Cantidad de miembros requeridos
+	setarray .reqp[getarg(0)],getarg(4);
+
+	// ID de la Misión de Reloj
+	setarray .questid[getarg(0)],getarg(5);
+
+	// Nivel Base Requerido
+	setarray .reqlvl[getarg(0)],getarg(6);
+
+	// Devuelve los valores si no tiene un requisito definido.
+	if(getargcount() == 6)
+		return;
+
+	// Objeto requerido
+	setarray .item[getarg(0)],getarg(7);
+
+	// Variable requerida
+	setarray .var$[getarg(0)],getarg(8);
+	// Valor de variable requerido
+	setarray .val[getarg(0)],getarg(9);
+	// Comparativa. 0 = '==', 1 = '>=', 2 = '<='.
+	setarray .com[getarg(0)],getarg(10);
+	
+	// Devuelve para el doble quest.
+	if(getargcount() == 10)
+		return;
+	
+	// Segunda variable complementada
+	setarray .var2$[getarg(0)],getarg(11);
+	
+	// Valor de la segunda variable
+	setarray .val2[getarg(0)],getarg(12);
+	
+	// Comparativa
+	setarray .com2[getarg(0)],getarg(12);
+
+	return;
+S_CheckQuest:
+	.@i = getarg(0);
+	switch(getarg(1)) {
+		case 1:
+			if(.val[.@i] < 1)
+				return;
+			switch(.com[.@i]) {
+				case 0:
+					if(getd(.var$[.@i]) == .val[.@i])
+						return;
+					break;
+				case 1:
+					if(getd(.var$[.@i]) >= .val[.@i])
+						return;
+					break;
+				case 2:
+					if(getd(.var$[.@i]) <= .val[.@i])
+						return;
+					break;
+				case 3:
+					if(getd(.var$[.@i]) < .val[.@i])
+						return;
+					break;
+			}
+			break;
+		case 2:
+			if(.val2[.@i] < 1)
+				return;
+			switch(.com2[.@i]) {
+				case 0:
+					if(getd(.var2$[.@i]) == .val2[.@i])
+						return;
+					break;
+				case 1:
+					if(getd(.var2$[.@i]) >= .val2[.@i])
+						return;
+					break;
+				case 2:
+					if(getd(.var2$[.@i]) <= .val2[.@i])
+						return;
+					break;
+				case 3:
+					if(getd(.var$[.@i]) < .val[.@i])
+						return;
+					break;
+			}
+			break;
+	}
+	mes "[^cc6600Memorial Dungeons^000000]";
+	mes "Lo siento pero no cumples con algún pre-requisito de misiones para poder accesar a esta instancia.";
+	close3;*/
+}

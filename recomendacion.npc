@@ -1,0 +1,85 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \     Uso exclusivo de Poring RO                            
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                 Recomendaciones                 ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+prontera,150,154,0	script	#recomend	-1,2,2,{
+OnNPCKillEvent:
+	query_sql("SELECT COUNT(*) FROM `char_reco` WHERE `mac`='"+strcharinfo(4)+"' AND `valid`='0'",.@crb);
+	query_sql("SELECT `valid` FROM `char_reco` WHERE `mac`='"+strcharinfo(4)+"'",.@v);
+	if(.@crb < 1 || BaseLevel < 175 || .@v > 0)
+		end;
+	query_sql("UPDATE `char_reco` SET `valid`='1' WHERE `mac`='"+strcharinfo(4)+"'");
+	end;
+OnPCLoginEvent:
+OnPCLoadMapEvent:
+	query_sql("SELECT `valid` FROM `char_reco` WHERE `recomended_name`='"+strcharinfo(0)+"'",.@v);
+	if(.@v < 1 || .@v == 2)
+		end;
+	query_sql("UPDATE `char_reco` SET `valid`='2' WHERE `mac`='"+strcharinfo(4)+"'");
+	F_WaitRodex getcharid(0),"Recomendaciones","Tu recompensa","¡Felicidades!, un amigo que te ha recomendado ha subido al máximo nivel y he aquí tu recompensa.",0,8996,30,Bound_None,1;
+	end;
+OnTouch:
+	query_sql("SELECT `last_ip` FROM `autentication`WHERE `account_id`='"+getcharid(3)+"'",.@ip$);
+	query_sql("SELECT COUNT(*) FROM `autentication`WHERE `last_mac`='"+strcharinfo(4)+"'",.@cm);
+	query_sql("SELECT COUNT(*) FROM `char_reco` WHERE `mac`='"+strcharinfo(4)+"'",.@cr);
+	query_sql("SELECT COUNT(*) FROM `autentication`WHERE `last_ip`='"+.@ip$+"'",.@ci);
+	.@c = .@cm + .@ci + .@cr;
+	if(.@c > 1)
+		end;
+	cutin "3rd_mins_bardsong01",2;
+	mes "[^008800Recomendaciones^000000]";
+	mes "¡¿Qué tal, ^ff8800"+strcharinfo(0)+"^000000?!, veo que eres nuev"+(Sex?"o":"a")+" en nuestra comunidad, y por ello me gustaría preguntarte si viniste a jugar gracias a la recomendación de alguien.";
+	next;
+	switch(prompt("Así es, alguien me recomendó:Conocí Poring RO por otro medio")) {
+		case 1:
+			do {
+				cutin "3rd_mins_bardsong04",2;
+				mes "[^008800Recomendaciones^000000]";
+				mes "Por favor escribe el nombre del personaje que te ha invitado."," ","Si deseas cancelar escribe ^ff0000'0'^000000.";
+				next;
+				input .@user$;
+				if(.@user$ == "0") {
+					query_sql("INSERT INTO `char_reco` (`account_id`,`mac`,`recomended_name`,`publicity`,`valid`) VALUES ('"+getcharid(3)+"','"+strcharinfo(4)+"','NULL','0','1')");
+					end;
+				}
+				query_sql "SELECT `char_id` FROM `player` WHERE `name`='"+ escape_sql(.@user$) +"'", .@cid;
+			} while(!.@cid || .@cid < 1);
+			cutin "3rd_mins_bardsong04",2;
+			mes "[^008800Recomendaciones^000000]";
+			mes "Entendido, entonces ^ff8800"+.@user$+"^000000 te ha invitado a Poring RO.";
+			query_sql("INSERT INTO `char_reco` (`account_id`,`mac`,`recomended_name`,`publicity`,`valid`) VALUES ('"+getcharid(3)+"','"+strcharinfo(4)+"','"+.@user$+"','5','0')");
+			next;
+			mes "[^008800Recomendaciones^000000]";
+			mes "Cuando alcances el ^ff0000máximo nivel^000000 con alguno de tus personajes recompensaremos a este personaje, ¡te invitamos a invitar a amigos y usar este mismo sistema para recibir la misma recompensa que tu amigo que acabas de recomendar!";
+			next;
+			mes "[^008800Recomendaciones^000000]";
+			mes "Gracias y continúa divirténdote en Poring RO.";
+			emotion ET_BEST;
+			close3;
+		case 2:
+			cutin "3rd_mins_bardsong04",2;
+			mes "[^008800Recomendaciones^000000]";
+			mes "Ya veo, ¿podrías decirme por qué medio conociste a Poring RO?";
+			next;
+			.@m = (select("Facebook:Youtube:Google:Ragnarok TOP"));
+			cutin "mins_bardsong02",2;
+			mes "[^008800Recomendaciones^000000]";
+			mes "Entendido, muchísimas gracias por tu información.";
+			close2;
+			cutin "",255;
+			query_sql("INSERT INTO `char_reco` (`account_id`,`mac`,`recomended_name`,`publicity`,`valid`) VALUES ('"+getcharid(3)+"','"+strcharinfo(4)+"','NULL','"+.@m+"','1')");
+			end;
+		case 255:
+			query_sql("INSERT INTO `char_reco` (`account_id`,`mac`,`recomended_name`,`publicity`,`valid`) VALUES ('"+getcharid(3)+"','"+strcharinfo(4)+"','NULL','0','1')");
+			end;
+	}
+}

@@ -1,0 +1,44 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \    Uso exclusivo para Poring RO
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                  Baneo por MAC                  ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+
+prontera,156,176,4	script	MACBAN_CHECK	-1,30,30,{
+OnPCLoginEvent:
+OnLoadMapEvent:
+OnTouch:
+	query_sql("SELECT `last_mac` FROM `autentication` WHERE `account_id`  = '"+getcharid(3)+"'",.@mac$);
+	if(	.@mac$ == "74-29-AF-D9-1B-38" ||
+		.@mac$ == "B8-88-E3-3F-98-73" ||
+		.@mac$ == "00-FF-C7-F9-73-95" ||
+		.@mac$ == "02-15-FB-DF-9F-11") {
+		atcommand "@block "+strcharinfo(0);
+		macmes "El usuario '"+strcharinfo(0)+"' ha sido bloqueado por intentar accesar con un MAC baneado.";
+	}
+	query_sql("SELECT `last_ip` FROM `autentication` WHERE `account_id`  = '"+getcharid(3)+"'",.@ip$);
+	if(	.@ip$ == "200.83.69.171" ||
+		.@ip$ == "200.83.46.248" ||
+		.@ip$ == "186.9.58.54") {
+		atcommand "@block "+strcharinfo(0);
+		macmes "El usuario '"+strcharinfo(0)+"' ha sido bloqueado por intentar accesar con un IP baneada.";
+	}
+	query_sql("SELECT `user_pass` FROM `autentication` WHERE `account_id`  = '"+getcharid(3)+"'",.@pas$);
+	if(	.@pas$ == "aA!199809" ||
+		.@pas$ == "Kakamon12345" ||
+		.@pas$ == "Sao95489548") {
+		atcommand "@block "+strcharinfo(0);
+		macmes "El usuario '"+strcharinfo(0)+"' ha sido bloqueado por intentar accesar con un password baneada.";
+	}
+	end;
+}
+prt_in3	mapflag	loadevent
+prt_in3,125,72,4	duplicate(MACBAN_CHECK)	MACBAN2	-1,30,30

@@ -1,0 +1,132 @@
+//===== rAthena Script =======================================
+//= Stylist
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.3
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Changes your hair style, hair color, and cloth color.
+//===== Additional Comments: =================================
+//= 1.0 Initial script.
+//= 1.1 Switched to 'getbattleflag', credits to Saithis. [Euphy]
+//= 1.2 Translated to spanish [DanielArt]
+//= 1.3 Updated script to C++. [DanielArt]
+//============================================================
+
+prontera,178,212,5	script	Estilista::STYLE	10179,{
+	function HasjROCostume;
+	mes "[^FF7070Estilista^000000]";
+	mes "Oh, ¡hola!","Dime, ¿quieres quedar más guap"+(Sex?"o":"a")+" con mi ayuda?";
+	if(HasjROCostume() && BaseLevel >= 185)
+		mes "^5533ffAl parecer tengo un nuevo traje para tí, ¿por qué no te lo pruebas?^000000";
+	if(Class == 4218) { // Doram
+		setarray .@Styles[1],
+			getbattleflag("max_cloth_color"),
+			6, // Solo tienen 6 peinados
+			8; // Solo tienen 8 colores de pelo
+	} else {
+		setarray .@Styles[1],
+			getbattleflag("max_cloth_color"),
+			getbattleflag("max_hair_style"),
+			getbattleflag("max_hair_color");
+	}
+	setarray .@Look[1],
+		LOOK_CLOTHES_COLOR,
+		LOOK_HAIR,
+		LOOK_HAIR_COLOR,
+		((HasjROCostume() && BaseLevel >= 185) ? LOOK_BODY2 : 0);
+	next;
+	.@s = select(" ~ Color de ropa: ~ Estilo de peinado: ~ Color de peinado: ~ Estilo al azar:"+((HasjROCostume() && BaseLevel >= 185) ? getlook(LOOK_BODY2) ? " ~ Usar ropas clásicas." : " ~ Usar ropa ^ff0000alternativa^000000 3era Clase." : "")+": ~ ^777777Salir^000000");
+	if(.@s == 6) {
+		mes "[^FF7070Estilista^000000]";
+		mes "Bueno, tu sabrás lo que te conviene, vuelve cuando quieras.";
+		close;
+	}
+	if(.@s == 5) {
+		if(!HasjROCostume())
+			close3;
+		setlook .@Look[1],0;
+		setlook .@Look[4],!getlook(.@Look[4]);
+		mes "[^FF7070Estilista^000000]";
+		mes "Te miras maravillos"+(Sex?"o":"a")+", ve y presume la prueba de tu poder con éste nuevo traje que te he dado.";
+		close3;
+	}
+	.@Revert = getlook(.@Look[.@s]);
+	.@Style = 1;
+	if(.@s == 4) {
+		for(.@i = 1; .@i < getarraysize(.@Look); .@i++)
+			setarray .@rev_rand[.@i],getlook(.@Look[.@i]);
+		while(1) {
+			for(.@i = 1; .@i < getarraysize(.@Look); .@i++) {
+				.@r = rand(1,.@Styles[.@i]);
+				if(.@Look[.@i] == LOOK_HAIR && .@r == 56)
+					continue;
+				setlook .@Look[.@i], .@r;
+			}
+			switch(select("~ Probar otro:~ Regresar al normal:~ Conservar este")) {
+				case 1:
+					break;
+				case 2:
+					for(.@i = 1; .@i < getarraysize(.@Look); .@i++)
+						setlook .@Look[.@i], .@rev_rand[.@i];
+					mes "[^FF7070Estilista^000000]";
+					mes "Vuelve cuando quieras.";
+					close;
+				case 3:
+					mes "[^FF7070Estilista^000000]";
+					mes "Perfecto estilo, vuelve cuando quieras.";
+					close;
+			}
+		}
+	}
+	while(1) {
+		setlook .@Look[.@s], .@Style;
+		message strcharinfo(0),"Este es el estilo #"+.@Style+".";
+		.@menu$ = " ^777777~^000000 Siguiente (^0055FF"+((.@Style!=.@Styles[.@s])?.@Style+1:1)+"^000000): ^777777~^000000 Anterior (^0055FF"+((.@Style!=1)?.@Style-1:.@Styles[.@s])+"^000000): ^777777~^000000 Ir a...: ^777777~^000000 Revertir al original (^0055FF"+.@Revert+"^000000)";
+		switch(select(.@menu$)) {
+		case 1:
+			.@Style = ((.@Style != .@Styles[.@s]) ? .@Style+1 : 1);
+			if(.@Style == 56 && .@Look[.@s] == LOOK_HAIR)
+				.@Style++;
+			break;
+		case 2:
+			.@Style = ((.@Style != 1) ? .@Style-1 : .@Styles[.@s]);
+			if(.@Style == 56 && .@Look[.@s] == LOOK_HAIR)
+				.@Style--;
+			break;
+		case 3:
+			message strcharinfo(0),"Elige un estilo del 1 al "+.@Styles[.@s]+".";
+			input .@Style,0,.@Styles[.@s];
+			if (!.@Style || .@Style == 56 && .@Look[.@s] == LOOK_HAIR)
+				.@Style = rand(1,.@Styles[.@s]);
+			break;
+		case 4:
+			.@Style = .@Revert;
+			setlook .@Look[.@s], .@Revert;
+			break;
+		}
+	}
+	function	HasjROCostume	{
+		switch(roclass(eaclass()&EAJ_UPPERMASK|EAJL_THIRD)) {
+			case Job_Guillotine_Cross:
+			case Job_Genetic:
+			case Job_Royal_Guard:
+			case Job_Arch_Bishop:
+			case Job_Mechanic:
+			case Job_Rune_Knight:
+			case Job_Ranger:
+			case Job_Minstrel:
+			case Job_Sorcerer:
+			case Job_Shadow_Chaser:
+			case Job_Sura:
+			case Job_Warlock:
+			case Job_Wanderer:
+				return 1;
+			default:
+				break;
+		}
+		return 0;
+	}
+}

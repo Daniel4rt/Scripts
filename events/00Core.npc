@@ -1,0 +1,263 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \    Uso exclusivo para Poring RO
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---           Control de Eventos Automáticos        ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+
+-	script	EVENT_CORE	-1,{
+OnCommand:
+	if(.@atcmd_command$ == "@votarset") {
+		if(.@atcmd_numparameters == 1) {
+			.@a = atoi(.@atcmd_parameters$[0]);
+			if(.@a < 2) {
+				.VoteMode = atoi(.@atcmd_parameters$[0]);
+				dispbottom "El modo de votación ahora está "+(atoi(.@atcmd_parameters$[0]) ? "activado":"desactivado");
+				end;
+			} else if(.@a == 3) {
+				query_sql("UPDATE `event_vote` SET `votos` = '0'");
+				query_sql("TRUNCATE TABLE `event_vote_log`");
+				dispbottom "Bases de datos reiniciadas.";
+				end;
+			}
+		}
+		dispbottom "@votarset - fallido.";
+		dispbottom "0 = Desactivar.";
+		dispbottom "1 = Activar.";
+		dispbottom "3 = Reset.";
+		end;
+	} else if(.@atcmd_command$ == "@votar") {
+		if(.VoteMode) {
+			.@a = atoi(.@atcmd_parameters$[0]);
+			if(.@a > 0 && .@a < 11) {
+				query_sql("SELECT `last_mac` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@mac$);
+				query_sql("SELECT `vote_to` FROM `event_vote_log` WHERE `mac` = '"+.@mac$+"'", .@mc);
+				if(.@mc > 0) {
+					dispbottom "@votar ha fallado.";
+					dispbottom "Solo puedes votar una vez por computador, espera a la próxima votación de eventos.";
+					end;
+				}
+				query_sql("SELECT `votos` FROM `event_vote` WHERE `name` = 'LAST'",.@last);
+				query_sql ("SELECT `name` FROM `event_vote` WHERE `id` = '"+.@last+"'",.@lastname$);
+				if( .@last == .@a ) {
+					dispbottom "@votar ha fallado.";
+					dispbottom "El evento '"+.@lastname$+"' fue el anterior que se llevó a cabo, vota por uno distinto.";
+					end;
+				}
+				query_sql ("UPDATE  `event_vote`  SET `votos` = (`votos` + 1) WHERE `id` = '"+.@a+"'");
+				query_sql ("INSERT INTO `event_vote_log` (char_id, mac, vote_to) VALUES ('"+getcharid(0)+"','"+.@mac$+"','"+.@a+"')");
+				query_sql ("SELECT `name` FROM `event_vote` WHERE `id` = '"+.@a+"'",.@n$);
+				dispbottom "Has votado correctamente por el evento [ "+.@a+" ] '"+.@n$+"', espera unos minutos a que finalicen las votaciones, se activará el evento que tenga más votaciones.";
+				end;
+			}
+			dispbottom "@votar <evento>";
+		} else
+			dispbottom "@votar no se encuentra disponible, cuando esté activo usa @votar <evento>.";
+		dispbottom "Lista de eventos:";
+		dispbottom "[ 1 ] - Busca al Poring:",0x45FEAA;
+		dispbottom "..........En una sala aparecerán cientos de poring y solo uno será el correcto, mátalo y gana el premio.",0xB3A8E3;
+		dispbottom "[ 2 ] - Last-Man Standing: ",0x45FEAA;
+		dispbottom "..........Los jugadores entran a una sala donde tendrán que enfrentarse uno al otro, el último en vivir gana.",0xB3A8E3;
+		dispbottom "[ 3 ] - Emperium Break: ",0x45FEAA;
+		dispbottom "..........Serás transportado a una sala donde estará un Emperium, sé el primero en destruirlo y gana el premio.",0xB3A8E3;
+		dispbottom "[ 4 ] - Pesca de Alberta: ",0x45FEAA;
+		dispbottom "..........Participa en el más fantástico concurso de pesca, donde si obtienes más puntos que los demás, ganarás, hay premios extras durante el evento.",0xB3A8E3;
+		dispbottom "[ 5 ] - Guerra Explosiva: ",0x45FEAA;
+		dispbottom "..........Entra a una sala donde te enfrentarás a varios jugadores, rompe los cofres para convocar bombas y arrojarlas a tus enemigos, derrota a todos para ganar.",0xB3A8E3;
+		dispbottom "[ 6 ] - Cuenta-Hongos: ",0x45FEAA;
+		dispbottom "..........Entra a una sala donde habrán Spore de distintos tipos, averigua cuántos hay antes que todos para ganar, solo te podrás equivocar tres veces.",0xB3A8E3;
+		dispbottom "[ 7 ] - Atrapa la Masa: ",0x45FEAA;
+		dispbottom "..........Se te otorgarán taming para atrapar masas, atrapa diez de ellas y entrégalos al NPC antes que todos para ganar, todos los participantes obtienen un pet gratis.",0xB3A8E3;
+		dispbottom "[ 8 ] - Novice vs Zombie: ",0x45FEAA;
+		dispbottom "..........Evento exclusivo para Novice, serás transportado a una sala donde paulatinamente aparecerán Zombie, huye de ellos y si eres el último en sobrevivir ganarás.",0xB3A8E3;
+		dispbottom "[ 9 ] - Dados: ",0x45FEAA;
+		dispbottom "..........Un evento donde habrán cuatros casillas distintas, elige una antes de que se se agote el tiempo, el NPC lanzará un número al azar, ganará la casilla que el NPC haya elegido al azar.",0xB3A8E3;
+		dispbottom "[ 10 ] - MvP vs. MvP: ",0x45FEAA;
+		dispbottom "..........Un par de MvP pelean entre sí, el evento consistirá en apostar por quien será el posible ganador después de una pelea en vivo y en directo.",0xB3A8E3;
+		end;
+	}
+OnInit:
+	.VoteMode = 0;
+	query_sql("UPDATE `event_vote` SET `votos` = '0'");
+	query_sql("TRUNCATE TABLE `event_vote_log`");
+	//bindatcmd "votar","EVENT_CORE::OnCommand",0,99;
+	//bindatcmd "votarset","EVENT_CORE::OnCommand",99,99;
+	//bindatcmd "votarstart","EVENT_CORE::OnForceStart",99,99;
+	bindatcmd "doevent","EVENT_CORE::OnForceEvent",99,99;
+	end;
+OnTimer60000:
+	stopnpctimer;
+	.VoteMode = 0;
+	query_sql("SELECT `id`,`name`,`votos` FROM `event_vote` ORDER BY `votos` DESC LIMIT 1",.@i,.@n$,.@v);
+	if(.@v[0] > 0) {
+		announce "[Eventos]: ¡Votación finalizada!, el evento '"+.@n$+"' ha ganado con '"+.@v[0]+"' votos, pasará a ejecutarse.",bc_all,0x49FEAA;
+		query_sql("UPDATE `event_vote` SET `votos` = '"+.@i+"' WHERE `name` = 'LAST'");
+	} else {
+		announce "[Eventos]: ¡No se ha recibido ningún voto!, se ejecutará un evento al azar.",bc_all,0x49FEAA;
+		.@i = rand(1,9);
+	}
+	sleep2 1500;
+	switch (.@i) {
+		case 1:
+			//Busca Poring
+			donpcevent "BUSCAPO::OnBuscaPoring";
+			break;
+		case 2:
+			//Last-Man Standing
+			donpcevent "#LASTMAN::OnLastMan";
+			break;
+		case 3:
+			//Emperium Break
+			donpcevent "EMP::OnEmpeBreak";
+			break;
+		case 4:
+			//Pesca Alberta
+			donpcevent "PESCALBE::OnPescaAlberta";
+			break;
+		case 5:
+			//Guerra Explosiva
+			donpcevent "EXPLOWAR::OnExploWar";
+			break;
+		case 6:
+			//Cuenta Hongos
+			donpcevent "CUENT::OnCuentaHongos";
+			break;
+		case 7:
+			//Atrapa la Masa
+			donpcevent "RICEVT::OnAtrapaMasa";
+			break;
+		case 8:
+			//Novice vs Zombies
+			donpcevent "announce_nvz::OnNoviceZombie";
+			break;
+		case 9:
+			//Dados
+			donpcevent "DADOS::OnDadosEvt";
+			break;
+		case 10:
+			//MvP vs MvP
+			donpcevent "MVP_EVENT::OnMvpStart";
+			break;
+	}
+	query_sql("UPDATE `event_vote` SET `votos` = '0'");
+	query_sql("TRUNCATE TABLE `event_vote_log`");
+	end;
+OnForceEvent:
+	switch (atoi(.@atcmd_parameters$[0])) {
+		case 1:
+			//Busca Poring
+			donpcevent "BUSCAPO::OnBuscaPoring";
+			break;
+		case 2:
+			//Last-Man Standing
+			donpcevent "#LASTMAN::OnLastMan";
+			break;
+		case 3:
+			//Emperium Break
+			donpcevent "EMP::OnEmpeBreak";
+			break;
+		case 4:
+			//Pesca Alberta
+			donpcevent "PESCALBE::OnPescaAlberta";
+			break;
+		case 5:
+			//Guerra Explosiva
+			donpcevent "EXPLOWAR::OnExploWar";
+			break;
+		case 6:
+			//Cuenta Hongos
+			donpcevent "CUENT::OnCuentaHongos";
+			break;
+		case 7:
+			//Atrapa la Masa
+			donpcevent "RICEVT::OnAtrapaMasa";
+			break;
+		case 8:
+			//Novice vs Zombies
+			donpcevent "announce_nvz::OnNoviceZombie";
+			break;
+		case 9:
+			//Dados
+			donpcevent "DADOS::OnDadosEvt";
+			break;
+		case 10:
+			//MvP vs MvP
+			donpcevent "MVP_EVENT::OnMvpStart";
+			break;
+		case 11:
+			//Monster Invade
+			donpcevent "MOB_INVADE::OnInvade";
+			break;
+	}
+	end;
+OnMinute20:
+OnMinute50:
+	if(gettime(DT_HOUR) >= 23 && gettime(DT_HOUR) <= 7 || agitcheck() || agitcheck2() || agitcheck3() || warcheck())
+		end;
+	if(rand(100) < 70) {
+OnForceStart:
+	switch (rand(1,11)) {
+		case 1:
+			//Busca Poring
+			donpcevent "BUSCAPO::OnBuscaPoring";
+			break;
+		case 2:
+			//Last-Man Standing
+			donpcevent "#LASTMAN::OnLastMan";
+			break;
+		case 3:
+			//Emperium Break
+			donpcevent "EMP::OnEmpeBreak";
+			break;
+		case 4:
+			//Pesca Alberta
+			donpcevent "PESCALBE::OnPescaAlberta";
+			break;
+		case 5:
+			//Guerra Explosiva
+			donpcevent "EXPLOWAR::OnExploWar";
+			break;
+		case 6:
+			//Cuenta Hongos
+			donpcevent "CUENT::OnCuentaHongos";
+			break;
+		case 7:
+			//Atrapa la Masa
+			donpcevent "RICEVT::OnAtrapaMasa";
+			break;
+		case 8:
+			//Novice vs Zombies
+			donpcevent "announce_nvz::OnNoviceZombie";
+			break;
+		case 9:
+			//Dados
+			donpcevent "DADOS::OnDadosEvt";
+			break;
+		case 10:
+			//MvP vs MvP
+			donpcevent "MVP_EVENT::OnMvpStart";
+			break;
+		case 11:
+			//Monster Invade
+			donpcevent "MOB_INVADE::OnInvade";
+			break;
+	}
+	end;
+		announce "[Eventos]: ¡La votación ha iniciado, vota por un evento usando @votar!",bc_all,0x49FEAA;
+		.VoteMode = 1;
+		query_sql("UPDATE `event_vote` SET `votos` = '0'");
+		query_sql("TRUNCATE TABLE `event_vote_log`");
+		sleep2 3000;
+		announce "[Eventos]: ¡La votación finalizará en 1 minuto y se elegirá el evento ganador, usa @votar!",bc_all,0x49FEAA;		
+		initnpctimer;
+		end;
+	}
+end;
+}

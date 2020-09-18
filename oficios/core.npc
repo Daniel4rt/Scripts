@@ -1,0 +1,1175 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---            Core: Sistema de Oficios             ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+// *Los siguientes scripts están completamente atados al -
+//  código source del emulador, si no se posee éste      -
+//  correctamente, su funcionamiento será nulo.          -
+//========================================================
+// * Version: 4.0
+//========================================================
+// - 1.0: Primera versión.
+// - 1.1: Corregidos bugs menores.
+// - 1.2: Adaptación al source.
+// - 1.3: Cambio de rAthena Script a C++
+// - 1.4: Añadidos NPC Dinámicos
+// - 1.5: Uso de variables temporales para Of Level
+// - 1.6: Añadido sistema de ranking SQL
+// - 1.7: Corregida tabla de experiencia
+// - 1.8: Corregido exploit con encantamientos
+// - 1.9: Nuevos scripts commands para Oficios
+// - 2.0: Nuevas skills para Sastre y Escriba
+// - 2.1: Corregido exploit con Hire Card Combination
+// - 2.2: Actualizada fórmula de Carpintero
+// - 2.3: Añadido anti-hack a Enchanter.
+// - 2.4: Añadida la 2da rama de Oficios.
+// - 2.5: Los teósofos ganarán +5% al encantar.
+// - 2.6: Añadido nuevo Enhance Log al encantamiento.
+// - 2.7: Añadida la entrada a las ruinas de explorador.
+// - 2.8: Añadidos nuevos elementos de eliminación.
+// - 2.9: Añadida función de la carroza de escudero.
+// - 3.0: Añadido sistema de comidas de explorador.
+// - 3.1: Exportadas nuevas constantes para los oficios.
+// - 3.2: Añadidas las funciones para Booking.
+// - 3.3: Añadidas las bonificaciones de los Celestiales.
+// - 3.4: Añadidos 'Pray' y 'Simony'.
+// - 3.5: Actualizadas fórmulas de oficios.
+// - 3.6: Corregido error en el shareo de buffs.
+// - 3.7: Añadida lista de objetos ignorados a Item Destroy
+// - 3.8: Añadido bucle para verificar la obtención de gema.
+// - 3.9: Añadido nuevo script command para revisar lvl up.
+// - 4.0: Los scripts públicos confirmarán si existe getofid.
+//========================================================
+
+// Template de tienda para usar en las skills
+-	shop	OF_SHOP_TEMPLATE	-1,909:100
+
+/**
+ * Script Core
+**/
+-	script	OF_CORE	-1,{
+OnPCLogoutEvent:
+// Eliminación de Skill-NPC al desconectarse
+	if( getcharid(6) )
+		deleteenchantshop;
+	if( getcharid(7) )
+		deletetree;
+	if( getcharid(8) )
+		deletecarroza;
+	if( getcharid(9) )
+		deleteruina;
+	if( getcharid(10) )
+		deletelunchtime;
+	end;
+
+// Convoca una Ruina en tu posición.
+OnRuinaCmd:
+	dispbottom "Ruina colocada en tu posición.",0x000000;
+	spawnruina();
+	end;
+
+// Variables iniciales y de NPC.
+OnInit:
+	query_sql("TRUNCATE TABLE `npc_enchant`");
+	query_sql("TRUNCATE TABLE `npc_tree`");
+	query_sql("TRUNCATE TABLE `npc_carroza`");
+	query_sql("TRUNCATE TABLE `npc_ruina`");
+	query_sql("TRUNCATE TABLE `npc_lunchtime`");
+	query_sql("TRUNCATE TABLE `npc_lunchtime_food`");
+	
+	// Comandos
+	bindatcmd "spawnruina","OF_CORE::OnRuinaCmd",99,99;
+	
+	// Tabla de Experiencia de niveles de oficio.
+	setarray .exp_table[1],1,30,60,150,300,600,1000,1500,2000,2500,3000,3500,5000,6300,7000,7050,7150,7300,7500,7800,8200,8500,9000,10000,10050,10100,10150,10300,11000,11250,11400,11600,12000,13000,14500,15000,16900,18500,20000,23000,999999999;
+	
+	// Menu de equipo
+	setarray .eq,   EQI_HEAD_TOP,EQI_HEAD_MID,EQI_HEAD_LOW,EQI_ARMOR, EQI_HAND_L,  EQI_HAND_R,  EQI_GARMENT,EQI_SHOES,EQI_ACC_L,   EQI_ACC_R;
+	setarray .eq_n$,"Hat Top",    "Hat Mid",     "Hat Low",    "Armadura", "M. Izquierda", "M. Derecha",  "Espalda",    "Botas",   "Acc. Izquierda", "Acc. Derecha";
+	setarray .c$,   "^FF0000",    "^FF0000",     "^FF0000",    "^CC6600", "^008800",    "^00FE00",     "^5533FF",   "^FF8800", "^000088",     "^0000CC";
+	
+	// Materiales de Sastre para Unravel
+	setarray .sasmat[1],8202,8203,8204,8205;
+	
+	// Relación Equipo - Gema
+	setarray .gem[1],8216,8217,8218,8219;
+
+	// Lista de gemas y puntos por grado.
+	setarray .gem_list, 8216,8217,8218,8219,8220,8221,8523,8524;
+	setarray .gem_point,   1,   2,   5,  10,  50,1000,3000,10000;
+	
+	// Máxima calidad de gema que puede salir sin usar Gemas nivel A y B.
+	.maxgem = 7;
+
+	// Tabla de Experiencia para la obtención de encantamientos.
+	setarray .gem_exp[1],50,100,500,1500,2000,2500,3000,3200,3500,3800,4000,4300,4500,5000,6000,8000,10000,20000,30000,50000,60000,70000,80000,90000,100000,120000,160000,200000,400000,600000;
+	
+	// ID's de las gemas según la tabla de experiencia de obtención de encantamientos.
+	setarray .gem_1,4700,4710,4720,4730,4740,4750,4701,4711,4721,4731,4741,4751,29101,29111,29112;
+	setarray .gem_2,4703,4713,4723,4733,4743,4753,4704,4714,4724,4734,4744,4754,4952,4953,4954,4955,4956;
+	setarray .gem_3,4762,4763,4786,4787,4788,4789,4790,4791,4792,4793,4794,4942,4943,4944,4945,4946,4947;
+	setarray .gem_4,4795,4796,4797,4798,4799,4800,4801,4802,4929,4930,4931,4932,4933,4934,4935;
+	setarray .gem_5,4760,4761,4762,4763,4764,4765,4766,4767;
+	setarray .gem_6,4786,4787,4788,4791,4792,4793,4794,4789,4790;
+	setarray .gem_7,4803,4804,4805,4818,4817,4816;
+	setarray .gem_8,4936,4937,4938,4939,4940,4941,4956;
+	setarray .gem_9,4957,4958,4959,4960,4961,4962,4963,4964,4965;
+	setarray .gem_10,4795,4796,4800,4801,4802,4966,4967,4968,4969;
+	setarray .gem_11,4797,4798,4799,29121,29122,29123,29124,29125,29126,29146,29147;
+	setarray .gem_12,4803,4804,4805,4806,4807,29148,29149,29150,29151,29152,29153;
+	setarray .gem_13,4808,4809,4810,4811,29101,29102,29103,29104,29105,29111,29112,29113;
+	setarray .gem_14,4812,4813,4814,4815,4816,4817,4818,4819,29091,29092,29093;
+	setarray .gem_15,4824,4825,29061,29062,29063,29064,29065,29071,29072;
+	setarray .gem_16,4826,4827,4828,4832,4833,4834,4835,29081,29082,29083;
+	setarray .gem_17,4842,4843,4844,4848,4849,4850,4851,4852;
+	setarray .gem_18,4853,4854,4855,4856,4857,4858,4861,4862;
+	setarray .gem_19,4863,4864,4865,4866,4867,4868,4737,4747,4757;
+	setarray .gem_20,4869,4870,4871,4872,4873,4736,4746,4756,4707;
+	setarray .gem_21,4881,4882,4883,4884,4885,4886,4887,4888,4889,4893;
+	setarray .gem_22,4896,4897,4898,4899,4900,4902,4903;
+	setarray .gem_23,4906,4907,4908,4909,4914,4917,4920,4923;
+	setarray .gem_24,4836,4837,4829,4830,4831,4705,4715,4725,4735,4745,4755,4706,4716,4726;
+	setarray .gem_25,4820,4821,4822,4823,4994,4995,4996,4997,4998,4999,4838,4839,4840,4841,4717,4727;
+	setarray .gem_26,4875,4876,4877,4878,4879,4880,4708,4718,4728,4738,4748,4758,4709,4719,4729,4739,4749,4759;
+	setarray .gem_27,29000,29006,29009,29061,29071,29081,29091,29101,29111;
+	setarray .gem_28,29148,29149,29150,29151,29152,29153;
+	setarray .gem_29,29146,29147,29108,29109,29118,29119,29120;
+	setarray .gem_30,29121,29122,29123,29124,29125,29126;
+
+	// Cartas requeridas para formar una nueva carta
+	.card_count = 3;
+
+	// Zeny base para Hire Card Combination
+	.zeny_cost = 500000;
+
+	// Lista negra de cartas prohibidas para Hire Card Combination
+	.forbidden_card$ = "|4324|4054|4399|4290|4662|4196|4198|4174|4047|4045|4241|4451|4383|4451|4456|4457|4462|4463|4507|4525|4526|4527|4528|4529|4534|4535|4536|4537|4538|4539|4540|4541|4542|4543|4544|4545|4546|4547|4556|4559|4560|4561|4562|4563|4564|4565|4566|4567|4568|4569|4570|4571|4572|4573|4574|4577|4578|4582|4590|4591|4592|4601|4602|4603|4604|4605|4606|4610|4635|4480|4481|4482|4483|4484|4485|4486|4487|4488|4489|4490|4491|4492|4493|4494|4495|4496|4497|4498|4499|4500|4501|4502|4503|4504|4142|4003|4069|4441|4145|4386|4263|4146|4376|4302|4342|4134|4142|4143|4135|4168|4123|4330|4419|4148|4374|4403|4352|4359|4363|4365|4357|4367|4361|4372|4132|4121|4144|4236|4276|4407|4131|4147|4128|4425|4408|4430|4137|4305|4318|";
+
+	// Recetas y niveles de Lunch Time
+	setarray .recipe$,"Ensalada","Sopa de Verduras","Sandwich","Yogurt","Brocheta BBQ","Champagne";
+	setarray .levelrecipe,15,20,25,35,40;
+	setarray .effect,SC_ENSALADA,SC_VERDURAS,SC_SANDWICH,SC_YOGURT,SC_BBQ,SC_CHAMPAGNE;
+	setarray .color$,"008800","cc6600","ff7070","ff7070","ff0000","ff8800";
+	setarray .pn,0,0,1,1,0,1;
+	setarray .ingr1,8530,8531,8530,8533,8534,8535;
+	setarray .ingr2,8531,8533,8532,8533,8531,8535;
+	
+	// Duración de los beneficios de cada comida
+	.foodtime = 1800000;
+	
+	// Extra por cada nivel del Escudero
+	.extrafood = 60000;
+	
+	// Correspondencia y calidad de efectos de los libros
+	setarray .bookid,8540,8541,8542,8543,8544,8545,8546,8547,8548,8549,8550,8551;
+	setarray .bookscid,SC_BOOK_AGNIS,SC_BOOK_VENTUS,SC_BOOK_TERRA,SC_BOOK_AQUA,SC_BOOK_DISPAIR,SC_BOOK_SANCTUS,SC_BOOK_TRAVELER,SC_BOOK_LIGHTINING,SC_BOOK_VITALY,SC_BOOK_MANA,SC_BOOK_ACCURACY,SC_BOOK_SNAKE;
+	setarray .bookval,15,15,15,15,15,15,25,1,10,10,40,40;
+	
+	// Duración de los libros
+	.booktime = 500000;
+	
+	// Extra por cada nivel de Booker
+	.extrabook = 60000;
+
+	// Lista de dioses
+	setarray .allgods,SC_GOD_ZEUS,SC_GOD_POSEIDON,SC_GOD_ARES,SC_GOD_HERMES,SC_GOD_ARTEMISA,SC_GOD_DEMETER,SC_GOD_HESTIA,SC_GOD_HUITZILOPOCHTLI,SC_GOD_QUETZATCOATL,SC_GOD_BRAGI,SC_GOD_HEIMDALL,SC_GOD_HERA,SC_GOD_AFRODITA,SC_GOD_APOLO,SC_GOD_OMETECUHTLI,SC_GOD_TEZCATLIPOCA,SC_GOD_XIPE_TOTEC,SC_GOD_THOR,SC_GOD_BALDER,SC_GOD_TYR,SC_GOD_VIDAR,SC_GOD_ATENEA,SC_GOD_HEFESTO,SC_GOD_TLALOC,SC_GOD_XIUHTECUHTLI,SC_GOD_HOOR,SC_GOD_VALI,SC_GOD_ULL,SC_GOD_LOKI;
+	
+	// Dios máximo sin suerte
+	.maxgod = 17;
+
+	// Duración de los dioses
+	.godtime = 500000;
+	
+	// Extra por cada nivel de Teósofo
+	.extragod = 60000;
+	
+	// Lista de objetos a ignorar verificación en Item Destroy.
+	setarray .ignore_item_destroy,1477,1479;
+	
+	// Porcentaje principal de fallo (%)
+	.failchance = 30;
+	
+	end;
+
+// Final de Contratos
+OnCazaEnd:
+	@CONTRATO_CAZA = 0;
+	message strcharinfo(0),"Tu 'Contrato de Caza' ha expirado.";
+	end;
+OnExpEnd:
+	message strcharinfo(0),"Tu 'Contrato de Exploración' ha expirado.";
+	end;
+
+// Encantamiento de objetos [Enchanter]
+OnEnchantShop:
+	@action = 2;
+	@shop = 1;
+	goto OnEnchantContinue;
+OnEnchantSelf:
+	@shop = 0;
+OnEnchantContinue:
+	disable_items;
+	message strcharinfo(0),"Elige el equipo a encantar.";
+	dispbottom " * IMPORTANTE * : Los equipos con encantamientos random como Crimson, Vicious y otros especiales, perderán sus encantamientos.",0xFF7070;
+	.@m$ = " ";
+	for(.@i = 0; .@i < (getarraysize(.eq)); .@i++)
+		.@m$ += "^4879E1"+.eq_n$[.@i]+"^000000 ~ "+(getequipid(.eq[.@i]) > 0 ? .c$[.@i]:"^777777")+"[  "+(getequipid(.eq[.@i]) > 0 ? getequipname(.eq[.@i]):"Nada")+" ]^000000:";
+	.@s = select(.@m$) - 1;
+	.@a = .eq[.@s];
+	if(getequipid(.@a) < 1) {
+		message strcharinfo(0),"No hay nada equipado en '"+.eq_n$[.@s]+"'.";
+		specialeffect2 611;
+		end;
+	}
+	getinventorylist;
+	for(.@i = 0; .@i < getarraysize(@inventorylist_id); .@i++) {
+		if(@inventorylist_id[.@i] == getequipid(.@a)) {
+			if(@inventorylist_expire[.@i] > 0) {
+				message strcharinfo(0),"Tu '"+getequipname(.@a)+"' es un objeto de renta, y no puede ser encantado.";
+				specialeffect2 611;
+				end;
+			}
+		}
+	}
+	if( npcshopattach("OF_SHOP_TEMPLATE") ) {
+		deletearray @sold_nameid;
+		@e = .@a;
+		@b = .failchance;
+		
+		// Debido a que se utilizan mucho las variables de oficio no se permite encantar sin oficio.
+		if(!getofid()) {
+			message strcharinfo(0),"Lo siento pero debes pertenecer a cualquier oficio para poder usar un 'Enchanting Spot'.";
+			end;
+		}
+		if( getofid() <= OFID_ENCHANTER )
+			@b -= getoficiolvl();
+		else if( getofid() > OFID_ENCHANTER )
+			@b -= 15;
+		message strcharinfo(0),"Por favor introduce las gemas que usarás para tu encantamiento.";
+		sleep2 200;
+		callshop "OF_SHOP_TEMPLATE",2;
+	}
+	end;
+
+// Obtención del ID del Encantamiento y probabilidad de ruptura del objeto
+S_GetEnchant:
+	disable_items;
+	do {
+		.@p = getarg(0);
+		.@v = 0;
+		for(.@i = 0; .@i < getarraysize(.gem_exp); .@i++) {
+			if(.@p > .gem_exp[.@i])
+				.@v++;
+		}
+		if(getarg(1) == 1)
+			.@max = .@v;
+		else
+			.@max = .maxgem;
+		if(.@max > 7 && rand(100) < 90)
+			.@max = 7; // Hace un forzoso para que haya menos suerte de que salgan encantamientos rotos.
+		.@r = rand(1,.@max);
+		.@g = getd(".gem_"+.@r+"["+rand(0,(getarraysize(getd(".gem_"+.@r))-1))+"]");
+		if(getscbonus(SC_ENCHANTERBOOST))
+			@b -= (getscbonus(SC_ENCHANTERBOOST) / 100);
+		@b += .@v;
+		if(getofid() == OFID_THEOSOPHY)
+			.@b -= 5; // Los teósofos obtienen +5%
+		if(@b < 0)
+			@b = 0;
+		
+		// Contrato de Gemas
+		// ===================
+		if(countitem(8229)) {
+			if(select("Consumir ^5533ffContrato de Gemas^000000:Continuar sin consumir contrato") == 1) {
+				delitem 8229,1;
+				message strcharinfo(0),"Se ha mostrado la adivinación de la gema en tu caja de chat.";
+				dispbottom "[Contrato de Gemas]: La gema a obtener en esta ocasión será: <"+getitemname(.@g)+">.",0xFF8800;
+			}
+		}
+		// ==================
+		if(select("Encantar ^008800[^000000Éxito > ^5533ff "+( (checksc(SC_GOD_HEFESTO) ? 100 : ((100-@b) > 100)?100:(100-@b)) )+"^FF0000%^008800]^000000","^777777Salir^000000 (^ff0000se perderán las gemas^000000)") == 2)
+			end;
+	} while(.@g < 1 || !.@g);
+	progressbar "008800",.@v;
+	return .@g;
+
+// Destrucción de objetos [Enchanter]
+OnDestruir:
+	disable_items;
+	message strcharinfo(0)," * Elije los objetos que deseas descomponer en gemas, ten mucho cuidado con los objetos duplicados, ya que se eliminará el primer objeto encontrado.";
+	if( npcshopattach("OF_SHOP_TEMPLATE") ) {
+		deletearray @sold_nameid;
+		callshop "OF_SHOP_TEMPLATE",2;
+		end;
+	}
+	end;
+
+// Destrucción de Objetos [Sastre]
+OnUnravel:
+	disable_items;
+	message strcharinfo(0)," * Elige los objetos que desees descomponer, ten mucho cuidado con los objetos duplicados, ya que se eliminará el primer objeto encontrado.";
+	if( npcshopattach("OF_SHOP_TEMPLATE") ) {
+		deletearray @sold_nameid;
+		callshop "OF_SHOP_TEMPLATE",2;
+		end;
+	}
+	end;
+
+// Funciones de tienda attach
+// @action se define desde el source.
+OnSellItem:
+	disable_items;
+	switch(@action) {
+		case 1: // Item Destroy
+			if( getarraysize(@sold_nameid) > 0 ) {
+				for(.@i = .@wlv = .@rate = 0; .@i < getarraysize(@sold_nameid); .@i++) {
+					.@wlv = getiteminfo(@sold_nameid[.@i],13);
+					.@rate = getiteminfo(@sold_nameid[.@i],3);
+					if(inarray(.ignore_item_destroy[0],@sold_nameid[.@i]) == -1) {
+						if(.@wlv == 0)
+							continue;
+						if(.@rate == 10000)
+							continue;
+					}
+					delitem @sold_nameid[.@i],1;
+					if((rand(100) < (10 - getoficiolvl()) && getofid() <= OFID_ENCHANTER) || (rand(100) < (45 - getoficiolvl()) && getofid() > OFID_ENCHANTER))
+						specialeffect2 32;
+					else {
+						getitem .gem[.@wlv],rand(1,@ITEM);
+						if(rand(1,35) <= getoficiolvl() && getofid() <= OFID_ENCHANTER) {
+							getitem 8222,1;
+							specialeffect2 612;
+							if(getofid() == OFID_ENCHANTER) {
+								@of_point = rand(1,3);
+								ranking "enchanter",@of_point,1,1,getcharid(0);
+							}
+							sleep2 1000;
+						} else if(rand(100) <= getoficiolvl() && getofid() > OFID_ENCHANTER) {
+							if(rand(1000) > 990) {
+								getitem 8525,1;
+								specialeffect2 545;
+								if(getofid() == OFID_THEOSOPHY) {
+									@of_point = rand(15,20+getoficiolvl());
+									ranking "enchanter",@of_point,1,1,getcharid(0);
+								}
+							} else {
+								getitem 8222,1;
+								specialeffect2 612;
+								if(getofid() == OFID_THEOSOPHY) {
+									@of_point = rand(1,3);
+									ranking "enchanter",@of_point,1,1,getcharid(0);
+								}
+							}
+							sleep2 1000;
+						} else {
+							specialeffect2 18;
+							sleep2 200;
+						}
+						.@a++;
+					}
+				}
+			}
+			if(.@a)
+				specialeffect2 610;
+			else
+				specialeffect2 611;
+			break;
+		case 2: // Enchanting
+			if( getarraysize(@sold_nameid) > 0 ) {
+				for(.@i = 0; .@i < getarraysize(@sold_nameid); .@i++) {
+					for(.@j = 0; .@j < getarraysize(.gem_list); .@j++) {
+						if(@sold_nameid[.@i] != .gem_list[.@j])
+							continue;
+						else {
+							delitem @sold_nameid[.@i],@sold_quantity[.@i];
+							.@p += .gem_point[.@j] * @sold_quantity[.@i];
+							if(.@j >= 4 && .@j <= 5)
+								.@b = 1;
+						}
+					}
+				}
+				if(.@p < 1) {
+					specialeffect2 611;
+					end;
+				}
+				@c = callsub(S_GetEnchant,.@p,.@b);
+				if(checksc(SC_GOD_HEFESTO)) {
+					sc_end SC_GOD_HEFESTO;
+				} else if(@b > rand(100)) {
+					failedenchant @e;
+					specialeffect2 155;
+					message strcharinfo(0),"El encantamiento ha fallado, tu equipo se ha roto.";
+					end;
+				}
+				
+				// Anti-Hack
+				setarray .@eca[0],getequipcardid(@e,0),getequipcardid(@e,1),getequipcardid(@e,2),getequipcardid(@e,3);
+				if(callfunc("F_IsEquipIDHack",@e,getequipid(@e)))
+					end;
+
+				// Encantamiento satisfactorio
+				successenchant getequipid(@e),@c,@e;
+				F_LogEnhance(0,getequipid(@e),@c);
+
+				if(@shop) {
+					@of_point = 1;
+					// Actualización del SQL cuando alguien compra en la tienda de alguien más.
+					query_sql("UPDATE `char_of_exp` SET `enchanter` = `enchanter` + 1 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+					query_sql("UPDATE `char_rank_day` SET `enchanter` = `enchanter` + 1 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+					query_sql("UPDATE `char_rank_week` SET `enchanter` = `enchanter` + 1 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+					query_sql("UPDATE `char_rank_month` SET `enchanter` = `enchanter` + 1 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+					dispbottom "* "+strcharinfo(0)+" ha encantado algo en tu tienda, has ganado experiencia.",0x000000,callfunc("F_GetCid4Nid",@nid,"enchant");
+				} else if(getofid() == OFID_ENCHANTER || getofid() == OFID_THEOSOPHY ) {
+					@of_point = 2;
+					ranking "enchanter",@of_point,1,1,getcharid(0);
+				}
+				specialeffect2 154;
+			}
+			break;
+		case 3: // Unravel
+			if( getarraysize(@sold_nameid) > 0 ) {
+				for(.@i = 0; .@i < getarraysize(@sold_nameid); .@i++) {
+					if(getiteminfo(@sold_nameid[.@i],2) == 4) { // Revisa si se trata de una armor (4).
+						if(getiteminfo(@sold_nameid[.@i],12) >= 150)
+							.@alv = 3;
+						else if(getiteminfo(@sold_nameid[.@i],12) >= 100 && getiteminfo(@sold_nameid[.@i],12) < 150)
+							.@alv = 2;
+						else if(getiteminfo(@sold_nameid[.@i],12) >= 70 && getiteminfo(@sold_nameid[.@i],12) < 100)
+							.@alv = 1;
+						else if(getiteminfo(@sold_nameid[.@i],3) == 0  && getiteminfo(@sold_nameid[.@i],12) >= 100) // Objetos muy raros que no son dropeables
+							.@alv = 4;
+						else
+							.@alv = 5;
+					}
+					if(getiteminfo(@sold_nameid[.@i],3) == 10000)
+						continue;
+					if(.@alv < 1)
+						continue;
+					if(.@alv == 5) {
+						.@err++;
+						continue;
+					}
+					delitem @sold_nameid[.@i],1;
+					if((rand(100) < ( (7 * .@alv) - getoficiolvl() ) && getofid() <= OFID_ENCHANTER) || (rand(100) < ( (15 * .@alv) - getoficiolvl() ) && getofid() > OFID_ENCHANTER))
+						specialeffect2 32;
+					else {
+						getitem .sasmat[.@alv],rand(1,@ITEM);
+						ranking "sewing",.@alv,1,1,getcharid(0);
+						specialeffect2 122;
+						sleep2 200;
+						.@a++;
+					}
+				}
+				if(.@err)
+					dispbottom " * 'Unravel' requiere el uso de armaduras de al menos de nivel de equipo mayor a 70.",0x000000;
+			}
+			if(.@a)
+				specialeffect2 610;
+			else
+				specialeffect2 611;
+			break;
+		case 4: // Hire Card Combination
+			disable_items;
+			.@sold_size = getarraysize( @sold_nameid );
+			if( .@sold_size == .card_count ) {
+				for( .@i = 0; .@i < .@sold_size; .@i++ ) {
+					if( compare( .forbidden_card$,"|"+@sold_nameid[.@i]+"|" ) ) {
+						message strcharinfo(0)," ~ "+getitemname( @sold_nameid[.@i] )+" no puede ser usada.";
+						end;
+					}
+					.@item_type[.@i] = getiteminfo( @sold_nameid[.@i],2 );
+					.@not_valid = ( .@item_type[.@i] != IT_CARD || callfunc("F_CheckIsValidCard",@sold_nameid[.@i]) );
+					message strcharinfo(0)," ~ "+getitemname( @sold_nameid[.@i] )+" "+( ( .@not_valid )?"[Inválida]":"[Válida]" );
+					if( .@not_valid )
+						.@failed++;
+				}
+				if( !.@failed ){
+					message strcharinfo(0),"¿Confirmas cambiar  "+.card_count+" cartas en una nueva carta?";
+					if( select( "¡Vamos allá!","No, lo pensaré mejor" ) == 1 ) {
+						if( Zeny < .zeny_cost ) {
+							message strcharinfo(0),"Necesitas "+callfunc("F_InsertComma",.zeny_cost)+"z por unión.";
+							end;
+						}
+						tax .zeny_cost,10;
+						for( .@i = 0; .@i < .@sold_size; .@i++ )
+							delitem @sold_nameid[.@i],1;
+							
+						message strcharinfo(0),"Creando carta...";
+						for( .@i = 0; .@i < 25 ; .@i++ ){
+							if( .@i == 20 )
+								message strcharinfo(0),"Deteniendo . . .";
+							cutin callfunc("card_illust",rand(4001,4477)),4;
+							specialeffect2 18;
+							sleep2 ( .@i * 25 + 100 );
+						}
+						
+						do {
+							.@new_card = rand( 4001,4477 );
+						} while( compare( .forbidden_card$,"|"+.@new_card+"|" ) || callfunc("F_IsMVPCard",.@new_card) );
+						
+						message strcharinfo(0),"Has obtenido una: "+getitemname( .@new_card )+".";
+						specialeffect2 10;
+						specialeffect2 66;
+						getitem .@new_card,1;
+						query_sql("UPDATE `char_of_exp` SET `escriba` = `escriba` + 2 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+						query_sql("UPDATE `char_rank_day` SET `escriba` = `escriba` + 2 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+						query_sql("UPDATE `char_rank_week` SET `escriba` = `escriba` + 2 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+						query_sql("UPDATE `char_rank_month` SET `escriba` = `escriba` + 2 WHERE `char_id` = '"+callfunc("F_GetCid4Nid",@nid,"enchant")+"'");
+						dispbottom "* "+strcharinfo(0)+" ha convertido cartas en tu tienda, has ganado experiencia.",0x000000,callfunc("F_GetCid4Nid",@nid,"enchant");
+						cutin callfunc("card_illust",.@new_card),4;
+					}
+				}
+			} else
+				message strcharinfo(0),"Asegúrate de colocar "+.card_count+" cartas diferentes.";
+			sleep2 3500;
+			cutin "",255;
+			break;
+		default:
+			message strcharinfo(0),"Error.";
+			break;
+	}
+	end;
+
+// Tala de Árboles [Carpenter]
+OnTreeShadow:
+	callsub S_WoodCut,0;
+OnTreeFlower:
+	callsub S_WoodCut,1;
+S_WoodCut:
+	if(!getofid()) {
+		dispbottom " * No perteneces a ningún oficio.";
+		end;
+	}
+	if( (getofid() != OFID_CARPENTER && getofid() != OFID_SQUIRE) || getskilllv(3057) < 1 ) {
+		dispbottom " * Necesitas ser Carpintero y poseer la skill 'Woodcut' para poder talar un árbol.",0x000000;
+		end;
+	}
+	if( callfunc("F_CheckNid2Cid",@nid,"tree") ) {
+		dispbottom " * Lo siento pero tu no has plantado este árbol.",0x000000;
+		end;
+	}
+	disable_items;
+	.@t = rand(10,20);
+	if(getofid() <= OFID_ENCHANTER)
+		.@t -= rand(getoficiolvl());
+	else
+		.@t -= rand(getoficiolvl()/2);
+	.@f = (getoficiolvl()/2);
+	if(getscbonus(SC_CARPENTERBOOST))
+		.@t -= (getscbonus(SC_CARPENTERBOOST) / 100);
+	if(.@f < 2)
+		.@f = 2;
+	while(.@t > .@f) {
+		specialeffect2 2;
+		mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+		mes " *^5533ff Resistencia del Árbol:^000000";
+		switch (.@t) {
+			case 1:  mes "^008800|^ff0000|||||||||||||||||||^000000"; break;
+			case 2:  mes "^008800||^ff0000||||||||||||||||||^000000"; break;
+			case 3:  mes "^008800|||^ff0000|||||||||||||||||^000000"; break;
+			case 4:  mes "^008800||||^ff0000||||||||||||||||^000000"; break;
+			case 5:  mes "^008800|||||^ff0000|||||||||||||||^000000"; break;
+			case 6:  mes "^008800||||||^ff0000||||||||||||||^000000"; break;
+			case 7:  mes "^008800|||||||^ff0000|||||||||||||^000000"; break;
+			case 8:  mes "^008800||||||||^ff0000||||||||||||^000000"; break;
+			case 9:  mes "^008800|||||||||^ff0000|||||||||||^000000"; break;
+			case 10: mes "^008800||||||||||^ff0000||||||||||^000000"; break;
+			case 11: mes "^008800|||||||||||^ff0000|||||||||^000000"; break;
+			case 12: mes "^008800||||||||||||^ff0000||||||||^000000"; break;
+			case 13: mes "^008800|||||||||||||^ff0000|||||||^000000"; break;
+			case 14: mes "^008800||||||||||||||^ff0000||||||^000000"; break;
+			case 16: mes "^008800|||||||||||||||^ff0000|||||^000000"; break;
+			case 17: mes "^008800||||||||||||||||^ff0000||||^000000"; break;
+			case 18: mes "^008800|||||||||||||||||^ff0000|||^000000"; break;
+			case 19: mes "^008800||||||||||||||||||^ff0000||^000000"; break;
+			default:
+			case 20: mes "^008800||||||||||||||||||||^ff0000^000000"; break;
+		}
+		mes " ","¿Qué quieres hacer?";
+		next;
+		switch(select(" ^777777>^000000 Cortar: ^777777>^000000 Empujar:^777777Salir^000000")) {
+			case 1:
+				if(.@t < (.@f + 2)) {
+					mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+					mes " *^5533ff Resistencia del Árbol:^000000";
+					mes "^ff0000||||||||||||||||||||^000000"," ";
+					mes "^777777Oh, el árbol ha caído.^000000";
+					.@i += rand(1,3);
+				}
+				specialeffect2 131;
+				if(getscbonus(SC_CARPENTERBOOST))
+					.@o += (getscbonus(SC_CARPENTERBOOST) / 100);
+				if(rand(100) < (rand((15-.@o),(30-.@o)) - ((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2)))) {
+					mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+					mes "Jod... me he dado en el dedo.";
+					emotion ET_CRY;
+					.@t += rand(3,5);
+					next;
+				} else
+					.@t -= rand(((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2)),((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))+rand(1,3)));
+				break;
+			case 2:
+				if(.@t >= rand(6,9)) {
+					if(rand(100) < (((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))*2)) {
+						mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+						mes "^777777Al parecer el árbol se encuentra en una excelente posición para caer.^000000";
+						.@i++;
+						next;
+					} else {
+						mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+						mes "^777777Empujas el árbol pero no pasa nada.^000000";
+						next;
+					}
+				} else {
+					mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+					mes " *^5533ff Resistencia del Árbol:^000000";
+					mes "^ff0000||||||||||||||||||||^000000"," ";
+					mes "^777777Oh, el árbol ha caído.^000000";
+					.@i += rand(1,4);
+				}
+				specialeffect2 131;
+				if(getscbonus(SC_CARPENTERBOOST))
+					.@o += (getscbonus(SC_CARPENTERBOOST) / 100);
+				if(rand(100) < (rand((12-.@o),(20-.@o)) - ((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2)))) {
+					mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+					mes "Oh poring, una rama me ha caído en la cabeza.";
+					emotion ET_CRY;
+					.@t += rand(4,8);
+					next;
+				} else
+					.@t -= rand(((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2)),(((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))+rand(1,3)));
+				break;
+			case 3:
+				mes "[ ^"+(getarg(0)?"000088Flor Gigante":"5533ffÁrbol Oscuro")+"^000000 ]";
+				mes "^777777Ten precaución, que el árbol se puede secar.^000000";
+				close2;
+				if(getcharid(7) && rand(100) < 6)
+					deletetree;
+				end;
+		}
+		if(.@t >= 20) {
+			close2;
+			dispbottom "* El árbol se ha secado.",0x000000;
+			specialeffect2 611;
+			if(getcharid(7))
+				deletetree;
+			end;
+		}
+	}
+	.@i += rand(1,((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2)));
+	if(getoficiolvl() >= 3)
+		.@i += 2;
+	if(getoficiolvl() >= 6)
+		.@i += 3;
+	if(getoficiolvl() >= 10)
+		.@i += 4;
+	if(getoficiolvl() >= 20)
+		.@i += 5;
+	if(getoficiolvl() >= 35)
+		.@i += 6;
+	specialeffect2 610;
+	// Objetos a entregar y su probabilidad al talar un árbol.
+	switch(getarg(0)) {
+		case 0: // Árbol Oscuro
+			setarray .@it,8206,8208,608,607;
+			setarray .@rate,100,10,5,5;
+			setarray .@cr,(rand(((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))+.@i)+((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))),1,1,1;
+			break;
+		case 1: // Flor Gigante
+		default:
+			setarray .@it,8206,8207,610,608;
+			setarray .@rate,100,5,20,5;
+			setarray .@cr,(rand(((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))+.@i)+((getofid() <= OFID_ENCHANTER) ? getoficiolvl() : (getoficiolvl()/2))),(getoficiolvl() >= 5 ? rand(4,8) : rand(1,3)),1,1;
+			break;
+	}
+	for(.@a = 0; .@a < (getarraysize(.@it)-1); .@a++) {
+		.@p = rand(100);
+		if(getscbonus(SC_CARPENTERBOOST))
+			.@p += (getscbonus(SC_CARPENTERBOOST) / 100);
+		if(.@p < .@rate[.@a]) {
+			if(getscbonus(SC_CARPENTERBOOST))
+				.@cuamat = (.@cr[.@a] + (rand(1,2)));
+			else
+				.@cuamat = .@cr[.@a];
+			if(checksc(SC_GOD_XIPE_TOTEC))
+				.@cuamat *= 2;
+			getitem .@it[.@a],.@cuamat;
+			if(.@rate[.@a] < 5)
+				@of_point += 10;
+			else if(.@rate[.@a] < 20)
+				@of_point += 5;
+			else
+				@of_point += 1;
+		}
+		sleep2 200;
+	}
+	if(getcharid(7))
+		deletetree;
+	if(@of_point > 0)
+		ranking "carpenter",@of_point,1,1,getcharid(0);
+	close;
+// Tienda de Cartas
+OnCardShop:
+	@action = 4;
+	do {
+		message strcharinfo(0),"Selecciona una opción.";
+		.@option = select( "^ff7070>^000000 Unir ^5533ff"+.card_count+"^000000 cartas","Información" );
+		if( .@option == 1 ){
+			if( Zeny < .zeny_cost ) {
+				message strcharinfo(0),"Necesitas "+callfunc("F_InsertComma",.zeny_cost)+"z por unión.";
+				end;
+			}
+			if( npcshopattach( "OF_SHOP_TEMPLATE" ) ){
+				deletearray @sold_nameid;
+				message strcharinfo(0),"Pon "+.card_count+" x cartas diferentes en la ventana.";
+				callshop "OF_SHOP_TEMPLATE",2;
+				end;
+			}
+		} else {
+			message strcharinfo(0),"Necesitas dar: "+.card_count+" cartas de monstruos + "+callfunc("F_InsertComma",.zeny_cost)+" Zeny para obtener una nueva carta cada vez.";
+			sleep2 3000;
+		}
+
+	} while( .@option == 2 );
+	end;
+
+// Entrada a la Ruina [Explorador]
+OnRuina:
+	// Temporalmente solo un nivel.
+	@ruinalv = 1;
+	.@md_name$ = "Ruinas Nv"+@ruinalv;
+	if(	BaseLevel > @exlevel && (BaseLevel - @exlevel) < 40) || (@exlevel > BaseLevel && (@exlevel - BaseLevel) < 40 ) {
+		mes "[^cc6600Ruinas de Explorador^000000]";
+		mes "El explorador que ha encontrado la ruina es Nv. ^5533ff"+@exlevel+"^000000, no puedes tener una diferencia de nivel de más de ^ff707040^000000 niveles del explorador.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	.@delay = checkquest(45117,PLAYTIME);
+	if(.@delay == 2) {
+		mes "[^cc6600Ruinas de Explorador^000000]";
+		mes "Ahora puedes entrar nuevamente a la Ruina de Explorador.";
+		close2;
+		erasequest 45117;
+		end;
+	} else if( .@delay == 1 || .@delay == 0 ) {
+		mes "[^cc6600Ruinas de Explorador^000000]";
+		mes "Lo siento, pero recientemente entraste a una Ruina de Explorador, vuelve después.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	
+	.@party_id = getcharid(1);
+	.@p_name$ = getpartyname(.@party_id);
+	
+	if (!instance_check_party(.@party_id,1)) {
+		mes "[^cc6600Ruinas de Explorador^000000]";
+		mes "Requieres estar en una ^ff0000party^000000 con al menos para poder accesar.";
+		close;
+	}
+
+	mes "[^cc6600Ruinas de Explorador^000000]";
+	mes "¡Una ruina ha aparecido!","¿Deseas excavarla para explorarla ^ff0000junto con tu party^000000?";
+	if (getcharid(0) == getpartyleader(.@party_id,2))
+		.@menu$ = "Excavar entrada.:Inspeccionar la ruina.:^777777Salir^000000";
+	else
+		.@menu$ = ":"+.@md_name$+".";
+	next;
+	switch(select(.@menu$)) {
+		case 1:
+			if (instance_create(.@md_name$) < 0) {
+				mes "[^cc6600Ruinas de Explorador^000000]";
+				mes "Al parecer el hueco que has hecho no se puede hacer más grande, apresúrate a entrar con tu party.";
+				close;
+			}
+			if (getofid() != OFID_EXPLORER) {
+				mes "[^cc6600Ruinas de Explorador^000000]";
+				mes "Lo siento, pero necesitas la habilidad ^5533ffArcheology^000000 para excavar esta ruina.";
+				close2;
+				emotion ET_SORRY;
+				end;
+			}
+			mes "[^cc6600Ruinas de Explorador^000000]";
+			mes "Has despejado la entrada a la ruina con éxito.";
+			close;
+		case 2:
+			getmapxy('origin$,'xo,'yo,0);
+			switch(instance_enter(.@md_name$)) {
+				case 0:
+					if (getcharid(0) == getpartyleader(.@party_id,2)) {
+						mapannounce strcharinfo(3),"El grupo '"+.@p_name$+"' a entrado a la "+.@md_name$+".",bc_map,"0x00ff99";
+						setquest 45117;
+						specialeffect2 EF_WARP;
+						ranking "sewing",20,1,1,getcharid(0);
+						'cid = getcharid(0);
+						'lvl = BaseLevel;
+						'rlv = 1;//@ruinalv;
+						'map$ = instance_mapname("1@ruinas");
+						end;
+					}
+				case 1:
+					mes "[^cc6600Ruinas de Explorador^000000]";
+					mes "Solo los miembros registrados pueden accesar a la ruina.";
+					close;
+				case 2:
+					mes "[^cc6600Ruinas de Explorador^000000]";
+					mes "Al parecer la entrada se encuentra bloqueada, pídele a tu explorador que la excave con ^5533ffArcheology^000000.";
+					close;
+				case 3:
+					mes "[^cc6600Ruinas de Explorador^000000]";
+					mes "Al parecer hay una gran y dura roca tapando la entrada, repórtalo a un Game Master.";
+					close;
+			}
+		case 3:
+			close;	
+	}
+	end;
+
+// Abrir el almacenamiento de la carroza [Escudero]
+OnCarroza:
+	getpartymember getcharid(1),0;
+	.@count = $@partymembercount;
+	copyarray .@name$[0], $@partymembername$[0], $@partymembercount;
+	for(.@i = 0; .@i < .@count; .@i++) {
+		.@q = query_sql("SELECT `name` FROM `player` WHERE `char_id`='"+callfunc("F_GetCid4Nid",@nid,"carroza")+"'",.@nidname$);
+		if(.@q && .@nidname$ == .@name$[.@i]) {
+			.@party++;
+			.@pname$ = getpartyname(getcharid(1,.@name$[.@i]));
+			break;
+		}
+	}
+	if(.@party < 1) {
+		message strcharinfo(0),"Lo siento, pero no perteneces a la Party '"+.@pname$+"'.";
+		end;
+	}
+	switch(select("Abrir almacén de la ^5533ffCarroza^000000:^777777Salir^000000")) {
+		case 1:
+			openstorage2 4,STOR_MODE_GET|STOR_MODE_PUT;
+			break;
+		case 2:
+			break;
+	}
+	end;
+
+// Definiciones de las comidas existentes al momento de crear un Lunch Time. [Escudero]
+OnLunchStart:
+	for(.@i = 0; .@i < getarraysize(.recipe$); .@i++)
+		query_sql("INSERT INTO `npc_lunchtime_food` (`npc_id`,`food_name`,`cuantity`) VALUES ('"+@nid+"','"+.recipe$[.@i]+"','0')");
+	end;
+
+// Lunch Time [Escudero]
+OnLunchTime:
+	getpartymember getcharid(1),0;
+	.@count = $@partymembercount;
+	copyarray .@name$[0], $@partymembername$[0], $@partymembercount;
+	for(.@i = 0; .@i < .@count; .@i++) {
+		.@q = query_sql("SELECT `name` FROM `player` WHERE `char_id`='"+callfunc("F_GetCid4Nid",@nid,"lunchtime")+"'",.@nidname$);
+		if(.@q && .@nidname$ == .@name$[.@i]) {
+			.@party++;
+			.@pname$ = getpartyname(getcharid(1,.@name$[.@i]));
+			break;
+		}
+	}
+	if(.@party < 1) {
+		message strcharinfo(0),"Lo siento, pero no perteneces a la Party '"+.@pname$+"'.";
+		end;
+	}
+	switch(select(((getcharid(0) == callfunc("F_GetCid4Nid",@nid,"lunchtime"))?"^5533ffCocinar^000000":"")+":Comer:^777777Salir^000000")) {
+		case 1:
+			while(1) {
+				.@m$ = "";
+				for(.@i = 0; .@i < getarraysize(.recipe$); .@i++) {
+					if(@noflvl >= .levelrecipe[.@i]) {
+						query_sql("SELECT `cuantity` FROM `npc_lunchtime_food` WHERE `npc_id`='"+@nid+"' AND `food_name` = '"+.recipe$[.@i]+"'",.@fc);
+						.@m$ += "^"+.color$[.@i]+.recipe$[.@i]+"^000000 ["+.@fc+"]:";
+					}
+				}
+				.@s = select(.@m$)-1;
+				message strcharinfo(0),"¿Cuánt"+(.pn[.@s]?"o":"a")+"s "+.recipe$[.@s]+" deseas preparar? (Escribe '0' para cancelar).";
+				input .@tocook;
+				if(.@tocook == 0)
+					end;
+				if(countitem(.ingr1[.@s]) < 1 || countitem(.ingr2[.@s]) < 1) {
+					message strcharinfo(0),"Lo siento, pero necesitas "+getitemname(.ingr1[.@s])+" y "+getitemname(.ingr2[.@s])+" para poder fabricar un "+.recipe$[.@s]+".";
+					specialeffect2 611;
+					end;
+				}
+				if(.ingr1[.@s] == .ingr2[.@s]) {
+					if(countitem(.ingr1[.@s]) < 2) {
+						message strcharinfo(0),"Lo siento, pero necesitas 2x "+getitemname(.ingr1[.@s])+" para poder fabricar un "+.recipe$[.@s]+".";
+						specialeffect2 611;
+						end;
+					}
+				}
+				delitem .ingr1[.@s],.@tocook;
+				delitem .ingr2[.@s],.@tocook;
+				.@makefood = query_sql("UPDATE `npc_lunchtime_food` SET `cuantity` = `cuantity` + "+.@tocook+" WHERE `food_name` = '"+.recipe$[.@s]+"'");
+				if(.@makefood == -1) {
+					message strcharinfo(0),"Algo extraño ha pasado, ten de vuelta tus ingredientes, repórtalo a un GM.";
+					getitem .ingr1[.@s],1;
+					getitem .ingr2[.@s],1;
+					specialeffect2 609;
+					end;
+				} else {
+					message strcharinfo(0),"Tu "+.recipe$[.@s]+" ha sido cread"+(.pn[.@s]?"o":"a")+" con éxito.";
+					ranking "carpenter",1,1,1,getcharid(0);
+					specialeffect2 608;
+				}
+				if(select("Continuar cocinando:^777777Salir^000000") == 2)
+					end;
+			}
+		case 2:
+			while(1) {
+				.@m$ = "";
+				for(.@i = 0; .@i < getarraysize(.recipe$); .@i++) {
+					if(@noflvl >= .levelrecipe[.@i]) {
+						query_sql("SELECT `cuantity` FROM `npc_lunchtime_food` WHERE `npc_id`='"+@nid+"' AND `food_name` = '"+.recipe$[.@i]+"'",.@fc);
+						.@m$ += "^"+.color$[.@i]+.recipe$[.@i]+"^000000 ["+.@fc+"]:";
+					}
+				}
+				message strcharinfo(0),"Por favor selecciona la comida que deseas consumir.";
+				.@s = select(.@m$)-1;
+				if(checksc(.effect[.@s])) {
+					message strcharinfo(0),"Lo siento, pero ya has consumido esta comida, espera que el efecto pase para consumir más del mismo tipo.";
+					specialeffect2 611;
+					end;
+				}
+				.@query = query_sql("UPDATE `npc_lunchtime_food` SET `cuantity` = `cuantity` - 1 WHERE `npc_id`='"+@nid+"' AND `food_name` = '"+.recipe$[.@s]+"'");
+				if(.@query == -1)
+					message strcharinfo(0),"Al parecer ya no queda más de esta comida, pídele a tu Escudero que prepare más.";
+				else {
+					.@extra = @noflvl * .extrafood;
+					if(checksc(SC_GOD_HESTIA))
+						.@god_hestia = (.foodtime + .@extra) * 2;
+					else
+						.@god_hestia = 0;
+					sc_start .effect[.@s],(.foodtime + .@extra + .@god_hestia),0;
+					specialeffect2 610;
+					specialeffect2 492;
+				}
+				if(select("Probar otro platillo:^777777Salir^000000") == 2)
+					end;
+			}
+		case 3:
+			end;
+	}
+end;
+
+// Compartir el efecto del libro con toda la party [Booker]
+OnBookShare:
+	.@m$ = "";
+	for(.@i = 0; .@i < getarraysize(.bookid); .@i++)
+		.@m$ += (countitem(.bookid[.@i]) ? getitemname(.bookid[.@i]) : "")+":";
+	.@s = select(.@m$)-1;
+	if(countitem(.bookid[.@s]) < 1)
+		end;
+	getmapxy .@mapl$, .@xl, .@yl, 0;
+	getpartymember getcharid(1);
+	.@c = $@partymembercount;
+	copyarray .@n$[0], $@partymembername$[0], .@c;
+	delitem .bookid[.@s],1;
+	for(.@i = 0; .@i < .@c; .@i++) {
+		if(!isloggedin(getcharid(3,.@n$[.@i]),getcharid(0, .@n$[.@i])))
+			continue;
+		.@enablebook = 0;
+		for(.@k = 0; .@k < getarraysize(.bookid); .@k++)
+			if(checksc(.bookscid[.@k],.@n$[.@i]))
+				.@enablebook++;
+		if(.@enablebook ||  (checkisdead(getcharid(0, .@n$[.@i]))))
+			continue;
+		if(!(getmapxy(.@mapm$, .@xm, .@ym, 0, .@n$[.@i])) && (.@mapm$ == .@mapl$)) {
+			sc_start .bookscid[.@s],(.booktime + (.extrabook * getoficiolvl())),.bookval[.@s],10000,SCSTART_NORATEDEF,getcharid(3, .@n$[.@i]);
+			specialeffect2 808,AREA,.@n$[.@i];
+		}
+	}
+	end;
+
+// Pray [Teósofo]
+OnPray:
+	.@r = 40-getoficiolvl();
+	if(.@r < 0)	.@r = 0;
+	if(rand(100) < .@r) {
+		specialeffect2 611;
+		end;
+	}
+	for(.@i = 0; .@i < getarraysize(.allgods); .@i++) {
+		if(checksc(.allgods[.@i])) {
+			specialeffect2 611;
+			end;
+		}
+	}
+	.@sz = getarraysize(.allgods)-1;
+	if((rand(100)+(getoficiolvl()/2)) > 95)
+		.@maxgod = .@sz;
+	else
+		.@maxgod = .maxgod;
+	.@god = .allgods[rand(0,.@maxgod)];
+	.@extra = .extragod * getoficiolvl();
+	specialeffect2 610;
+	specialeffect2 91;
+	sc_start .@god,(.godtime + .@extra),0;
+	end;
+
+// Simony [Teósofo]
+OnSimony:
+	for(.@i = 0; .@i < getarraysize(.allgods); .@i++)
+		if(checksc(.allgods[.@i]))
+			.@sc = .allgods[.@i];
+	if(!checksc(.@sc)) {
+		specialeffect2 611;
+		end;
+	}
+	getmapxy .@mapl$, .@xl, .@yl, 0;
+	getpartymember getcharid(1);
+	.@c = $@partymembercount;
+	copyarray .@n$[0], $@partymembername$[0], .@c;
+	sc_end .@sc;
+	specialeffect2 610;
+	.@extra = .extragod * getoficiolvl();
+	for(.@i = 0; .@i < .@c; .@i++) {
+		if(!isloggedin(getcharid(3,.@n$[.@i]),getcharid(0, .@n$[.@i])))
+			continue;
+		.@alreadygod = 0;
+		for(.@g = 0; .@g < getarraysize(.allgods); .@g++)
+			if(checksc(.allgods[.@g],.@n$[.@i]))
+				.@alreadygod++;
+		if(.@alreadygod || (checkisdead(getcharid(0, .@n$[.@i]))))
+			continue;
+		if(!(getmapxy(.@mapm$, .@xm, .@ym, 0, .@n$[.@i])) && (.@mapm$ == .@mapl$)) {
+			sc_start .@sc,(.godtime + .@extra),0,10000,SCSTART_NORATEDEF,getcharid(3, .@n$[.@i]);
+			specialeffect2 86,AREA,.@n$[.@i];
+		}
+	}
+	end;	
+
+// Actualización de experiencia y ranking desde el source a la SQL.
+S_CheckExp:
+	if(@shop) {
+		if(getarg(2))
+			ranking getarg(1),@of_point,1,0,getarg(4);
+		else
+			ranking getarg(1),@of_point,0,0,getarg(4);
+		@shop = 0;
+		return;
+	}
+
+// Incremento de nivel en base a la tabla de experiencia.
+OnCheckExp:
+	for(.@i = 0; .@i < getarraysize(.exp_table); .@i++) {
+		if( (getoficioexp() >= .exp_table[.@i]) && (getoficiolvl() < .@i) ) {
+			OFLEVEL++;
+			dispbottom "[Oficios]: ¡Felicidades, has subido tu nivel de "+getoficioname()+"!. Nivel actual: [ "+getoficiolvl()+" ]",0x000000;
+		}
+	}
+	end;
+}
+
+// Mapflag de Instancias
+1@ruinas	mapflag	restricted	6
+
+1@ruinas,54,42,0	script	#touchevent1	-1,5,5,{
+OnTouch:
+OnTouch_:
+	if('spawned)
+		end;
+	switch ('rlv) {
+		case 1:
+			donpcevent instance_npcname("#control")+"::OnEnable";
+			break;
+		case 2:
+		default:
+			debugmes "ID de ruina desconocida.";
+			end;
+	}
+	'spawned = 1;
+	end;
+OnInstanceInit:
+	end;
+}
+
+// Control de Monstruos
+1@ruinas,0,0,0	script	#control	-1,{
+OnInstanceInit:
+	end;
+OnEnable:
+	'hp = 2780 * 'lvl;
+	'ronda = 1;
+	switch('rlv) {
+		case 1:
+			areasmob 'map$,34,65,65,44,"--ja--",20094,0,10,0,0,'hp,0,1,0,0,0,0,0,0,instance_npcname("#control")+"::OnMyMobDead";
+			end;
+		case 2:
+	}
+	end;
+OnMyMobDead:
+	'c = mobcount('map$,instance_npcname("#control")+"::OnMyMobDead");
+	if('c < 1) {
+		switch('ronda) {
+			case 1:
+				switch('rlv) {
+					case 1:
+						'ronda = 2;
+						areasmob 'map$,34,65,65,44,"--ja--",20095,0,15,0,0,'hp,0,1,0,0,0,0,0,0,instance_npcname("#control")+"::OnMyMobDead";
+					case 2:
+				}
+				break;
+			case 2: // Boss
+				switch('rlv) {
+					case 1:
+						'ronda = 3;
+						areasmob 'map$,34,65,65,44,"--ja--",20096,0,1,0,0,('hp*25),0,1,0,0,0,0,0,0,instance_npcname("#control")+"::OnMyMobDead";
+					case 2:
+				}
+				break;
+			case 3:
+				donpcevent instance_npcname("Cofre del Tesoro#r")+"::OnEnable";
+				killmonsterall 'map$;
+				break;
+		}
+	}
+	end;
+}
+
+// Cofre del Tesoro después de derrotar a los monstruos.
+1@ruinas,50,63,5	script	Cofre del Tesoro#r	10005,{
+	if('ronda != 3 || @rp) {
+		select("Salir de la Ruina");
+		warp 'origin$,'xo,'yo;
+		end;
+	}
+	switch('rlv) {
+		case 1:
+			setarray .@p,7619,7620,6240,6241,6225,6226,7126,909,619,8525,8222,8501;
+			setarray .@r,1030,7451,7652,7109,7165,7023,7566,2576,2589,28901,616,5436,5447,5253,5365,5099,5554,5529,5181,5214,5520,5511,5288,5445,5272,5304,5294;
+			break;
+		case 2:
+	}
+	if(rand(100) < 20)
+		copyarray .@item[0],.@r[0],getarraysize(.@r);
+	else
+		copyarray .@item[0],.@p[0],getarraysize(.@r);
+	.@s = getarraysize(.@item)-1;
+	.@c = rand('rlv,('rlv+2));
+	.@i = .@item[rand(.@s)];
+	getitem .@i,.@c;
+	npctalk strcharinfo(0)+" ha obtenido "+.@c+"x "+getitemname(.@i)+".",instance_npcname("Cofre del Tesoro#r"),bc_map;
+	@rp = 1;
+	end;
+OnInstanceInit:
+OnDisable:
+	hideonnpc instance_npcname("Cofre del Tesoro#r");
+	end;
+OnEnable:
+	hideoffnpc instance_npcname("Cofre del Tesoro#r");
+	end;
+}

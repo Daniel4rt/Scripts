@@ -1,0 +1,67 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                 Channel Editor                  ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	script	CHAN_CFG	-1,{
+	cutin "16mye_nor",2;
+	mes "[ ^3209FFConfiguración de Canales^000000 ]";
+	mes "Hola, "+strcharinfo(0);
+	mes "¿En qué canales te gustaría habilitar?";
+	while(1) {
+		.@m$ = "";
+		for(.@i = 0; .@i < getarraysize(.mN$); .@i++) {
+			.@m$ += .mN$[.@i]+" ["+( (getd("canal_"+.mV$[.@i])) ? "^00BB22Encendido^000000" : "^FF2200Apagado^000000")+"]";
+			.@m$ += ":";
+		}
+		next;
+		.@a = select(.@m$) - 1;
+		mes "[ ^3209FFConfiguración de Canales^000000 ]";
+		mes "Estado: "+( (getd("canal_"+.mV$[.@a])) ? "^00BB22Encendido^000000" : "^FF2200Apagado^000000");
+		next;
+		if(select("- Quiero "+((!getd("canal_"+.mV$[.@a])) ? "^00BB22activarlo^000000" : "^FF2200desactivarlo^000000"),"- Nada, gracias.") == 2) {
+			mes "[ ^3209FFConfiguración de Canales^000000 ]";
+			mes "¡Nos vemos!";
+			mes "Regresa cuando quieras.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[ ^3209FFConfiguración de Canales^000000 ]";
+		if(getd("canal_"+.mV$[.@a])) {
+			mes .mN$[.@a]+" está ahora ^FF2200Apagado^000000.";
+			setd("canal_"+.mV$[.@a]),0;
+			switch( .@a ) {
+				case 1: charcommand "@channel leave #principal "+strcharinfo(0); break;
+				case 2: charcommand "@channel leave #soporte "+strcharinfo(0); break;
+				case 3: charcommand "@channel leave #ventas "+strcharinfo(0); break;
+				case 4: charcommand "@channel leave #mapa "+strcharinfo(0); break;
+				case 5: charcommand "@channel leave #aliados "+strcharinfo(0); break;
+			}
+		} else {
+			mes .mN$[.@a]+" está ahora ^00BB22Encendido^000000.","";
+			mes "Debes enviar un mensaje privado a ^008800#"+.mV$[.@a]+"^000000 para chatear en el canal";
+			setd("canal_"+.mV$[.@a]),1;
+			switch( .@a ) {
+				case 1: charcommand "@channel join #principal "+strcharinfo(0); break;
+				case 2: charcommand "@channel join #soporte "+strcharinfo(0); break;
+				case 3: charcommand "@channel join #ventas "+strcharinfo(0); break;
+				case 4: charcommand "@channel join #mapa "+strcharinfo(0); break;
+				case 5: charcommand "@channel join #aliados "+strcharinfo(0); break;
+			}
+		}
+	}
+OnInit:
+	setarray .mN$[0],"#principal","#soporte","#ventas","#mapas","#aliados ^0101DF(Guilds)^000000";
+	setarray .mV$[0],"principal","soporte","ventas","mapa","aliados";
+	end;
+}
+premium,169,38,4	duplicate(CHAN_CFG)	Configurar Canales#00	4_EP16_MEYER

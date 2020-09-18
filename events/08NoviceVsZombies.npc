@@ -1,0 +1,133 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                 Novice vs Zombies               ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+-	script	announce_nvz	-1,{
+OnWhisperGlobal:
+OnNoviceZombie:
+	announce "En Prontera a aparecido el Npc ' Novice Vs. Zombie '!",bc_all,0xFF6060;
+	enablenpc "nvz";
+	movenpc "nvz",156,179;
+	sleep2 5000;
+	announce "El evento Novice Vs. Zombie comenzará en 3 minutos",bc_all,0xFF6060;
+	killmonsterall "quiz_01";
+	.numzom = 0;
+	sleep2 60000;
+	announce "El evento Novice Vs. Zombie comenzará en 2 minutos!",bc_all,0xFF6060;
+	sleep2 60000; //60 s
+	announce "El evento Novice Vs. Zombie comenzará en 1 minutos!",bc_all,0xFF6060;
+	sleep2 30000; //30 s
+	mapannounce "quiz_01","El evento comenzará en 30 segundos!",bc_all,0xFF6060;
+	sleep2 25000; //25 s
+	mapannounce "prontera","El evento Novice Vs. Zombie comenzará en ~5~",bc_all,0xFF6060;
+	sleep2 1000; //1 s
+	mapannounce "prontera","El evento Novice Vs. Zombie comenzará en ~4~",bc_all,0xFF6060;
+	sleep2 1000; //1 s
+	mapannounce "prontera","El evento Novice Vs. Zombie comenzará en ~3~",bc_all,0xFF6060;
+	sleep2 1000;// 1 s
+	mapannounce "prontera","El evento Novice Vs. Zombie comenzará en ~2~",bc_all,0xFF6060;
+	sleep2 1000; //1 s
+	mapannounce "prontera","El evento Novice Vs. Zombie comenzará en ~1~",bc_all,0xFF6060;
+	sleep2 1000; //1 s
+	announce "¡¡El evento Novice Vs. Zombie ya comenzó!!",bc_all,0xFF8800;
+	monster "quiz_01",42,369,"Zombie",1015,1;
+	movenpc "nvz",198,177;
+	disablenpc "nvz";
+	sleep2 10000;
+	monster "quiz_01",42,369,"Zombie",1015,1;
+	initnpctimer;
+	end;
+
+OnTimer10000:
+	stopnpctimer;
+	if ( getmapusers("quiz_01") < 1 ) {
+		killmonsterall "quiz_01";
+		announce "El evento Novice Vs. Zombie ha terminado, todos los Novice murieron",bc_all,0xFF6060;
+		disablenpc "Premio";
+		end;
+	} else if ( getmapusers("quiz_01") > 1 ) {
+		mapannounce "quiz_01","Aún hay "+getmapusers("quiz_01")+" usuarios en el evento.",0,0x00FF00;
+		.numzom++;
+		areamonster "quiz_01",40,371,44,367,"Zombie",1015,.numzom;
+		initnpctimer;
+		end;
+	} else if ( getmapusers("quiz_01") == 1 ) {
+		killmonsterall "quiz_01";
+		mapannounce "quiz_01","Ganaste, acercate al NPC 'Premio' para recibir tu premio.",0;
+		enablenpc "Premio";
+		end;
+	}
+	initnpctimer;
+	end;
+
+OnPCDieEvent:
+	if ( strcharinfo(3) == "quiz_01" ) {
+		sleep2 50;
+		warp "prontera",156,223;
+		percentheal 100,100;
+		dispbottom "Un zombie te ha devorado, has perdido.";
+	}
+	end;
+}
+
+quiz_01,42,369,3	script	Premio	72,{
+	announce strcharinfo(0)+" ha ganado el evento Novice Vs. Zombie, ¡Felicidades!",0;
+	F_Event 1,rand(3,7);
+	warp "prontera",156,223;
+	sleep2 250;
+	disablenpc "Premio";
+	end;
+}
+
+prontera,198,177,4	script	Novice vs. Zombie::nvz	1015,{
+	if (BaseLevel > 10 || JobLevel > 10 || Class > 0) {
+		mes "[^0000FFZombie Vs. Novice^000000]";
+		mes "No puedes ser mayor a Nv. 10/10";
+		close;
+	} else if (class == 0) {
+		mes "[^0000FFZombie Vs. Novice^000000]";
+		mes "¿Quiéres entrar en el evento Novice Vs. Zombie?";
+		mes " ";
+		mes "^ff6060Si hay un sólo participante el evento NO es válido^000000";
+		next;
+		if (select("Entrar al evento [^ff0000"+getmapusers("quiz_01")+"^000000]","No entrar")==2) {
+			mes "[^0000FFZombie Vs. Novice^000000]";
+			mes "Está bien, vuelve cuando quieras.";
+			close;
+		} else {
+			if (Weight > 100) {
+				mes "[^0000FFZombie Vs. Novice^000000]";
+				mes "¡Alto ahí!";
+				mes "No puedes llevar tanto ^5533ffpeso^000000 cargando en tu inventario, vacíalo un poco y te dejaré entrar.";
+				close;
+			} else {
+				sc_end SC_ALL;
+				sc_start SC_DECREASEAGI,300000,10;
+				percentheal 100,100;
+				mapannounce "prontera","[ "+strcharinfo(0)+" ] ha entrado al evento Novice Vs. Zombie",bc_map,0xFF6060;
+				warp "quiz_01",42,369;
+				end;
+			}
+		}
+	}
+OnInit:
+	disablenpc "nvz";
+	disablenpc "Premio";
+	end;
+}
+quiz_01	mapflag	nowarpto
+quiz_01	mapflag	restricted	5
+quiz_01	mapflag	nocommand
+quiz_01	mapflag	noreturn
+quiz_01	mapflag	nowarp
+quiz_01	mapflag	nomemo
+quiz_01	mapflag	nosave	SavePoint

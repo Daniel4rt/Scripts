@@ -1,0 +1,469 @@
+premium,191,100,4	script	Mad Bunny Enhancer::MDE	674,{
+	disable_items;
+	mes "[^5533ffMad Bunny Enhancer^000000]";
+	mes "Gracias por tu interés, el sistema de Mad Bunny estará finalizado hasta el mantenimiento por problemas técnicos.";
+	close;
+	mes "¿Qué tal?, reciéntemente fui contratada para atender a las personas que poseen un Mad Bunny.";
+	next;
+	mes "[^5533ffMad Bunny Enhancer^000000]";
+	mes "¿En qué te puedo ayudar?";
+	next;
+	switch(select("Mejorar mi Mad Bunny:Abrir Slot a Mad Bunny:Encantar mi Mad Bunny:^777777Salir^000000")) {
+		case 1:
+			if(getequipid(EQI_HAND_L) == 2189) {
+				mes "[^5533ffMad Bunny Enhancer^000000]";
+				mes "Vale, he verificado que el Mad Bunny que tienes es compatible con este método.";
+				next;
+				if(countitem(12612) >= 10 && Zeny >= 10000000) {
+					mes "[^5533ffMad Bunny Enhancer^000000]";
+					mes "Veo que tienes todo lo necesario, ¿deseas proceder?";
+					mes " ","Permíteme recordarte que se perderá todo del objeto que tienes actualmente, y se creará uno totalmente nuevo.";
+					next;
+					if(select("Mejorar mi Mad Bunny:Después, gracias") == 2) {
+						mes "[^5533ffMad Bunny Enhancer^000000]";
+						mes "Vuelve cuando tengas mayor seguridad de hacerlo por favor.";
+						close;
+					}
+					specialeffect2 154;
+					specialeffect 154;
+					delequip EQI_HAND_L;
+					tax 10000000,10;
+					getitem 28901,1;
+					mes "[^5533ffMad Bunny Enhancer^000000]";
+					mes "Ahí tienes tu antiguo muñeco, pero ahora con una poderosa maldición, que lo disfrutes.";
+					close;
+				}
+				mes "[^5533ffMad Bunny Enhancer^000000]";
+				mes "Vale, veo que tienes un Mad Bunny un tanto corriente hecho por el titiritero de Umbala, te lo puedo mejorar mucho si me traes 10,000,000 de Zeny y 10 <ITEM>Old Coin Bag<INFO>12612</INFO><ITEM>.";
+				close;
+			}
+			mes "[^5533ffMad Bunny Enhancer^000000]";
+			mes "Recuerda equiparte tu Mad Bunny primero.";
+			close;
+		case 2:
+			if(getequipid(EQI_HAND_L) == 28901) {
+				mes "[^5533ffMad Bunny Enhancer^000000]";
+				mes "Vale, he verificado que el Mad Bunny que tienes es compatible con este método.";
+				next;
+				if(countitem(8574) >= 30 && Zeny >= 3000000) {
+					mes "[^5533ffMad Bunny Enhancer^000000]";
+					mes "¿Todo listo para proceder?";
+					mes " ","Se perderá el refinamiento, cartas y encantamientos del objeto.";
+					next;
+					if(select("Vamos allá:No gracias") == 2) {
+						mes "[^5533ffMad Bunny Enhancer^000000]";
+						mes "Claro, es tu decisión.";
+						close;
+					}
+					delitem 8574,30;
+					tax 3000000,10;
+					specialeffect2 154;
+					specialeffect 154;
+					delequip EQI_HAND_L;
+					getitem 28902,1;
+					mes "[^5533ffMad Bunny Enhancer^000000]";
+					mes "La apertura del slot se ha realizado con éxito.";
+					close;
+				}
+				mes "[^5533ffMad Bunny Enhancer^000000]";
+				mes "Vale, no es muy dificil realizar lo que quieres, sólo necesito 3,000,000 Zeny y 30 <ITEM>"+getitemname(8574)+"<INFO>8574</INFO></ITEM>.";
+				close;
+			}
+			mes "[^5533ffMad Bunny Enhancer^000000]";
+			mes "Recuerda equiparte tu Mad Bunny primero.";
+			close;
+		case 3:
+			if(getequipid(EQI_HAND_L) == 28902) {
+				mes "[^5533ffMad Bunny Enhancer^000000]";
+				mes "Vale, he verificado que el Mad Bunny que tienes es compatible con este método.";
+				next;
+				if(countitem(8575) >= 30 && Zeny >= 5000000) {
+					mes "[^5533ffMad Bunny Enhancer^000000]";
+					mes "El encantamiento ha sido colocado satisfactoriamente, recuerda que no lo podrás cambiar por otro.";
+					delitem 8575,30;
+					tax 5000000,10;
+					setarray .@enc[0],getequipid(EQI_HAND_L),1,1,getequiprefinerycnt(EQI_HAND_L),0,getequipcardid(EQI_HAND_L,0),getequipcardid(EQI_HAND_L,1),getequipcardid(EQI_HAND_L,2),getequipcardid(EQI_HAND_L,3);
+					progressbar "008800",2;
+					// Anti-hack
+					if (callfunc("F_IsEquipIDHack", EQI_HAND_L, .@enc[0]))
+						close3;
+					delequip EQI_HAND_L;
+					setarray .@c,29061,29071,29081,29091,29101,29111;
+					.@enc[7] = .@c[rand(0,5)];
+					getitem2 .@enc[0],.@enc[1],.@enc[2],.@enc[3],.@enc[4],.@enc[5],.@enc[6],.@enc[7],.@enc[8];
+					specialeffect2 154;
+					specialeffect 154;
+					close;
+				}
+				mes "[^5533ffMad Bunny Enhancer^000000]";
+				mes "Perfecto, sólo necesito 5,000,000 Zeny y 30 <ITEM>"+getitemname(8575)+"<INFO>8575</INFO></ITEM>, recuerda que el encantamiento solo se realiza una sola vez.";
+				close;
+			}
+			mes "[^5533ffMad Bunny Enhancer^000000]";
+			mes "Recuerda equiparte tu Mad Bunny antes de proceder con el encantamiento.";
+			close;
+		case 4:
+			mes "[^5533ffMad Bunny Enhancer^000000]";
+			mes "Vuelve cuando quieras.";
+			close;
+	}
+}
+prontera,160,160,4	script	Maria#qb1	72,{
+	switch (Q_BUNNY_A) {
+		case 1:
+			mes "[Maria]";
+			mes "¿Qué esperas para ir a buscar a mi hermana a ^5533ffComodo^000000?";
+			close2;
+			emotion ET_STARE;
+			end;
+		case 2:
+		case 3:
+			emotion ET_CRY;
+			mes "[Maria]";
+			mes "Hermana idiota ^5533ff*sob*^000000 ¿dónde has ido en un día tan especial?";
+			close2;
+			emotion ET_CRY;
+			end;
+		case 4:
+			mes "[Maria]";
+			mes "Oye, ¿sabes algo de esto?";
+			next;
+			select("¿Qué sucede?");
+			mes "[Maria]";
+			mes "Mi hermana me ha mandado un paquete todo raro, y trae una nota con él.";
+			next;
+			mes "[Maria]";
+			mes "No sé leer, así que léemela.";
+			next;
+			select("Tomar el paquete y leer la nota");
+			mes "^777777Querida hermana,","he decidido que es desesperante vivir a tu lado, así que te mando este regalo y me suicidaré ahogándome en Comodo.","Esperando que tu vida esté llena de desgracias, tu hermana, Emma.^000000";
+			next;
+			mes "[Maria]";
+			mes "Entonces, ¿qué dice?";
+			next;
+			select("Dice que tu hermana te quiere mucho");
+			mes "[Maria]";
+			mes "Que asco, mejor no quiero nada ya, ten, te doy la caja, no me vuelvas a hablar.";
+			next;
+			mes "[Deyla]";
+			mes "M-maría, ¿estás segura?";
+			next;
+			mes "[Maria]";
+			mes "Guardia silencio, plebeya.";
+			next;
+			select("Abrir la caja y huir");
+			close2;
+			Q_BUNNY_A = 5;
+			getitem 2189,1;
+			dispbottom "[Misión especial completada]",0x000000;
+			dispbottom " - Has arrebatado el regalo de una presunta suicida a una niña en su cumpleaños, deberías visitar a cierta persona en la Oficina Central de Prontera para mejorar ese muñeco.",0x000000;
+			end;
+		case 5:
+			mes "[Maria]";
+			mes "Largate.";
+			close;
+		default:
+			break;
+	}
+	mes "[Maria]";
+	mes "¿Dónde se habrá metido mi hermana ahora?";
+	next;
+	donpcevent "Deyla#qbe::OnDoEmote1";
+	mes "[Deyla]";
+	mes "Creo que dijo que iría a Comodo a pasar el rato debido a que se sentía muy encerrada en la ciudad.";
+	next;
+	emotion ET_HUK;
+	mes "[Maria]";
+	mes "¡Pero como se le ocurre eso, deb... espera...!";
+	next;
+	mes "[Maria]";
+	mes "Oye tu, ¿sabes que es de mala educación escuchar conversaciones ajenas?";
+	next;
+	select("¿Qué?, ¿yo?");
+	mes "[Maria]";
+	mes "Pues claro que tu, no te hagas tont"+(Sex?"o":"a")+", mira, te perdonaré si me haces un favor.";
+	next;
+	select("Espera, ¿qué?");
+	mes "[Maria]";
+	mes "Exacto, como escuchaste, un favor.";
+	next;
+	mes "[Maria]";
+	mes "Por favor ve a la ciudad de ^5533ffComodo^000000 y busca a mi hermana ^ff0000Emma^000000, convéncela de alguna forma de regresar, me preocupa que esté fuera.";
+	next;
+	select("De acuerdo, te ayudaré, creo...");
+	mes "[Maria]";
+	mes "¿Entonces? ¿qué esperas?";
+	mes "¡VE A BUSCARLA!";
+	close2;
+	Q_BUNNY_A = 1;
+	dispbottom "[Misión especial]",0x000000;
+	dispbottom " - Ve y busca a 'Emma' a Comodo.",0x000000;
+	end;
+}
+prontera,159,161,5	script	Deyla#qbe	703,{
+	switch(Q_BUNNY_A) {
+		case 1:
+			mes "[Deyla]";
+			mes "Sé que mi prima Maria puede ser molesta, pero en realidad se preocupa por su hermana, por favor ayúdale a buscarla.";
+			close;
+		case 2:
+			mes "[Deyla]";
+			mes "Ya veo, así que eso sucedió, asegúrate de conseguir el regalo, yo me encargaré de tranquilizar a Maria.";
+			close;
+		case 3:
+			mes "[Deyla]";
+			mes "Ya veo, creí que intentarían estafarlos, conozco muy bien a ese titiritero, no se encuentra en la ciudad, búscalo bien.";
+			close;
+		case 4:
+		case 5:
+			mes "[Deyla]";
+			mes "Al menos estará feliz.";
+			close;
+		default:
+			break;
+	}
+	mes "[Deyla]";
+	mes "Mi prima Maria siempre se preocupa demaciado por su hermana, creo que ella debería de dejar de hacer tantas travesuras.";
+	close;
+OnDoEmote1:
+	emotion ET_SCRATCH;
+	end;
+}
+comodo,176,151,5	script	Emma#qb2	719,{
+	switch (Q_BUNNY_A) {
+		case 1:
+			mes "[Emma]";
+			mes "¡Ah!...";
+			emotion ET_DELIGHT;
+			sleep2 2000;
+			mes "Esto es justo lo que me hacía falta, una temporada fuera de mi fastidiosa hermana.";
+			next;
+			select("He venido a buscarte");
+			mes "[Emma]";
+			mes "¿Quién eres? ¿acaso quieres secuestrarme?, te aseguro que no tengo un buen sabor, o al menos eso dicen.";
+			next;
+			select("Mi hermana me ha mandado a buscarte");
+			mes "[Emma]";
+			mes "¿Qué? ¿acaso te ha pagado?, yo te daré el doble, espera ¡el triple de lo que te ha pagado!";
+			next;
+			select("Ella no me ha dado nada, espera...");
+			mes "[Emma]";
+			mes "Exacto, ves como es ella, tacaña como nadie más, te aseguro a que estaba furiosa porque me fuí de paseo sin decirle.";
+			next;
+			mes "[Emma]";
+			mes "Pero como dices, te mandó a buscarme sin darte nada a cambio, eso no garantiza que lo harás, digo, te dedicas a buscar tesoros.";
+			next;
+			mes "[Emma]";
+			mes "¿Qué beneficios podrías adquirir de buscar a una inutil como yo?";
+			next;
+			select("No deberías hablar así de ti");
+			mes "[Emma]";
+			mes "Claro que si, soy una inútil, el cumpleaños de mi hermana es el día de hoy y aún no le he conseguido un regalo.";
+			next;
+			mes "[Emma]";
+			mes "Se supone que en Comodo le encontraría algo lindo, pero, aún no he encontrado nada.";
+			next;
+			donpcevent "Vendedor#qb::OnAppear";
+			mes "[Vendedor]";
+			mes "¡Venga, acérquese, le ofreceré los mejores precios!";
+			next;
+			mes "[Vendedor]";
+			mes "Regalos para todas las ocasiones, desde bodas, funerales, despedidas de soltero y por supuesto ^ff0000cumpleaños^000000.";
+			next;
+			mes "[Emma]";
+			mes "¿Escuchaste eso? ¡EL TENDRÁ ALGO PARA MI HERMANA!";
+			next;
+			select("No deberías estar segura a la primera");
+			mes "[Emma]";
+			mes "Me interesa un bledo lo que pienses.";
+			next;
+			mes "[Emma]";
+			mes "Disculpe señor, quiero un regalo de cumpleaños.";
+			next;
+			mes "[Vendedor]";
+			mes "Claro que si señorita, el día de hoy tengo un objeto de gran calidad que estoy seguro que le encantará a cualquiera, sobre todo si es una niña.";
+			next;
+			mes "[Emma]";
+			mes "Es justo lo que necesito.";
+			next;
+			mes "[Emma]";
+			mes "Dígame, ¿cuál es el precio?";
+			next;
+			mes "[Vendedor]";
+			mes "Oh no necesito nada importante, solo . . .";
+			next;
+			mes "^777777El vendedor te voltea a ver con una mirada bastante inquietante.^000000";
+			next;
+			mes "[Emma]";
+			mes "¿Qué sucede?";
+			next;
+			mes "[Vendedor]";
+			mes "Mire, se lo dejaré gratis.";
+			next;
+			mes "[Emma]";
+			mes "¿En serio?, muchísimas gracias.";
+			next;
+			mes "[Vendedor]";
+			mes "Espere un momento allí señorita, se lo dejaré gratis a usted, pero a cambio de ello quiero que tu conocido aquí vaya y me consiga algunos materiales para mi.";
+			next;
+			mes "[Emma]";
+			mes "Claro, es mi querido esclavo.";
+			next;
+			select("Espera, ¿qué?");
+			mes "[Emma]";
+			mes "Calla esclavo.";
+			next;
+			mes "[Vendedor]";
+			mes "Perfecto, no es nada importante, solo ve y consígueme 200 <ITEM>Fluff<INFO>914</INFO></ITEM> y 200 <ITEM>Yarn<INFO>7038</INFO></ITEM>, cuando los hayas obtenido vuelve y habla con la señorita.";
+			next;
+			donpcevent "Vendedor#qb::OnDisable";
+			mes "[Emma]";
+			mes "Perdón por llamarte esclavo, fue la emoción.";
+			next;
+			mes "[Emma]";
+			mes "Por favor ve y ayúdame, yo si te daré una recompensa no como mi estúpida pero amada hermana.";
+			close2;
+			Q_BUNNY_A = 2;
+			dispbottom "[Misión especial]",0x000000;
+			dispbottom " - Consigue 200 Fluff y 200 Yarn.",0x000000;
+			end;
+		case 2:
+			if(countitem(914) < 200 && countitem(7038) < 200) {
+				mes "[Emma]";
+				mes "Por favor no pierdas el tiempo y ve a conseguir lo que pidió el vendedor.";
+				mes " - 200 <ITEM>Fluff<INFO>914</INFO></ITEM>";
+				mes " - 200 <ITEM>Yarn<INFO>7038</INFO></ITEM>";
+				close;
+			}
+			donpcevent "Vendedor#qb::OnAppear";
+			mes "[Vendedor]";
+			mes "Vale, todo está bien.";
+			next;
+			mes "[Emma]";
+			mes "...";
+			next;
+			mes "[Vendedor]";
+			mes "...";
+			next;
+			select("...");
+			mes "[Emma]";
+			mes "¿Entonces?";
+			next;
+			mes "[Vendedor]";
+			mes "¿Entonces qué?";
+			next;
+			select("¡PUES EL MALDITO MUÑECO!");
+			mes "[Vendedor]";
+			mes "Ah si, espera... veo que un turista se llevó el último.";
+			next;
+			mes "[Emma]";
+			mes "¿QUÉ?";
+			next;
+			select("De acuerdo, prepárate para morir.");
+			mes "[Vendedor]";
+			mes "E-espera, tengo una idea.";
+			next;
+			select("Habla fuerte y claro");
+			mes "[Vendedor]";
+			mes "Tengo un amigo en Umbala que le deben sobrar de estas cosas, estoy seguro que si vas con él y le dices que yo te envío, te dará uno muy especial.";
+			next;
+			select("De acuerdo, vivirás unos días más");
+			mes "[Vendedor]";
+			mes "De acuerdo, adios.";
+			donpcevent "Vendedor#qb::OnDisable";
+			next;
+			mes "[Emma]";
+			mes "Entonces ve a Umbala, y llévale el regalo a mi hermana, yo te esperaré en ^5533ffProntera^000000.";
+			close2;
+			delitem 914,200;
+			delitem 7038,200;
+			Q_BUNNY_A = 3;
+			dispbottom "[Misión especial]",0x000000;
+			dispbottom " - Ve a Umbala y busca al titiritero para conseguir el regalo.",0x000000;
+			end;
+		case 3:
+			mes "[Emma]";
+			mes "Apresúrate a ir a Umbala.";
+			close;
+		case 4:
+			mes "[Emma]";
+			mes "Ve a Prontera, ya le he mandado el regalo a mi hermana.";
+			close;
+		case 5:
+			mes "[Emma]";
+			mes "Calla, soy un fantasma ahora, miento, sólo quiero alejarme de esa tonta hermana, no la soporto más.";
+			close;
+	}
+	mes "[Emma]";
+	mes "Comodo es una excelente ciudad para venir a vacacionar y relajarse, o al menos, eso dicen.";
+	close;
+}
+comodo,179,149,4	script	Vendedor#qb	58,{
+	mes "[Vendedor]";
+	mes "Me dedico a vender distintas manualidades de todo tipo de materiales.";
+	close;
+OnAppear:
+	hideoffnpc "Vendedor#qb";
+	end;
+OnDisable:
+OnInit:
+	hideonnpc "Vendedor#qb";
+	end;
+}
+um_fild04,210,294,5	script	Titiritero#qbt	788,{
+	if(Q_BUNNY_A == 3) {
+		if(Q_TITERE == 1) {
+			input .@a$;
+			if(.@a$ != "aug dem is ti rimiriku") {
+				mes "[Titiritero]";
+				mes "Ugh...";
+				close;
+			}
+			mes "[Titiritero]";
+			mes "eh... ¿AUG TAR DIS N-N-NAAA?";
+			next;
+			mes "[Titiritero]";
+			mes "Oh, una disculpa, no hablas Umbaliniense ancestral con olor a limón.";
+			next;
+			mes "[Titiritero]";
+			mes "Tu muñeco ya debería estar en manos de aquella niña.";
+			next;
+			select("¿Cómo lo supiste?");
+			mes "[Titiritero]";
+			mes "Por que soy bárbaro, ahora lárgate.";
+			close2;
+			Q_BUNNY_A = 4;
+			dispbottom "[Misión especial]",0x000000;
+			dispbottom " - Ve a Prontera a decir que el regalo ha sido enviado.",0x000000;
+			end;
+		}
+		mes "[Titiritero]";
+		mes "¿Necesitas algo de mi?";
+		next;
+		select("¿Cómo supiste?");
+		mes "[Titiritero]";
+		mes "Ese maldito estafador de muñecos de Comodo me envío un RODEX hace unos minutos.";
+		next;
+		mes "[Titiritero]";
+		mes "Bendita sea la tecnología.";
+		next;
+		select("Bueno, me ha enviado él por un títere.");
+		mes "[Titiritero]";
+		mes "Oh claro, no te preocupes, lo tengo justo a la m-mano....";
+		next;
+		mes "[Titiritero]";
+		mes "E-e-est-estoy s-s-s-s-s-s-s-s-s..........";
+		next;
+		select("¿T-titiritero?");
+		mes "[Titiritero]";
+		mes "Ugh...";
+		close2;
+		Q_TITERE = 1;
+		dispbottom " - Has recibido un mensaje en RODEX.";
+		rodex getcharid(0),"Vendedor","Sobre el Titiritero","Hola, perdón pero olvidé decirte que el viejo es muy sénil, si acaso se llega a casi morir dile lo siguiente: aug dem is ti rimiriku, eso seguro lo despertará.",0,0,0,0;
+		end;
+	}
+	mes "[Titiritero]";
+	mes "Estoy seguro que por aquí podré conseguir buenos materiales.";
+	close;
+}

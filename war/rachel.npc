@@ -1,0 +1,42 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---           Guerra de Territorios: Rachel         ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+
+-	script	yd_ice_flag	722,{
+	mes "[^cc6600Bandera de Territorio^000000]";
+	mes "El territorio de ^5533ffAlberta^000000,";
+	mes "le pertenece al gremio:"," ";
+	mes "^ff7070"+getguildname(getterritoryowner("ice_dun01"))+"^000000.";
+	close2;
+OnInit:
+OnClock0000:
+OnRecvFieldIce:
+	flagemblem getterritoryowner("ice_dun01");
+	end;
+}
+
+// Duplicados de Banderas
+//============================================================
+prontera,160,194,4	duplicate(yd_ice_flag)	Rachel#yd	722
+rachel,121,147,4	duplicate(yd_ice_flag)	Rachel#city	722
+ice_dun01,153,253,4	duplicate(yd_ice_flag)	Rachel#empe1	722
+ice_dun01,145,253,4	duplicate(yd_ice_flag)	Rachel#empe2	722
+ice_dun01,154,23,4	duplicate(yd_ice_flag)	Rachel#dun1	722
+
+// Territory War Manager
+//============================================================
+ice_dun01,150,248,0	duplicate(Yd_Manager)	War#ice_dun01	-1,100,100
+
+// Mapflags
+//============================================================
+ice_dun01	mapflag	loadevent

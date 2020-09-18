@@ -1,0 +1,57 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---               Login Configuration               ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	script	LOGIN_CFG	-1,{
+	cutin "16isa",2;
+	mes "[ ^DF3A01Configuración de Login^000000 ]";
+	mes "Hola, "+strcharinfo(0);
+	mes "¿Qué configuraciones te gustaría cambiar?"," ","^8A084BMenu para 'C.Premium' disponible.^000000";
+	while(1) {
+		.@m$ = "";
+		for(.@i = 0; .@i < getarraysize(.mN$); .@i++) {
+			.@m$ += .mN$[.@i]+" ["+( (getd("login_"+.mV$[.@i])) ? "^00BB22Encendido^000000" : "^FF2200Apagado^000000")+"]";
+			.@m$ += ":";
+		}
+		next;
+		.@a = select(.@m$) - 1;
+		mes "[ ^DF3A01Configuración de Login^000000 ]";
+		mes "Estado: "+( (getd("login_"+.mV$[.@a])) ? "^00BB22Encendido^000000" : "^FF2200Apagado^000000");
+		next;
+		if(select("- Quiero "+((!getd("login_"+.mV$[.@a])) ? "^00BB22activarlo^000000" : "^FF2200desactivarlo^000000"),"- Nada, gracias.") == 2) {
+			mes "[ ^DF3A01Configuración de Login^000000 ]";
+			mes "¡Nos vemos!";
+			mes "Regresa cuando quieras.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[ ^DF3A01Configuración de Login^000000 ]";
+		if(getd("login_"+.mV$[.@a])) {
+			mes .mN$[.@a]+" está ahora ^FF2200Apagado^000000.";
+			setd("login_"+.mV$[.@a]),0;
+			if(charat(.mC$[.@a],0) == "@")
+				atcommand .mC$[.@a];
+		} else {
+			mes .mN$[.@a]+" está ahora ^00BB22Encendido^000000.";
+			setd("login_"+.mV$[.@a]),1;
+			if(charat(.mC$[.@a],0) == "@")
+				atcommand .mC$[.@a];
+		}
+	}
+OnInit:
+	setarray .mN$[0],"Recoger objetos auto.","Bounty Hunting","Letrero de premios diarios","Monstruo del Día", "Mensaje de Inicio","Mensaje del Día","Kill Steal","Evitar invitaciones","Battleground","Mensajes de Experiencia","Mensajes de Zeny";
+	setarray .mV$[0],"loot",                 "bounty",        "premiod",                   "mdia",             "inicio",           "tipsdia",        "noks",      "noask",              "escucharbg",  "verexp",                 "verzeny";
+	setarray .mC$[0],"@autoloot",            "0",             "0",                         "0",                "0",                "0",              "@noks",     "@noask",             "@listenbg",   "@showexp",               "@showzeny";
+	end;
+}
+premium,172,38,4	duplicate(LOGIN_CFG)	Configuración de Login#0	10126

@@ -1,0 +1,438 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                  Premio Diario                  ---
+//========================================================
+// ---              by Stolao & DanielArt              ---
+//========================================================
+premium,181,37,3	script	Premio Diario::DAILY_LOGIN	555,{
+	mes "[^cc6600Premio Diario^000000]";
+	mes "¿Qué tal, ^FF8B00"+strcharinfo(0)+"^000000?,","has venido a verme por algo de información supongo.";
+	next;
+	mes "[^cc6600Premio Diario^000000]";
+	mes "Dime, ¿en qué te puedo ayudar?";
+	next;
+	while(1) {
+		switch(select("^777777 >^FF8B00 Ver premios de un día^000000:^777777 -^000000 ¿Qué es el premio diario?:^777777 -^000000 ¿Cómo ganar mi premio diario?:^777777 -^000000 Comandos disponibles:^777777 -^000000 Información interesante")) {
+			case 1:
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Por favor digita el día que quieras consultar"," ";
+				mes "^FF7070Días: 1 al 31^000000";
+				next;
+				input .@d;
+				if(.@d < 1 || .@d > 31) {
+					mes "[^cc6600Premio Diario^000000]";
+					mes "Lo siento, pero el día que has colocado es inválido.";
+					close2;
+					emotion ET_SORRY;
+					end;
+				}
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Estos son los premios que recibirás el ^008800día #"+.@d+"^000000.";
+				callsub S_GetDay, .@d;
+				next;
+				break;
+			case 2:
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Este sistema te recompensará por ingresar a Poring RO diariamente, recibiendo un premio distinto cada día.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Obviamente, mientras más entres recibirás más grandes premios.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Los premios diarios incluyen:";
+				mes " ^5533ff*^5588FF Zeny^000000";
+				mes " ^5533ff*^5588FF Kafra Points^000000";
+				mes " ^5533ff*^5588FF Objetos diarios^000000";
+				next;
+				break;
+			case 3:
+				mes "[^cc6600Premio Diario^000000]";
+				mes "No es muy complicado conseguir tu premio diario.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Solo asegúrate de iniciar sesión en el juego, y mantenerte conectado una hora constante.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "El tiempo que llevas jugado se almacena constantemente, así que si te desconectas por cualquier razón tu tiempo se almacenará cuando inicies sesión nuevamente.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Cuando hayas cumplido la hora constante, escribe ^5533ff@daily^000000 y lo recibirás por medio de ^FF7070RODEX^000000.";
+				next;
+				break;
+			case 4:
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Tenemos a ^5533ff@daily^000000.";
+				mes "Un comando que te permitirá ver la interfaz de premio diario para saber cuáles son los premios del mes, y si cumples con el tiempo diario, te entregará tu premio.";
+				next;
+				break;
+			case 5:
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Una información interesante que te puedo proporcionar es la siguiente.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Si te conectas varios días constantemente recibirás ^5533ffbuff especiales^000000 por alrededor de ^0088002~4 hrs^000000.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "También, cumplir con la cronología de los premios, te permitirá ganar ^ff7070más Zeny y Kafra Points ^FF8080(Free Cash)^000000 cada vez.";
+				next;
+				mes "[^cc6600Premio Diario^000000]";
+				mes "Esto último especialmente cuando cumplas cada decena de días, recibirás una cantidad de premio especial, aparte del mostrado en la interfaz de ^5533ff@daily^000000^000000.";
+				next;
+				break;
+		}
+	}
+OnPCLoginEvent:
+	.@q = query_sql("SELECT `last`,`day` FROM `daily_reward` WHERE `account_id`='"+getcharid(3)+"'", #DAILY_LAST,#DAILY_DAY);
+	if(.@q < 1 || getarraysize(#DAILY_LAST) < 1 || getarraysize(#DAILY_DAY) < 1) {
+		if(#DAILY_LAST < 1)
+			#DAILY_LAST = 0;
+		if(#DAILY_DAY < 1)
+			#DAILY_DAY = 0;
+		callsub S_Query,1,#DAILY_LAST,#DAILY_DAY;
+	}
+	if(#DAILY_CLOCK == gettime(DT_DAYOFYEAR)) {
+		dispbottom "[Premio Diario]: Ya has obtenido el premio correspondiente al día de hoy.",0xFFBF00;
+		end;
+	}
+	query_sql("SELECT `day` FROM `daily_check` WHERE `unique_id` = '"+get_unique_id(getcharid(0))+"'",.@dayuniqueid);
+	if(.@dayuniqueid == gettime(DT_DAYOFYEAR)) {
+		dispbottom "[Premio Diario]: Ya has obtenido el premio correspondiente al día de hoy.",0xFFBF00;
+		end;
+	}
+	if(.MacCheck){
+		if( callfunc("F_CheckMac") ) {
+			dispbottom "[Premio Diario]: Premios limitados a '"+.MacCheck+"' computador por persona.",0xFFBF00;
+			end;
+		}
+	}
+	if(login_premiod && Q_WELCOME)
+		cutin .Cutins$[#DAILY_DAY],3;
+	addtimer 60000,strnpcinfo(3)+"::OnCounting";
+	sleep2 5000;
+	if(login_premiod && Q_WELCOME)
+		cutin "",255;
+	end;
+OnCounting:
+// Si aún no se han cumplido los 60 min de Premio Diario hace correr el timer.
+	if(#DAILY_DO < 1)
+		#DAILY_TIMER++;
+
+// Si el usuario no está conectado en la misma PC, hace correr el timer.
+	if( !callfunc("F_CheckMac") )
+		#HOURLY_TIMER++;
+	
+// Premio por hora.
+	if(#HOURLY_TIMER >= 60) {
+		#HOURLY_TIMER = 0;
+		getitem 8998,1;
+		callfunc("F_LogItem",2,8998);
+		dispbottom " * Has obtenido un Hourly Box por jugar una hora a Poring RO.",0xFFBF00;
+	}
+	
+// Premio diario al jugar una hora.
+	if(#DAILY_TIMER >= 60 && #DAILY_DO < 1) {
+		dispbottom "[Premio Diario]: Has cumplido con los 60 min. de juego, usa @daily para recibir tu recompenza.",0xFFBF00;
+		#DAILY_DO = 1;
+	}
+
+// Reinicia el conteo
+	addtimer 60000,strnpcinfo(3)+"::OnCounting";
+	end;
+
+OnLoginCmnd:
+	if(.MacCheck){
+		if( callfunc("F_CheckMac") ) {
+			dispbottom "[Premio Diario]: Premios limitados a '"+.MacCheck+"' computador por persona.",0xFFBF00;
+			end;
+		}
+	}
+	query_sql("SELECT `day` FROM `daily_check` WHERE `unique_id` = '"+get_unique_id(getcharid(0))+"'",.@dayuniqueid);
+	if(.Mode & 16)
+		cutin .Cutins$[#DAILY_DAY],3;
+	if(.@dayuniqueid == gettime(DT_DAYOFYEAR)) {
+		dispbottom "[Premio Diario]: Ya has obtenido el premio correspondiente al día de hoy.",0xFFBF00;
+		end;
+	}
+	if(#DAILY_CLOCK == gettime(DT_DAYOFYEAR)) {
+		dispbottom "[Premio Diario]: Ya has obtenido el premio correspondiente al día de hoy.",0xFFBF00;
+		end;
+	}
+	.@i = (gettime(DT_YEAR) * 365 * 24 * 60) + (gettime(DT_DAYOFYEAR) * 24 * 60) + (gettime(DT_HOUR) * 60) + gettime(DT_MINUTE);
+	if(.@i >= (#DAILY_LAST + 60) || #DAILY_CLOCK != gettime(DT_DAYOFYEAR) ) {
+		.@cd = #DAILY_DAY + 1;
+		if(.Mode & 16)
+			cutin .Cutins$[.@cd],3;
+		if(#DAILY_DO < 1){
+			.@delay = 60 - #DAILY_TIMER;
+			dispbottom "[Premio Diario]: Para recoger la recompensa debes permanecer conectado por "+callfunc("F_InsertPlural",.@delay,"minuto")+" más (@daily).",0xFFBF00;
+			//dispbottom "si ya has recibido el día de hoy tu premio, pasados los 60 minutos, no recibirás nada hasta mañana, recuerda que puedes usar @daily como apoyo.",0xFFBF00;
+			end;
+		}
+		if(checkvending() & 2 && .Mode & 64){
+			dispbottom "[Premio Diario]: Vendedores no reciben premios.",0xFFBF00;
+			end;
+		}
+		#DAILY_DAY++;
+		if(#DAILY_DAY >= getarraysize(.Rewards$))
+			#DAILY_DAY = 1;
+		callsub S_Query,1,#DAILY_LAST,#DAILY_DAY;
+		explode(.@XT$,.Rewards$[#DAILY_DAY],",");
+		for(.@x = 0; .@x < getarraysize(.@XT$); .@x++)
+			.@TT[.@x] = atoi(.@XT$[.@x]);
+		if(.Mode & 1 && .@TT[4] > 0){
+			for(.@x = 4; .@x <= getarraysize(.@TT) - 1 ; .@x += 2){
+				.@itms[getarraysize(.@itms)] = .@TT[.@x];
+				.@qnts[getarraysize(.@qnts)] = .@TT[.@x + 1];
+			}
+			for(.@x = 0; .@x < getarraysize(.@itms) && .@x < getarraysize(.@qnts); .@x++) {
+				if(.Mode & 32)
+					rodex getcharid(0),"Premio Diario",getitemname(.@itms[.@x]),"¡Poring RO agradece tu preferencia!, disfruta tu premio.", .@TT[0],.@itms[.@x],.@qnts[.@x],.Bound_Mode;
+				else
+					rodex getcharid(0),"Premio Diario",getitemname(.@itms[.@x]),"¡Poring RO agradece tu preferencia!, disfruta tu premio.", .@TT[0],.@itms[.@x],.@qnts[.@x],Bound_None;
+				callfunc "F_LogItem",1,getcharid(0),strcharinfo(0),.@itms[.@x],.@qnts[.@x],"(NPC) Daily Reward";
+			}
+		}
+		if(.Mode & 2){
+			if(.@TT[1]){
+				setd(.Points$[0]),getd(.Points$[0]) + .@TT[1];
+				dispbottom "[Premio Diario]: Recibes "+ .@TT[1] +" "+.Points$[1]+"",0xFFBF00;
+			}
+		}
+		if(.Mode & 4 && (.@TT[3] || .@TT[4]))
+			getexp .@TT[3], .@TT[4];
+		if(.Mode & 8){
+			for(.@x = 0; .@x < getarraysize(.BuffInfo); .@x += 4){
+				if(#DAILY_DAY % .BuffInfo[.@x + 1] == 0)
+					sc_start .BuffInfo[.@x], .BuffInfo[.@x + 2] * 60000, .BuffInfo[.@x + 3];
+			}
+		}
+		dispbottom "[Premio Diario]: Has recogido tu Premio Diario por "+#DAILY_DAY+" días.",0xFFBF00;
+		#DAILY_DO = #DAILY_TIMER = 0;
+		#DAILY_CLOCK = gettime(DT_DAYOFYEAR);
+		callsub S_Query,2;
+		#DAILY_LAST = (gettime(DT_YEAR) * 365 * 24 * 60) + (gettime(DT_DAYOFYEAR) * 24 * 60) + (gettime(DT_HOUR) * 60) + gettime(DT_MINUTE) - .Rest;
+		callsub S_Query,1,#DAILY_LAST,#DAILY_DAY;
+	} else
+		dispbottom "[Premio Diario]: Ya has obtenido el premio correspondiente al día de hoy.",0xFFBF00;
+	end;
+OnInit:
+	// Basic Settings
+	//   1: Item | 2: Points | 4: Exp  
+	//   8: Gain Buffs Every X Consecutive Days logged in
+	//   16: Show Cutins | 32: Bound Items
+	//   64: No Rewards ffor Autotraders
+	//   128: Show Next Day Cutin
+	//     (a bit value, e.g. 3 = Items & Points from Multi)
+	.Mode = 1|2|8|16|64|128;
+
+	// Number of times same IP can recive rewards
+	//   0 = unlimited
+	.IPCheck = 0;
+
+	// Number of times same Computer (MacAdress) can recive rewards
+	//   0 = unlimited
+	.MacCheck = 1;
+
+	// Item Binding Mode
+	//	 Bound_Account : Account Bound item
+	//	 Bound_Guild   : Guild Bound item
+	//	 Bound_Party   : Party Bound item
+	//	 Bound_Char    : Character Bound item
+	.Bound_Mode = Bound_Account;
+	
+	// To disable the command '@loginreward' comment the next lines
+	// * Needs extra commands for typos
+	bindatcmd "daily",strnpcinfo(3)+"::OnLoginCmnd",0,99;
+
+	// Minimum minutes between collecting daily reward
+	//   Day: 22*60 - 24*60
+	//   Week: 10080 1320
+	.MinWait = 1320;
+
+	// Minutes before losing the consecutive reward
+	//   Day: 48*60 - 50*60
+	//   Week: 20160
+	.MaxWait = 20160;
+
+	// What to do upon reaching last day defined
+	//   [0] Repeat last day
+	//   [1] Restart at 1
+	.Reset = 1;
+
+	// Number of mins after logging before collecting prize
+	.Rest = 0;
+
+	// Point Type
+	//   [0] Points earned
+	//   [1] Point name in mes
+	setarray .Points$,"#KAFRAPOINTS","Puntos Kafra";
+
+	// Consecutive Days Buff
+	// Each buff contains 4 variables
+	// <Type>,<Days>,<Duration>,<Rate>, // Buff 1
+	// <Type>,<Days>,<Duration>,<Rate>, // Buff 2
+	//   ...;
+	//
+	//  Example: 188,7,45,3
+	//    -On the 7th day logged in Player gains +3 Str for 45 mins
+	//
+	//  Type is 188, which references which SC_ to use, SC_INCSTR in this example
+	//     -For a full list of SC_ visit the db/const.txt
+	//  Days is days buff is applied, in this example 7, so every 7th day, 14,21,28....
+	//  Duration is buff duration is Minuits, in this example 45 mins
+	//  Rate is buff val1, in this example player gains 3 Str
+	setarray .BuffInfo
+				,260,2,360,1	// Life Insurance for 360 on 2nd Day
+				,198,3,120,10	// +10% Hp for 120 Mins on 3rd Day
+				,260,4,360,1	// Life Insurance for 360 on 4th Day
+				,196,5,120,25	// +25 Flee for 120 Mins on 5th Day
+				,198,6,120,10	// +10% Hp for 120 Mins on 6th Day
+				,257,7,240,50	// +50% Exp for 240 Mins on 7th Day
+				,260,8,360,1	// Life Insurance for 360 on 8th Day
+				,198,9,120,10	// +10% Hp for 120 Mins on 9th Day
+				,196,10,120,25	// +25 Flee for 120 Mins on 10th Day
+				,198,12,120,10	// +10% Hp for 120 Mins on 12th Day
+				,257,14,240,50	// +50% Exp for 240 Mins on 14th Day
+				,196,15,120,25	// +25 Flee for 120 Mins on 15th Day
+				,260,16,360,1	// Life Insurance for 360 on 16th Day
+				,198,18,120,10	// +10% Hp for 120 Mins on 18th Day
+				,196,20,120,25	// +25 Flee for 120 Mins on 20th Day
+				,257,21,240,50	// +50% Exp for 240 Mins on 21st Day
+				,260,22,360,1	// Life Insurance for 360 on 22nd Day
+				,198,24,120,10	// +10% Hp for 120 Mins on 24th Day
+				,196,25,120,25	// +25 Flee for 120 Mins on 25th Day
+				,260,26,360,1	// Life Insurance for 360 on 26th Day
+				,198,27,120,10	// +10% Hp for 120 Mins on 27th Day
+				,257,28,240,50	// +50% Exp for 240 Mins on 28th Day
+				,196,30,120,25;	// +25 Flee for 120 Mins on 30th Day
+
+	// Daily Prize items:
+	//   "<Zeny>,<Points>,<BaseExp>,<JobExp>,<itemID-1>,<amount-1>,<itemID-2>,<amount-2>...etc", // Day 1
+	//   "<Zeny>,<Points>,<BaseExp>,<JobExp>,<itemID-1>,<amount-1>,<itemID-2>,<amount-2>...etc"  // Day 2
+	//   ...;
+	// Total length of any days string must be 255 or shorter
+	setarray .Rewards$[1],
+		"10000,1,0,0,12208,1",  //Dia 1  | battle manual 50% (1 unidades)
+		"10000,1,0,0,12211,5",  //Dia 2  | Kafra Card (5 unidades)
+		"10000,1,0,0,8503,10",   //Dia 3  | Gold coin (10 unidades)
+		"10000,3,0,0,12215,10", //Dia 4  | Bless Scroll (10 unidades)
+		"10000,3,0,0,12210,1",  //Dia 5  | Bubble Gum (1 unidades)
+		"10000,3,0,0,7621,2",   //Dia 6  | Token Of Siegfried  (2 unidades)
+		"10000,6,0,0,14592,1",  //Dia 7  | battle manual 50% (1 unidades)
+		"10000,6,0,0,12103,1",  //Dia 8  | Bloddy Branch (1 unidades)
+		"10000,6,0,0,12214,2",  //Dia 9  | Convex Mirror (2 unidades)
+		"50000,20,0,0,8503,15",   //Dia 10 | Gold coin (15 unidades)
+		"25000,10,0,0,8996,20", //Dia 11 | Medalla de lealtad (20 unidades)
+		"25000,10,0,0,12523,10", //Dia 12 | LV10 Agil Scroll (10 unidades)
+		"25000,10,0,0,14533,1",  //Dia 13 | Field Manual 100% (1 unidades)
+		"25000,10,0,0,12214,3",  //Dia 14 | Convex Mirror (3 unidades)
+		"25000,10,0,0,616,3",    //Dia 15 | Old Card Album (3 unidades)
+		"25000,10,0,0,12215,10", //Dia 16 | Bless Scroll (10 unidades)
+		"25000,10,0,0,12211,10", //Dia 17 | Kafra Card (10 unidades)
+		"25000,10,0,0,12103,2",  //Dia 18 | Bloddy Branch (2 unidades)
+		"25000,10,0,0,8503,20",   //Dia 19 | Gold coin (20 unidades)
+		"100000,30,0,0,8996,20", //Dia 20 | Medalla de lealtad (20 unidades)
+		"50000,10,0,0,12214,5",  //Dia 21 | Convex Mirror (5 unidades)
+		"50000,10,0,0,12210,2",  //Dia 22 | Bubble Gum (2 unidades)
+		"50000,10,0,0,7621,5",   //Dia 23 | Token Of Siegfried (5 unidades)
+		"50000,10,0,0,12103,3",  //Dia 24 | Bloddy Branch (3 unidades)
+		"50000,10,0,0,8996,40", //Dia 25 | Medalla de lealtad (40 unidades)
+		"50000,10,0,0,8503,50",   //Dia 26 | Gold coin (50 unidades)
+		"50000,10,0,0,7776,5",   //Dia 27 | Gym Pass (5 unidades)
+		"50000,10,0,0,8500,500", //Dia 28 | Ticket de Inversión (500 unidades)
+		"50000,10,0,0,8501,1",  //Dia 29 | Pack random Refine Seguro (1 unidades)
+		"500000,10,0,0,8502,1",  //Dia 30 | Pack random hat (1 unidades)
+		"150000,40,0,0,12246,1";  //Dia 31 | Mystical Card Album (1 unidades)
+
+	// Cutin Array
+	//	Shows a cuting for each date
+	//	
+	setarray .Cutins$,
+			"dia_00",
+			"dia_01",
+			"dia_02",
+			"dia_03",
+			"dia_04",
+			"dia_05",
+			"dia_06",
+			"dia_07",
+			"dia_08",
+			"dia_09",
+			"dia_10",
+			"dia_11",
+			"dia_12",
+			"dia_13",
+			"dia_14",
+			"dia_15",
+			"dia_16",
+			"dia_17",
+			"dia_18",
+			"dia_19",
+			"dia_20",
+			"dia_21",
+			"dia_22",
+			"dia_23",
+			"dia_24",
+			"dia_25",
+			"dia_26",
+			"dia_27",
+			"dia_28",
+			"dia_29",
+			"dia_30",
+			"dia_31";
+end;
+S_GetDay:
+	.@d = getarg(0);
+	for(.@x = 0; .@x < getarraysize(.BuffInfo); .@x += 4){
+		if(.@d % .BuffInfo[.@x + 1] == 0 && .BuffInfo[.@x + 1] == .@d)
+			callsub S_BonusInfo, .BuffInfo[.@x], .BuffInfo[.@x + 3], .BuffInfo[.@x + 2];
+	}
+	explode(.@XT$,.Rewards$[.@d],",");
+	for(.@x = 0; .@x < getarraysize(.@XT$); .@x++)
+		.@TT[.@x] = atoi(.@XT$[.@x]);
+	if(.@TT[4] > 0){
+		for(.@x = 4; .@x <= getarraysize(.@TT) - 1 ; .@x += 2){
+			.@itms[getarraysize(.@itms)] = .@TT[.@x];
+			.@qnts[getarraysize(.@qnts)] = .@TT[.@x + 1];
+		}
+	}
+	mes " ^5533ff*^FF7070 "+callfunc("F_InsertComma", .@TT[0])+" Zenys^000000";
+	mes " ^5533ff*^FF7070 "+.@TT[1]+" Kafra Points^000000";
+	for(.@x = 0; .@x < getarraysize(.@itms) && .@x < getarraysize(.@qnts); .@x++)
+		mes " ^5533ff*^FF7070 <ITEM>"+.@qnts[.@x]+"x "+getitemname(.@itms[.@x])+"<INFO>"+.@itms[.@x]+"</INFO></ITEM>^000000";
+	return;
+S_BonusInfo:
+	switch (getarg(0)) {
+		case 198: .@n$ = "+"+getarg(1)+"% HP"; break;
+		case 196: .@n$ = "+"+getarg(1)+" Flee"; break;
+		case 257: .@n$ = "+"+getarg(1)+"% EXP"; break;
+		case 260: .@n$ = "Life Insurance"; break;
+	}
+	mes " ^5533ff*^FF7070 "+.@n$+" por "+(getarg(2)/60)+" hr.^000000";
+	return;
+S_Query:
+	switch (getarg(0)) {
+		case 1:
+			query_sql("SELECT COUNT(*) FROM `daily_reward` WHERE `account_id`='"+getcharid(3)+"'", .@check);
+			if( .@check > 0 )
+				query_sql("UPDATE `daily_reward` SET `last`='"+getarg(1)+"',`day`='"+getarg(2)+"' WHERE `account_id`='"+getcharid(3)+"'");
+			else
+				query_sql("INSERT INTO `daily_reward` (account_id,last,day) VALUES ('"+getcharid(3)+"','"+getarg(1)+"','"+getarg(2)+"')");
+			break;
+		case 2:
+			query_sql("SELECT COUNT(*) FROM `daily_check` WHERE `unique_id`='"+get_unique_id(getcharid(0))+"'", .@check);
+			if( .@check > 0 )
+				query_sql("UPDATE `daily_check` SET `day` = "+gettime(DT_DAYOFYEAR)+" WHERE `unique_id` = '"+get_unique_id(getcharid(0))+"'");
+			else
+				query_sql("INSERT INTO `daily_check` (char_id,unique_id,day) VALUES ('"+getcharid(0)+"','"+get_unique_id(getcharid(0))+"','"+gettime(DT_DAYOFYEAR)+"')");
+			break;
+	}
+	return;
+}

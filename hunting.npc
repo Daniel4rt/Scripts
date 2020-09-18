@@ -1,0 +1,215 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                    Hunting                      ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	pointshop	HUNT_SHOP	-1,Mission_Points:0,13973:6,13989:5,12831:21,7619:10,7620:10,6240:35,6241:35,6225:77,6226:77,1030:27,7451:27,7562:27,7109:27,7165:27,7023:27,7300:27,7566:27,8570:50,8571:50,8572:50,8573:50,8574:50,8575:50,8576:50
+prontera,180,193,4	script	Cacería::hunting_m	634,{
+	cutin "gnor",2;
+	mes "[^cc6600Cacería^000000]";
+	mes "¡¿A qué es un gran día para salir de cacería?!";
+	mes "¿En qué te puedo ayudar, ^ff8800"+strcharinfo(0)+"^000000?";
+	next;
+	.@m$ = ((Mission_Tick > 0) ? "^ff0000Info. Misión / Entregar^000000:" : "^ff7070Iniciar misión de cacería^000000:") + "Mejor Cazador:^5533ffTienda de cacería^000000:^777777Salir^000000";
+	switch(select(.@m$)) {
+		case 1:
+			if( Mission_Tick <= 0 || Mission_Tick < gettimetick(2) ) {
+				if( Mission_Tick < gettimetick(2) ) {
+					mes "[^cc6600Cacería^000000]";
+					if( Mission_Tick == 0 ) {
+						mes "Aquí te asignaré ^0000FFMisiones de Cacería^000000 cada día.";
+						mes "Las misiones constan de eliminar criaturas que te asignaré.";
+						next;
+						mes "[^cc6600Cacería^000000]";
+						mes "Cada vez que las completes te asignaré más difíciles.";
+						next;
+						mes "[^cc6600Cacería^000000]";
+						mes "Pero no te preocupes, puedes realizar el trabajo en grupos de amigos, y cualquiera del equipo puede ser quien elimine y a ti se te cuenta.";
+						next;
+						mes "[^cc6600Cacería^000000]";
+						mes "Tendrás exactamente 24 horas para terminar una misión, si la terminas antes del tiempo debes venir a mi para pagarte el trabajo.";
+					} else if( Mission_Ended ) {
+						mes "Tu nueva misión está lista, ya revisé los documentos.";
+						mes "¿Estás tu listo para recibirla?";
+					} else {
+						mes "Según puedo ver fallaste tu última misión, no llegaste antes de las 24 horas o no eliminaste el total de criaturas solicitadas.";
+						next;
+						mes "[^cc6600Cacería^000000]";
+						mes "En fin, una lástima. Supongo que vienes por tu misión de hoy.";
+						mes "¿Estás list"+(Sex?"o":"a")+" para llevarla a cabo?";
+					}
+					next;
+					if( select("Si, ¿cuál es mi trabajo del día?:No gracias, por hoy no.") == 2 ) {
+						mes "[^cc6600Cacería^000000]";
+						mes "Suerte entonces, vuelve cuando cuentes con tiempo y recibirás buena paga.";
+						close3;
+					}
+					mes "[^cc6600Cacería^000000]";
+					mes "Un momento, dejar revisar mis documentos para ver qué te puedo asignar...";
+					next;
+					mission_settime gettimetick(2) + 86400;
+					.@Mr = ((Mission_Rank % 45) * 2) + 1;
+					.@Mb = (Mission_Rank / 45) * 5;
+					.@Mr += .@Mb;
+					if( .@Mr > 140 )
+						.@Mr = 140;
+					Mission_Ended = 0;
+					L_Restart:
+					for( .@i = 1; .@i < 6; .@i++ ) {
+						.@MobCC = rand(15,20);
+						.@MobCC += BaseLevel / 18;
+						.@Mid = getmobrandid(.@Mr, 14);
+						mission_sethunting .@i, .@Mid, .@MobCC;
+					}
+					for( .@i = 1; .@i < 6; .@i++ ) {
+						.@Mid = getd("Mission_ID"+.@i);
+						setarray @ms[.@i],.@Mid;
+					}
+					// Evita que la ID de algún monstruo se repita.
+					// Se intentó hacer bucle pero no lo permite.
+					if (@ms[1] == 0 || @ms[2] == 0 || @ms[3] == 0 || @ms[4] == 0 || @ms[5] == 0 || 
+						(@ms[1] == @ms[2]) || (@ms[1] == @ms[3]) || (@ms[1] == @ms[4]) || (@ms[1] == @ms[5]) ||
+						(@ms[2] == @ms[1]) || (@ms[2] == @ms[3]) || (@ms[2] == @ms[4]) || (@ms[2] == @ms[5]) ||
+						(@ms[3] == @ms[1]) || (@ms[3] == @ms[2]) || (@ms[3] == @ms[4]) || (@ms[3] == @ms[5]) ||
+						(@ms[4] == @ms[1]) || (@ms[4] == @ms[2]) || (@ms[4] == @ms[3]) || (@ms[4] == @ms[5]) ||
+						(@ms[5] == @ms[2]) || (@ms[5] == @ms[3]) || (@ms[5] == @ms[4])) goto L_Restart;
+					callfunc "MissionInfo";
+					next;
+					mes "[^cc6600Cacería^000000]";
+					mes "Suerte en tu misión, recuerda que tienes 24 horas para completarla.";
+					mes "Presentate conmigo cuando termines.";
+					close3;
+				}
+			} else {
+				mes "[^cc6600Cacería^000000]";
+				mes "Me alegra verte nuevamente por aquí, veamos como vas con el trabajo que te encargué...";
+				next;
+				if( (Mission_Count1 + Mission_Count2 + Mission_Count3 + Mission_Count4 + Mission_Count5) < 1 ) {
+					mes "[^cc6600Cacería^000000]";
+					if( Mission_Ended == 0 ) {
+						mes "¡¡Excelente trabajo!! Terminaste tu misión del día sin problemas y antes del tiempo límite.";
+						mes "Dejame pagarte por tus servicios.";
+						next;
+						.@Me = .@Mlv = .@Mj = 0;
+						for( .@i = 1; .@i < 6; .@i++ ) {
+							.@Mid = getd("Mission_ID" + .@i);
+							.@Mlv += strmobinfo(3, .@Mid);
+							.@Me += (strmobinfo(6, .@Mid) * 20);
+							.@Mj += (strmobinfo(7, .@Mid) * 20);
+						}
+						.@Mz = .@Mlv * 150;
+						if( .@Mlv < 125 )
+							.@Mp = 7;
+						else if( .@Mlv < 250 )
+							.@Mp = 14;
+						else
+							.@Mp = 25;
+						getexp .@Me, .@Mj;
+						Zeny += .@Mz;
+						Mission_Points += .@Mp;
+						if( Mission_Rank < 449 )
+							Mission_Rank++;
+						Mission_Completed++;
+						if( Mission_Completed > $TMission_Score ) {
+							$TMission_Score = Mission_Completed;
+							$TMission_CharID = getcharid(0);
+							$TMission_Name$ = strcharinfo(0);
+							$TMission_Job$ = jobname(Class);
+						}
+						for( .@i = 1; .@i < 6; .@i++ )
+							mission_sethunting .@i,0,0;
+						Mission_Ended = 1;
+					}
+					mes "Tu misión diaria ya esta terminada.";
+					.@Mtick = Mission_Tick - gettimetick(2);
+					if( .@Mtick > 3600 )
+						mes "Te asignaré una nueva misión en ^0000FF" + (.@Mtick / 3600) + " horas^000000.";
+					else if( .@Mtick > 60 )
+						mes "Te asignaré una nueva misión en ^0000FF" + (.@Mtick / 60) + " minutos^000000.";
+					else if( .@Mtick > 0 )
+						mes "Te asignaré una nueva misión en ^0000FF" + (.@Mtick) + " segundos^000000.";
+					else
+						mes "Dejame ordenar mis documentos, vuelve a hablarme para asignarte tu nueva misión.";
+					close3;
+				}
+				callfunc "MissionInfo";
+			}
+			close3;
+		case 2:
+			mes "[^cc6600Cacería^000000]";
+			if($TMission_Score) {
+				mes "El mejor cazador actual es:";
+				mes " ^ff0000-^000000 Nombre:^5533ff "+$TMission_Name$+"^000000.";
+				mes " ^ff0000-^000000 Clase:^5533ff "+$TMission_Job$+"^000000.";
+				mes " ^ff0000-^000000 Misiones:^5533ff "+$TMission_Score+"^000000.";
+			} else
+				mes "Aún no hay un mejor cazador, vuelve luego.";
+			close3;
+		case 3:
+			mes "[^cc6600Cacería^000000]";
+			mes "Cuando completes una misión recibirás ^5533ffpuntos de cacería^000000 que podrás usar en la tienda que te mostraré.";
+			close2;
+			cutin "",255;
+			callshop "HUNT_SHOP",1;
+			end;
+		case 4:
+			mes "[^cc6600Cacería^000000]";
+			mes "Vuelve cuando quieras emprender una nueva misión de cacería.";
+			close3;
+	}
+	end;
+OnPCLoadMapEvent:
+	if(strcharinfo(3) == "prontera" && !Mission_Tick)
+		showevent QTYPE_QUEST,1;
+	end;
+}
+
+function	script	MissionInfo	{
+	.@Mj = .@Mlv = .@Me = 0;
+	mes "[^cc6600Contrato - Misión^000000]";
+	for( .@i = 1; .@i < 6; .@i++ ) {
+		set .@Mid, getd("Mission_ID" + .@i);
+		mes "^0000FF" + getd("Mission_Count" + .@i) + "^000000 x ^cc6600" + strmobinfo(2,.@Mid) + "^000000 (ID : " + .@Mid + ")";
+		.@Mlv += strmobinfo(3, .@Mid);
+		.@Me += (strmobinfo(6, .@Mid) * 20);
+		.@Mj += (strmobinfo(7, .@Mid) * 20);
+	}
+	.@Mz = .@Mlv * 150;
+	next;
+	mes "[^cc6600Detalles - Misión^000000]";
+	mes "Nivel : ^0000FF" + .@Mlv + "^000000";
+	if( .@Mlv < 125 ) {
+		mes "Dificultad : ^008000Bajo^000000";
+		.@Mp = 7;
+	} else if( .@Mlv < 250 ) {
+		mes "Dificultad : ^000080Media^000000";
+		.@Mp = 14;
+	} else {
+		mes "Dificultad : ^FF0000Alta000000";
+		.@Mp = 25;
+	}
+	.@Mtick = Mission_Tick - gettimetick(2);
+	if( .@Mtick <= 0 )
+		mes "Tiempo Restante : ^FF0000Expirado^000000";
+	else if( .@Mtick > 3600 )
+		mes "Tiempo Restante : ^0000FF" + (.@Mtick / 3600) + " hora(s)^000000.";
+	else if( .@Mtick > 60 )
+		mes "Tiempo Restante : ^0000FF" + (.@Mtick / 60) + " minuto(s)^000000.";
+	else
+		mes "Tiempo Restante : ^0000FF" + (.@Mtick) + " segundo(s)^000000.";
+	next;
+	mes "[^cc6600Premio - Misión^000000]";
+	mes "Base Exp : ^0000FF" + callfunc("F_InsertComma",.@Me) + "^777777 exp^000000.";
+	mes "Job Exp : ^0000FF" + callfunc("F_InsertComma",.@Mj) + "^777777 exp^000000.";
+	mes "Zeny : ^0000FF" + callfunc("F_InsertComma",.@Mz) + "^777777 z^000000.";
+	mes "Puntos : ^0000FF" + callfunc("F_InsertComma",.@Mp) + "^777777 puntos^000000.";
+	return 0;
+}

@@ -1,0 +1,70 @@
+prontera,176,157,4	script	Servicios de Personaje::debug	743,7,5,{
+	cutin "job_sage_kayron",2;
+	mes "[^cc6600Servicios de Personaje^000000]";
+	mes "¿Qué tal?, vengo a ofrecer mis servicios cuando hay problemas serios con tus personajes, en este momento me encuentro disponible con los siguientes servicios.";
+	next;
+	switch(prompt(" ~ Recalcular el nivel: ~ Recalcular puntos de habilidad:^777777Salir^000000")) {
+		case 1:
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Por un problema presentado el 16 de Julio, se tienen que recalcular el nivel de gran cantidad de personajes, ese mismo día se hizo un evento para no perder experiencia.";
+			next;
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Y se te dió unos objetos en compensación al iniciar sesión en el juego.";
+			next;
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Al momento de que aceptes recalcular el nivel, posiblemente pierdas experiencia o ganes experiencia traducida en niveles, eso es lamentablemente una responsabilidad y por ello se te dieron los objetos extras.";
+			next;
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Entonces, ¿estás segur"+(Sex?"o":"a")+" de recalcular tu nivel?";
+			next;
+			if(select("No:Vamos allá") == 1)
+				close3;
+			if(DO_RESETEH > 0) {
+				mes "[^cc6600Servicios de Personaje^000000]";
+				mes "Lo siento, pero tu nivel ya ha sido recalculado anteriormente.";
+				close3;
+			}
+			if(F_GetInvalidExp(getcharid(0)) < 1) {
+				mes "[^cc6600Servicios de Personaje^000000]";
+				mes "Al parecer tu personaje no tiene problemas de nivel.";
+				close3;
+			}
+			F_FixLevel(getcharid(0));
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Listo, el recalculo se ha hecho con éxito.";
+			DO_RESETEH = 1;
+			close3;
+		case 2:
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Este tipo de reset solo se hará una vez, y me permitirá recalcular tus skill point para que tengas los correctos.";
+			next;
+			if(select("Realizar un recálculo de puntos de habilidad:No hacer nada")==2)
+				close3;
+			if(DO_POINTFIX4 > 0) {
+				mes "[^cc6600Servicios de Personaje^000000]";
+				mes "Solo te puedo hacer este ajuste una vez.";
+				close3;
+			}
+			callfunc "F_FixPoints";
+			DO_POINTFIX3 = 1;
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Listo, el ajuste se ha hecho de manera correcta.";
+			close3;
+		case 3:
+			mes "[^cc6600Servicios de Personaje^000000]";
+			mes "Vuelve cuando quieras.";
+			close2;
+			cutin "",255;
+			end;
+		case 255:
+			cutin "",255;
+			end;
+	}
+end;
+OnTouch:
+	if(BaseLevel == 175)
+		npctalk "Si tu personaje presenta alguna situación rara acércate conmigo, te ayudaré a corregirlo.","debug",bc_self;
+	end;
+}
+scenario,47,112,4	duplicate(debug)	DEbug clone	998
+hugel,104,158,4	duplicate(debug)	Servicios de Personaje#4	743,15,15

@@ -1,0 +1,281 @@
+//===== rAthena Script ======================================= 
+//= Ticket Refiner
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Refiner that uses +5~9/+11 refine tickets to refine
+//= equipment with no chance of failure.
+//= NOTE: This NPC is currently disabled on official servers.
+//===== Additional Comments: =================================
+//= 1.0 First version. [Euphy]
+//= 1.1 Do not refine above ticket level. [Euphy]
+//= 1.2 Now the system only safe the refine level [DanielArt]
+//============================================================
+
+// Condensador de Shadowdecon y Zelunium
+// ===========================================================
+prontera,179,177,4	script	Experienced Miner#shae	766,{
+	if (checkweight(25731,1) == 0) {
+		mes "- Wait a minute !! -";
+		mes "- Currently you're carrying -";
+		mes "- too many items with you. -";
+		mes "- Please try again -";
+		mes "- after you lose some weight. -";
+		close;
+	}
+	mes "[Experienced Miner]";
+	mes "I can purify your";
+	mes "Rough Shadowdecon or";
+	mes "Rough Zelunium. I'll need";
+	mes "5 Rough Stones to make";
+	mes "1 pure one for you.";
+	next;
+	switch(select("Make Shadowdecon:Make Zelunium:Ask about these stones")) {
+	case 1:
+		if (countitem(25728) > 4) {
+			delitem 25728,5;
+			getitem 25729,1;
+			mes "[Experienced Miner]";
+			mes "Here's your Shadowdecon.";
+			mes "You're welcome to come";
+			mes "back whenever you want.";
+			close;
+		}
+		else {
+			mes "[Experienced Miner]";
+			mes "You're kidding me, right?";
+			mes "I just told you that I need 5 Rough Shadowdecon to make a pure Shadowdecon.";
+			close;
+		}
+	case 2:
+		if (countitem(25730) > 4) {
+			delitem 25730,5;
+			getitem 25731,1;
+			mes "[Experienced Miner]";
+			mes "Here's your Zelunium.";
+			mes "You're welcome to come";
+			mes "back whenever you want.";
+			close;
+		}
+		else {
+			mes "[Experienced Miner]";
+			mes "You're kidding me, right?";
+			mes "I just told you that I need 5 Rough Zeluniums to make a pure Zelunium.";
+			close;
+		}
+	case 3:
+		mes "[Experienced Miner]";
+		mes "These new discovered minerals can be obtained from the hands of strong monsters";
+		next;
+		mes "[Experienced Miner]";
+		mes "You will have to look for them and finish them to get them";
+		close;
+	}
+}
+
+// Mesa de refinamiento
+//============================================================
+prontera,184,180,0	script	Mesa de Refinamiento	111,{
+	disable_items;
+	refineui();
+	end;
+}
+
+// Main NPC :: safety_Ref_NPC
+//============================================================
+prontera,181,182,4	script	Refining Expert	10079,{
+	disable_items;
+	// Nombre
+	if (countitem(6238) || countitem(6228) || countitem(6229) || countitem(6230) || countitem(6231) || countitem(6456))
+		.@bWeaponUp = 1;
+	if (countitem(6239) || countitem(6232) || countitem(6233) || countitem(6234) || countitem(6235) || countitem(6457))
+		.@bArmorUp = 1;
+	if (countitem(8517) || countitem(8518) || countitem(8519) || countitem(8520) || countitem(8521) || countitem(8522))
+		.@bHatUp = 1;
+	if (!.@bWeaponUp && !.@bArmorUp && !.@bHatUp) {
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "¿Qué sucede?, ¿quieres que tu equipo no falle al intentar refinarlo?, no hay problema, busca un ^5533ffSafe Ticket Refiner^000000 y evitaremos que tu equipo se rompa.";
+		close;
+	}
+	emotion et_gasp;
+	mes "[ ^B43104Refining Expert^000000 ]";
+	mes "¡Saludos!";
+	mes "Puedo refinar una parte de tu equipo de manera segura según el ^006400ticket que poseas^000000.";
+	next;
+	mes "[ ^B43104Refining Expert^000000 ]";
+	mes "¡No tienes que preocuparte!, ^ff0000no hay ninguna posibilidad de romper tu objeto^000000.";
+	next;
+	if(select("- Mejor vuelvo más tarde..:- Hacer uso del ^5533ffSafe Ticket Refiner^000000.") == 1) {
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "De acuerdo, vuelve cuando gustes, aquí me la paso todo el tiempo de todas formas.";
+		close;
+	}
+	mes "[ ^B43104Refining Expert^000000 ]";
+	mes "¿Qué equipo te gustaría refinar?";
+	next;
+	.@menu$ = "";
+	setarray .@position$[1],"- Armadura","- Mano Izquierda","- Mano Derecha","- Botas","- Clothing","- Gorro";
+	setarray .@indices[1], EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_SHOES, EQI_GARMENT,EQI_HEAD_TOP;
+	for(.@i = 1; .@i <= 6; .@i++)
+		.@menu$ += ((getequipisequiped(.@indices[.@i]))?.@position$[.@i]+" ~ [^ff7070+"+getequiprefinerycnt(.@indices[.@i])+"^000000 ^0037FF"+getequipname(.@indices[.@i])+"^000000]":.@position$[.@i]+" ~ [ ^0037FFvacío^000000 ]")+":";
+	.@s = select(.@menu$);
+	.@part = .@indices[.@s];
+	if (!getequipisequiped(.@part)) {
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Pero no hay nada equipado aquí,","Tienes que tener el objeto equipado para poder refinarlo.";
+		close;
+	}
+	if (!getequipisenableref(.@part)) {
+		emotion et_otl;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Oh, lo siento.";
+		mes "Este ítem es imposible refinarlo.";
+		mes "Solo refino Armas y Armaduras.";
+		close;
+	}
+	switch(.@s) {
+		case 1: // Armadura
+		case 4: // Botas
+		case 5: // Garment
+			setarray .@tickets[0],6457,6235,6234,6233,6232,6239;
+			setarray .@levels[0],5,6,7,8,9,11;
+			.@type$ = "Armor";
+			.@check = .@bArmorUp;
+			break;
+		case 3: // Mano Derecha
+			setarray .@tickets[0],6456,6231,6230,6229,6228,6238;
+			setarray .@levels[0],5,6,7,8,9,11;
+			.@type$ = "Weapon";
+			.@check = .@bWeaponUp;
+			break;
+		case 2: // Mano Izquierda
+			if(getiteminfo(getequipid(.@part),2) == 4) {
+				setarray .@tickets[0],6457,6235,6234,6233,6232,6239;
+				setarray .@levels[0],5,6,7,8,9,11;
+				.@type$ = "Armor";
+				.@check = .@bArmorUp;
+			} else {
+				setarray .@tickets[0],6456,6231,6230,6229,6228,6238;
+				setarray .@levels[0],5,6,7,8,9,11;
+				.@type$ = "Weapon";
+				.@check = .@bWeaponUp;
+			}
+			break;
+		case 6: // Hat
+			setarray .@tickets[0],8517,8518,8519,8520,8521,8522;
+			setarray .@levels[0],5,6,7,8,9,11;
+			.@type$ = "Headgear";
+			.@check = .@bHatUp;
+			break;
+	}
+	if (!.@check) {
+		emotion ET_DOTS;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Si quieres refinar esta ^006400"+.@type$+"^000000, por favor ven junto con el ^006400"+.@type$+" Refine Ticket^000000.";
+		mes "¡Nos vemos más tarde!";
+		close;
+	}
+	mes "[ ^B43104Refining Expert^000000 ]";
+	mes "De acuerdo, veamos si tienes el ^006400"+.@type$+" Refine Ticket^000000 necesario para continuar.";
+	next;
+	.@required = (getequiprefinerycnt(.@part) + 1);
+	for(.@i = 0; .@i < getarraysize(.@tickets); .@i++) {
+		if(.@required == .@levels[.@i]) {
+			.@a = .@i;
+			break;
+		}
+	}
+	.@ticket_lv = .@levels[.@a];
+	.@ticket_id = .@tickets[.@a];
+	if (countitem(.@ticket_id) == 0) {
+		emotion ET_WHAT;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes getitemname(.@ticket_id)+" no está en tu inventario. ¿Lo pusiste en tu almacén?";
+		mes "Por favor revisa otra vez.";
+		mes "¡Nos vemos más tarde!";
+		next;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Necesito un Safe Ticket que sea un nivel mayor al de tu equipo, para garantizar un refinamiento seguro al siguiente nivel.";
+		next;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Por ejemplo si tienes un:";
+		mes " - Cotton Shirt ^5533ff+6^000000";
+		mes "Necesitaré:";
+		mes " - Safe Ticket Refiner ^5533ff+7^000000";
+		next;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Ya que estaría garantizando que tu equipo suba sin romperse de ^5533ff+6^000000 a ^5533ff+7^000000 con hasta un ^ff707090%^000000 probabilidad de éxito.";
+		close;
+	}
+	if (.@ticket_lv != .@required) {
+		emotion ET_SORRY;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Necesito un Safe Ticket que sea un nivel mayor al de tu equipo, para garantizar un refinamiento seguro al siguiente nivel.";
+		next;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Por ejemplo si tienes un:";
+		mes " - Cotton Shirt ^5533ff+6^000000";
+		mes "Necesitaré:";
+		mes " - Safe Ticket Refiner ^5533ff+7^000000";
+		next;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Ya que estaría garantizando que tu equipo suba sin romperse de ^5533ff+6^000000 a ^5533ff+7^000000 con hasta un ^ff707090%^000000 probabilidad de éxito.";
+		close;
+	}
+	mes "[ ^B43104Refining Expert^000000 ]";
+	mes "Entonces procederé a refinar tu ^006400"+getequipname(.@part)+"^8B4513 a +"+.@ticket_lv+"^000000 con ^006400"+getitemname(.@ticket_id)+"^000000.";
+	mes "¿Puedo continuar?";
+	next;
+	if(select("No.:Si.") == 1) {
+		emotion et_dots;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "No importa, cambiar de idea es de sabios, vuelve cuando estés list"+(Sex?"o":"a")+".";
+		close;
+	}
+	if(Zeny < 2000000) {
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Lo siento, pero necesito ^5533ff2,000,000^000000z para proceder.";
+		close;
+	}
+	tax 2000000,15;
+	mes "[ ^B43104Refining Expert^000000 ]";
+	mes "Estupendo.";
+	mes "¡Como desées!";
+	mes "Tengo mi propia manera especial para refinar...";
+	mes ".......ka boom!";
+	specialeffect EF_SUI_EXPLOSION;
+	if (countitem(.@ticket_id))
+		delitem .@ticket_id,1;
+	else {
+		next;
+		mes "¡Error del sistema!";
+		mes "Por favor toma una captura de pantalla y reporta esto.";
+		close;
+	}
+	next;
+
+	// Anti-Hack
+	if(callfunc("F_IsEquipIDHack",.@part,getequipid(.@part)))
+		close;
+
+	if(rand(100) < 90) {
+		successrefitem .@part;
+		F_LogEnhance(1,getequipid(.@part),getequiprefinerycnt(.@part));
+		emotion ET_HO;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Excelente, aquí está ~";
+		mes "Bien, ^0000FF"+strcharinfo(0)+"^000000!";
+		mes "Todo ha salido como esperábamos, disfruta tu nuevo equipamento.";
+	} else {
+		specialeffect 155;
+		emotion ET_SORRY;
+		mes "[ ^B43104Refining Expert^000000 ]";
+		mes "Uh oh, salgo ha salido mal, pero no te preocupes, no le ha pasado nada tu equipo.";
+	}
+	close;
+}

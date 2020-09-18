@@ -1,0 +1,42 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---           Guerra de Territorios: Comodo         ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+
+-	script	yd_cmd_flag	722,{
+	mes "[^cc6600Bandera de Territorio^000000]";
+	mes "El territorio de ^5533ffComodo^000000,";
+	mes "le pertenece al gremio:"," ";
+	mes "^ff7070"+getguildname(getterritoryowner("cmd_fild02"))+"^000000.";
+	close2;
+OnInit:
+OnClock0000:
+OnRecvFieldCmd:
+	flagemblem getterritoryowner("cmd_fild02");
+	end;
+}
+
+// Duplicados de Banderas
+//============================================================
+prontera,163,196,4	duplicate(yd_cmd_flag)	Comodo#yd	722
+comodo,186,159,4	duplicate(yd_cmd_flag)	Comodo#city	722
+cmd_fild02,90,81,4	duplicate(yd_cmd_flag)	Comodo#empe1	722
+cmd_fild02,96,81,4	duplicate(yd_cmd_flag)	Comodo#empe2	722
+cmd_fild02,226,160,4	duplicate(yd_cmd_flag)	Comodo#dun1	722
+
+// Territory War Manager
+//============================================================
+cmd_fild02,254,186,0	duplicate(Yd_Manager)	War#cmd_fild02	-1,100,100
+
+// Mapflags
+//============================================================
+cmd_fild02	mapflag	loadevent

@@ -1,0 +1,119 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                     Dresser                     ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+premium,163,109,4	script	Dress Room#sc	123,{
+	function HasjROCostume;
+	function ChangeAppr;
+	function CheckClass;
+	.@TYPE_CHANGEBASE = 0;
+	.@TYPE_SETLOOK = 1;
+	if (CheckClass()) {
+		mes "[ ^0101DFDress Room^000000 ]";
+		mes "¿Cómo estás, ^FF8800"+strcharinfo(0)+"^000000?,","aquí podrás cambiar la apariencia de tu traje.";
+		mes " ";
+		mes " *Precio: ^FF0000" + callfunc("F_InsertComma", .cost) + "^000000z & ^5533ff1x Gold Coin^000000!";
+		next;
+		mes "[ ^0101DFDress Room^000000 ]";
+		if(HasjROCostume())
+			mes "Al parecer, tengo un nuevo traje para ofrecerte,","¿por qué no te lo pruebas?";
+		else
+			mes "¿Qué te trae por aquí?";
+		next;
+		switch(select(	jobname(roclass(eaclass()&EAJ_UPPERMASK)),
+						jobname(roclass(eaclass()&EAJ_UPPERMASK|EAJL_UPPER)),
+						jobname(roclass(eaclass()|EAJL_THIRD)),
+						HasjROCostume() ? getlook(LOOK_BODY2) ? "Usar ropas clásicas." : "Usar ropa alternativa 3era Clase." : "")
+				) {
+			case 1:
+				ChangeAppr(roclass(eaclass()&EAJ_UPPERMASK),.@TYPE_CHANGEBASE);
+				break;
+			case 2:
+				ChangeAppr(roclass(eaclass()&EAJ_UPPERMASK|EAJL_UPPER),.@TYPE_CHANGEBASE);
+				break;
+			case 3:
+				ChangeAppr(roclass(eaclass()|EAJL_THIRD),.@TYPE_CHANGEBASE);
+				break;
+			case 4:
+				ChangeAppr(0,.@TYPE_SETLOOK);
+				break;
+		}
+		close;
+	}
+	mes "[ ^0101DFDress Room^000000 ]";
+	mes "Lamentablemente,","este servicio es exclusivo para las 3rd class.";
+	close;
+	function	HasjROCostume	{
+		switch(roclass(eaclass()&EAJ_UPPERMASK|EAJL_THIRD)) {
+			case Job_Guillotine_Cross:
+			case Job_Genetic:
+			case Job_Royal_Guard:
+			case Job_Arch_Bishop:
+			case Job_Mechanic:
+			case Job_Rune_Knight:
+			case Job_Ranger:
+			case Job_Minstrel:
+			case Job_Sorcerer:
+			case Job_Shadow_Chaser:
+			case Job_Sura:
+			case Job_Warlock:
+			case Job_Wanderer:
+				return 1;
+			default:
+				break;
+		}
+		return 0;
+	}
+	function	ChangeAppr	{
+		if(Zeny < .cost) {
+			mes "[ ^0101DFDress Room^000000 ]";
+			mes "No tienes el dinero suficiente.","El Costo del servicio es de "+callfunc("F_InsertComma", .cost)+"z";
+			close;
+		}
+		if(countitem(8503) < 1) {
+			mes "[ ^0101DFDress Room^000000 ]";
+			mes "Necesito que me entregues ^5533ff10x Gold Coin^000000 para proceder.";
+			close;
+		}
+		switch(getarg(1)){
+			case 0: // Normal Mode
+				setlook LOOK_BODY2,0;
+				changebase getarg(0);
+				break;
+			case 1: // jRO Mode
+				if(!HasjROCostume())
+					return;
+				changebase roclass(eaclass()|EAJL_THIRD);
+				setlook LOOK_CLOTHES_COLOR,0;
+				setlook LOOK_BODY2,!getlook(LOOK_BODY2);
+				break;
+		}
+		tax .cost,100;
+		delitem 8503,1;
+		mes "[ ^0101DFDress Room^000000 ]";
+		mes "Aquí tienes.";
+		close;
+	}
+	function	CheckClass	{
+		if ( class >= 4096 && class <= 4108) ||
+			(class >= 4060 && class <= 4065) ||
+			(class >= 4073 && class <= 4079) ||
+			(class >= 4054 && class <= 4059) ||
+			(class >= 4066 && class <= 4072)
+			return 1;
+		else
+			return 0;
+	}
+OnInit:
+	.cost = 200000;
+	end;
+}

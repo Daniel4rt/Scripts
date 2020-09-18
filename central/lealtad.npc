@@ -1,0 +1,76 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---         Tienda de Medallas de Lealtad           ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	itemshop	SHOP_LEALTAD	-1,8996:0,31186:30,31299:30,8502:500,8501:1000,14210:8,18716:20,5471:60,18908:80,5873:80,5874:80,5875:80,5595:120,20706:120,2573:60,20707:120,2576:160,20724:160,2589:160,20727:60,20761:60,20746:60,20737:60,18910:200,18909:400
+premium,151,110,4	script	Tienda de Lealtad#q	721,{
+	.@m = countitem(8996);
+	if(.@m > 0) {
+		delitem 8996,.@m;
+		getitem 8996,.@m;
+	}
+	cutin "kafra_07",2;
+	mes "[^ff8800Tienda de Lealtad^000000]";
+	mes "¿Cómo estás, ^5533ff"+strcharinfo(0)+"^000000?, te doy la bienvenida a la Tienda de Lealtad, un lugar donde podrás decidir qué hacer con tus ^cc6600Medallas de Lealtad^000000.";
+	next;
+	mes "[^ff8800Tienda de Lealtad^000000]";
+	mes "Actualmente cuentas con: "," - ^5533ff"+.@m+"^000000 Medallas."," ","¿Qué deseas hacer?";
+	next;
+	switch(select("Obtener Cash Points por Medallas:Canjear mis Medallas por objetos:^777777Salir^000000")) {
+		case 1:
+			mes "[^ff8800Tienda de Lealtad^000000]";
+			mes "La equivalencia actual es:";
+			mes " "," * 5x ^5533ffMedalla^000000 = "+.cpc+"x ^FF0000Cash Point^000000."," ","¿Cuántas medallas deseas cambiar?"," * ^ff7070Digita '0' para cancelar.^000000";
+			next;
+			input .@ch;
+			if(.@ch < 1) {
+				mes "[^ff8800Tienda de Lealtad^000000]";
+				mes "De acuerdo, piénsalo detenidamente.";
+				close2;
+				cutin "",255;
+				emotion ET_BEST;
+				end;
+			}
+			if( countitem(8996) < .@ch*5 ) {
+				mes "[^ff8800Tienda de Lealtad^000000]";
+				mes "No dispones de esta cantidad de medallas actualmente.";
+				close2;
+				cutin "",255;
+				emotion ET_SORRY;
+				end;
+			}
+			mes "[^ff8800Tienda de Lealtad^000000]";
+			mes "La transacción se ha completado, muchas gracias.";
+			close2;
+			cutin "",255;
+			delitem 8996,.@ch*5;
+			#CASHPOINTS += (.@ch*.cpc);
+			dispbottom "* Has obtenido "+(.@ch*.cpc)+" Cash Points. Cantidad Actual: "+#CASHPOINTS+" Cash Points",0x000000;
+			end;
+		case 2:
+			mes "[^ff8800Tienda de Lealtad^000000]";
+			mes "De acuerdo, veamos la tienda.";
+			close2;
+			callshop "SHOP_LEALTAD",1;
+			cutin "",255;
+			end;
+		case 3:
+			mes "[^ff8800Tienda de Lealtad^000000]";
+			mes "Nos vemos luego.";
+			close2;
+			cutin "",255;
+			end;
+	}
+OnInit:
+	.cpc = 2;
+	end;
+}

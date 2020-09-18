@@ -1,0 +1,22 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                  Premium Room                   ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+premium,171,13,0	warp	oficina_warp1	1,1,prontera,163,166// Salida a Hall de acceso
+prontera,167,166,0	warp	oficina_warp2	2,2,premium,171,16//Entrada a Hall de acceso
+premium,161,48,0	warp	oficina_warp3	1,1,premium,117,20// de hall a mercado npc (ir)
+premium,117,17,0	warp	oficina_warp4	1,1,premium,161,44// de mercado npc a hall (volver)
+premium,171,68,0	warp	oficina_warp5	1,1,premium,171,48//De salon premium a hall (volver)
+//premium,117,17,0	warp	oficina_warp6	1,1,premium,171,72//Sala de servicios
+premium,49,17,0 	warp	oficina_warp8	1,1,premium,181,45//De sala de servicios a hall
+premium,171,53,0	warp	oficina_warp9	1,1,premium,171,72
+

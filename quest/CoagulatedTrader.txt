@@ -1,0 +1,19 @@
+2@gl_k,150,253,5	script	Ramsus#ginstance	10084,{
+	mes "[Ramsus]";
+	mes "Veo que has llegado lejos, permíteme darte la bienvenida, me encuentro aquí buscando ^5533ffCoagulated Spell^000000.";
+	next;
+	mes "[Ramsus]";
+	mes "Si tienes alguno te los puedo intercambiar.";
+	next;
+	if(select("Buscaré unos, ya vuelvo","¿Qué tienes para ofrecer?") == 1) {
+		mes "[Ramsus]";
+		mes "De acuerdo, aquí te espero.";
+		close;
+	}
+	mes "[Ramsus]";
+	mes "Déjame mostrarte.";
+	close2;
+	callshop "cs-shop",1;
+	end;
+}
+-	itemshop	cs-shop	134,6608:0,4608:250,4609:250

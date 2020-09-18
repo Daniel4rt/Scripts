@@ -1,0 +1,166 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                   Premiador                     ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+prontera,132,187,5	script	Gato Premiador::PRICES	631,{
+OnInitNPC:
+	if(getgroupid() > 5 || strcharinfo(0) == "Vexx") {
+		emotion ET_OK;
+		mes "[^5533ffGato Premiador^000000]";
+		mes "¡Oh, hola ^0000FFGM "+strcharinfo(0)+"^000000!";
+		mes "¿En qué te puedo ayudar?";
+		next;
+		switch(select("Otorgar premio a usuario:Ver premios entregados:^000088Ver como usuario^000000:^777777Salir^000000")) {
+			case 1:
+				mes "[^5533ffGato Premiador^000000]";
+				mes "Por favor escribe el nombre del usuario al que desees entregar el premio.";
+				next;
+				input .@user$;
+				query_sql "SELECT `char_id` FROM `player` WHERE `name`='"+ escape_sql(.@user$) +"'", .@cid;
+				if (.@cid) {
+					while(.@w == 0 | .@w == 2) {
+						mes "[^5533ffGato Premiador^000000]";
+						mes "Por favor coloca la ID del objeto que deseas darle de premio.";
+						next;
+						input .@it_id;
+						if(.@it_id < 1) {
+							mes "[^5533ffGato Premiador^000000]";
+							mes "Has ingresado una ID inválida.";
+							close2;
+							emotion ET_SORRY;
+							end;
+						}
+						mes "[^5533ffGato Premiador^000000]";
+						mes "¿Deseas entrega un ^008800"+getitemname(.@it_id)+"^000000?";
+						next;
+						.@w = select("Si, ese objeto es correcto.","No, intentaré con otra ID");
+					}
+					mes "[^5533ffGato Premiador^000000]";
+					mes "¿Cuántos ^008800"+getitemname(.@it_id)+"^000000 entregarás a ^cc6600"+.@user$+"^000000?";
+					next;
+					input .@c;
+					if(.@c < 1) {
+						mes "[^5533ffGato Premiador^000000]";
+						mes "No me hagas perder mi tiempo.";
+						close2;
+						emotion ET_THROB;
+						end;
+					}
+					mes "[^5533ffGato Premiador^000000]";
+					mes "Por favor verifica los datos:";
+					mes "^FF0000Usuario:^000000 "+.@user$;
+					mes "^FF0000Item:^000000 "+getitemname(.@it_id)+" ("+.@it_id+")";
+					mes "^FF0000Cantidad:^000000 "+.@c;
+					next;
+					if(select("Datos correctos, envía el premio.","^777777Salir^000000") == 2) {
+						mes "[^5533ffGato Premiador^000000]";
+						mes "Vaya pérdida de tiempo, vuelve cuando estés totalmente segur"+(Sex?"o":"a")+".";
+						close2;
+						emotion ET_THROB;
+						end;
+					}
+					.@a = select("Anunciar premio:No anunciar");
+					specialeffect2 338;
+					mes "[^5533ffGato Premiador^000000]";
+					mes "Premio enviado correctamente por ^FF0000RODEX^000000 y almacenado en la base de datos.";
+					F_LogItem 1,.@cid,.@user$,.@it_id,.@c,strcharinfo(0);
+					if(.@a == 1)
+						announce "[Gato Premiador]: El Game Master <"+strcharinfo(0)+"> ha entregado ["+.@c+"x "+getitemname(.@it_id)+"] a <"+.@user$+">",bc_all,0xFF7070;
+					F_WaitRodex .@cid,"Gato Premiador","Premio de "+strcharinfo(0),"¡Felicidades!, aquí tienes tu premio.",0,.@it_id,.@c,Bound_None,1;
+					close2;
+					emotion ET_THANKS;
+					end;
+				} else {
+					mes "[^5533ffGato Premiador^000000]";
+					mes "No se ha encontrado al personaje ^FF0000"+.@user$+"^000000, por favor inténtalo nuevamente.";
+					close2;
+					emotion ET_SORRY;
+					end;
+				}
+			case 2:
+				callsub S_ShowList;
+			case 3:
+				goto S_User;
+			case 4:
+				mes "[^5533ffGato Premiador^000000]";
+				mes "Vuelve conmigo cuando gustes.";
+				close2;
+				emotion ET_BEST;
+				end;
+		}
+	} else {
+S_User:
+		emotion ET_THROB;
+		mes "[^5533ffGato Premiador^000000]";
+		mes "Prrrr!, soy un gato a servicio de los ^000088Game Master^000000 para facilitar la entrega de premios con total transparencia.";
+		next;
+		mes "[^5533ffGato Premiador^000000]";
+		mes "¿Quieres ver los premios entregados a todos los usuarios hasta ahora?";
+		next;
+		if(select("Ver listado => ^00880010,000^000000z","^777777No, gracias^000000") == 2) {
+			mes "[^5533ffGato Premiador^000000]";
+			mes "Lo siento si no quieres pagar, pero de algo debo comer.";
+			close;
+		}
+		if(Zeny < 10000) {
+			mes "[^5533ffGato Premiador^000000]";
+			mes "Aun cuando no quieras pagar, ocupo algo que comer, vuelve cuando tengas dinero.";
+			close;
+		}
+S_ShowList:
+		mes "[^5533ffGato Premiador^000000]";
+		mes "Dime, ¿qué tipo de búsqueda tienes en mente?";
+		next;
+		switch(select("Mostrar ^ff0000todos^000000 los premios:Mostrar por nombre de usuario:Mostrar por ID del objeto:Mostrar por GM/NPC")) {
+			case 1:
+			default:
+				.@z = query_logsql("SELECT `name`,`get`,`item`,`c`,`sended_at`,`get_at`,`gm` FROM `prizelog` WHERE `get`='1' ORDER BY `sended_at` ASC LIMIT 100", .@n$,.@g,.@it,.@c,.@s$,.@gs$,.@gm$);
+				break;
+			case 2:
+				mes "[^5533ffGato Premiador^000000]";
+				mes "Por favor escribe el nombre del usuario que deseas ver los premios que ha recibido.";
+				next;
+				input .@NB$;
+				.@z = query_logsql("SELECT `name`,`get`,`item`,`c`,`sended_at`,`get_at`,`gm` FROM `prizelog` WHERE `get`='1' AND `name`='"+.@NB$+"' ORDER BY `sended_at` ASC", .@n$,.@g,.@it,.@c,.@s$,.@gs$,.@gm$);
+				break;
+			case 3:
+				mes "[^5533ffGato Premiador^000000]";
+				mes "Por favor escribe la ID del objeto que deseas buscar, puedes usar ^ff0000@ii^000000.";
+				next;
+				input .@IT;
+				.@z = query_logsql("SELECT `name`,`get`,`item`,`c`,`sended_at`,`get_at`,`gm` FROM `prizelog` WHERE `get`='1' AND `item`='"+.@IT+"' ORDER BY `sended_at` ASC", .@n$,.@g,.@it,.@c,.@s$,.@gs$,.@gm$);
+				break;
+			case 4:
+				mes "[^5533ffGato Premiador^000000]";
+				mes "Por favor escribe el nombre del GM o NPC que deseas ver los premios que ha entregado.";
+				next;
+				input .@NB$;
+				.@z = query_logsql("SELECT `name`,`get`,`item`,`c`,`sended_at`,`get_at`,`gm` FROM `prizelog` WHERE `get`='1' AND `gm`='"+.@NB$+"' ORDER BY `sended_at` ASC", .@n$,.@g,.@it,.@c,.@s$,.@gs$,.@gm$);
+				break;
+		}
+		mes "[^5533ffGato Premiador^000000]";
+		mes "He colocado una lista de todos los premios enviados en tu cuadro de chat.";
+		announce " ",bc_self,0xFF8800;
+		announce "**** Premios entregados: ****",bc_self,0xFF8800;
+		if(.@z) {
+			tax 10000,50;
+			announce "= GM > Usuario | Nombre del Item | Item ID | Cant. | Fecha de Envío =",bc_self,0xFF9900;
+			for(.@i = 0; .@i < .@z; .@i++)
+				announce "- "+.@gm$[.@i]+" > "+.@n$[.@i]+" | "+getitemname(.@it[.@i])+" | "+.@it[.@i]+" | "+.@c[.@i]+" | "+.@s$[.@i], bc_self,0x+(rand(100000,999999));
+		} else
+			announce "- Lista vacía.",bc_self,0xFF8800;
+		close;
+	}
+OnInit:
+	query_logsql("CREATE TABLE IF NOT EXISTS `prizelog` (`id` int(11) NOT NULL AUTO_INCREMENT,`char_id` int(11) NOT NULL,`name` varchar(26) NOT NULL,`get` tinyint(1) NOT NULL DEFAULT '0',`item` int(5) NOT NULL,`c` int(5) NOT NULL,`sended_at` datetime NOT NULL,`get_at` datetime DEFAULT NULL,`gm` varchar(26) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+	end;
+}

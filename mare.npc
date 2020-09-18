@@ -1,0 +1,13 @@
+-	script	MANT_REWARD	-1,{
+OnPCLoginEvent:
+OnCommand:
+	if(#Q_MANT_R || Q_MANT_R)
+		end;
+	getitembound 8503,5,Bound_Account;
+	getitembound 12263,5,Bound_Account;
+	#Q_MANT_R = 1;
+	end;
+OnInit:
+	bindatcmd "mant","MANT_REWARD::OnCommand",0,99;
+	end;
+}

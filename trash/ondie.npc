@@ -1,0 +1,97 @@
+-	script	MODE	-1,{
+OnPCLoginEvent:
+	if( VAR_ONEDIE )
+		end;
+	cutin "acact_01",2;
+	mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+	mes "Bienvenid"+(Sex ? "o ^000088":"a ^880000")+strcharinfo(0)+"^000000,";
+	mes "mi trabajo es darte la bienvenida a este mundo.";
+	next;
+	mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+	mes "Tienes la posibilidad de vivir como un aventurero ^5533ffmortal^000000 en vez de un inmortal.";
+	next;
+	mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+	mes "Es decir, que si elijes este modo de juego, la primera vez que mueras, perderás tu personaje, todos tus objetos, absolutamente todo de este personaje para ^ff0000siempre^000000.";
+	next;
+	mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+	mes "Pero por supuesto, elegir este modo trae algo consigo, al elegirlo recibirás multiples beneficios, entre ellos tener ^ff0000Puntos de Estado^000000 extra.";
+	next;
+	mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+	mes "¿En qué tomas tu decisión entonces?";
+	next;
+	while(1) {
+		switch(prompt("^777777 >^000000 Vivir normalmente:^777777 >^FF8B00 Vivir como mortal^000000:^777777 >^FF7070 Elegir después^000000")) {
+			case 1:
+				mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+				mes "Entendido, ve a vivir como un simple inmortal entonces.";
+				close2;
+				cutin "",255;
+				VAR_ONEDIE = 2;
+				end;
+			case 2:
+				mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+				mes "¡Excelente!, entonces me quedaré con tu inmortalidad.";
+				next;
+				mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+				mes "Para empezar, aquí tienes:";
+				mes " ^5533ff*^FF8B00 "+.epoint+" Puntos de Estado^000000";
+				mes " ","Suerte con tu aventura.";
+				close2;
+				VAR_ONEDIE = 1;
+				EXTRA_STATUSPOINT += .epoint;
+				StatusPoint += EXTRA_STATUSPOINT;
+				cutin "",255;
+				end;
+			case 3:
+				mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+				mes "Lo siento pero tienes que elegir ahora mismo.";
+				next;
+				break;
+			case 255:
+				mes "[ ^cc6600Nivel de Dificultad^000000 ]";
+				mes "Veo que quieres escapar de tu responsabilidad, entonces serás un inmortal, adios.";
+				close2;
+				cutin "",255;
+				VAR_ONEDIE = 2;
+				end;
+		}
+	}
+OnPCDieEvent:
+	if( VAR_ONEDIE == 1 ) {
+		.@cid = getcharid(0);
+		message strcharinfo(0),"¡El juego ha terminado para ti!";
+		soundeffect "fallingbishop_die.wav",0;
+		sleep2 1500;
+		atcommand "@kick "+strcharinfo(0);
+		for (.@i = 0; .@i < getarraysize( .char_delete$ ); .@i++)
+			query_sql("DELETE FROM `"+ .char_delete$[.@i] +"` WHERE `char_id` = '"+ .@cid +"'");
+		query_sql "DELETE FROM `party` WHERE `leader_char` = '"+.@cid+"'";
+    }
+	end;
+OnInit:
+.epoint = 500; // Puntos de Stat extras
+setarray .char_delete$ // Añade todas las tablas que usen el `char`
+			,"bonus_script"
+			,"char"
+			,"cart_inventory"
+			,"elemental"
+			,"friends"
+//			,"global_reg_value" // N: Los dos siguientes sustituyen a este :3
+			,"global_acc_reg_num"
+			,"global_acc_reg_str"
+			,"guild"
+			,"guild_member"
+			,"homunculus"
+			,"hotkey"
+			,"inventory"
+			,"memo"
+			,"mercenary"
+			,"mercenary_owner"
+			,"pet"
+			,"quest"
+			,"sc_data"
+			,"skill"
+			,"skillcooldown";
+end;
+    
+}

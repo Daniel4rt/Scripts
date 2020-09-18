@@ -1,0 +1,110 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \    Uso exclusivo para Poring RO
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                 HD Gem Creation                 ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+premium,157,23,4	script	Caja de Seguridad::HDBOX	10249,{
+	disable_items;
+	select("Depositar Mythril Ore [^5533ff"+#MYT_BOX+"^000000]");
+	message strcharinfo(0),"Por favor ingresa la cantidad de Mythril Ore que deseas ingresar a la caja, si deseas cancelar digita '0'.";
+	input .@m;
+	if(.@m == 0)
+		end;
+	if(countitem(7233) < .@m) {
+		message strcharinfo(0),"No dispones de esa cantidad de Mythril Ore.";
+		end;
+	}
+	delitem 7233,.@m;
+	#MYT_BOX += .@m;
+	message strcharinfo(0),"Mythril Ore depositado correctamente.";
+	end;
+}
+premium,159,24,5	script	Refinador de Gemas::HDCREATE	10152,{
+	disable_items;
+	if((#STONE_TICK + 86400) < gettimetick(2) || #STONE_MAT < 1) {
+		#STONE_MAT = .rmat[rand(0,6)];
+		#STONE_TICK = gettimetick(2);
+	}
+	do { #STONE_MAT = .rmat[rand(6)]; } while( getitemname(#STONE_MAT) == "null" );
+	mes "[^5533ffRefinador de Gemas^000000]";
+	mes "Buenas "+(isday()?"tardes":"noches")+" señor"+(Sex?"":"ita")+",";
+	mes "Al parecer busca mis servicios para la creación de piedras de ^ff8800alta densidad y calidad^000000.";
+	next;
+	switch(select("Así es:Cuéntame más:^777777Salir^000000")) {
+		case 1:
+			mes "[^5533ffRefinador de Gemas^000000]";
+			mes "Por favor elige qué tipo de piedra deseas crear en esta ocasión.";
+			.@m$ = "";
+			for(.@i = 0; .@i < getarraysize(.stone); .@i++)
+				.@m$ += getitemname(.stone[.@i])+":";
+			next;
+			.@a = select(.@m$)-1;
+			mes "[^5533ffRefinador de Gemas^000000]";
+			mes "Para poder crear <ITEM>"+getitemname(.stone[.@a])+"<INFO>"+.stone[.@a]+"</INFO></ITEM>.";
+			mes "Necesitaré lo siguiente:";
+			mes "^008800 ~^000000 "+callfunc("F_InsertComma",.mithril[.@a])+"x <ITEM>Mythril Ore<INFO>7233</INFO></ITEM>.";
+			mes "^008800 ~^000000 1x <ITEM>"+getitemname(#STONE_MAT)+"<INFO>"+#STONE_MAT+"</INFO></ITEM>.";
+			mes "Recuerda depositar el Myhtril Ore en la caja al lado mío.";
+			next;
+			if(select("Continuar:^777777Salir^000000") == 2) {
+				mes "[^5533ffRefinador de Gemas^000000]";
+				mes "Por favor vuelva cuando guste.";
+				close;
+			}
+			if(#MYT_BOX < .mithril[.@a] || countitem(#STONE_MAT) < 1 || Zeny < .zeny[.@a]) {
+				mes "[^5533ffRefinador de Gemas^000000]";
+				mes "Al parecer aún no tienes lo que te he pedido, vuelve en otra ocasión.";
+				close;
+			}
+			#MYT_BOX -= .mithril[.@a];
+			delitem #STONE_MAT,1;
+			tax .zeny[.@a],32;
+			specialeffect 154;
+			getitem .stone[.@a],1;
+			#STONE_MAT = .rmat[rand(0,6)];
+			mes "[^5533ffRefinador de Gemas^000000]";
+			mes "Todo perfecto, dale buen uso a tu ^ff7070"+getitemname(.stone[.@a])+"^000000.";
+			close2;
+			emotion ET_BEST;
+			end;
+		case 2:
+			mes "[^5533ffRefinador de Gemas^000000]";
+			mes "Mediante mis avanzadas técnicas de refinación gatuna, puedo convertir <ITEM>Mythril Ore<INFO>7233</INFO></ITEM> en distintas piedras de alta calidad que podrás usar en la refinación de tu equipo.";
+			next;
+			mes "[^5533ffRefinador de Gemas^000000]";
+			mes "Pero no creas que solo necesitaré un material, dependiendo de mi humor te pediré un distinto tipo de material cada día, así que no te confíes.";
+			break;
+		case 3:
+			mes "[^5533ffRefinador de Gemas^000000]";
+			mes "Por favor vuelva cuando guste.";
+			close;
+	}
+
+OnInit:
+	// Adición de Piedras con su costo en Mithril.
+	callsub S_AddStone,0,7619,450,200;
+	callsub S_AddStone,1,7620,450,200;
+	callsub S_AddStone,2,6240,950,450;
+	callsub S_AddStone,3,6241,950,450;
+	callsub S_AddStone,4,6225,1650,600;
+	callsub S_AddStone,5,6226,1650,600;
+
+	// Lista de materiales random a pedir por día.
+	setarray .rmat,1030,7451,7562,7109,7165,7023,7566;
+	end;
+
+// Función para añadir piedras.
+S_AddStone:
+	setarray .stone[getarg(0)],getarg(1);
+	setarray .mithril[getarg(0)],getarg(2);
+	setarray .zeny[getarg(0)],getarg(3)*1000;
+	return;
+}

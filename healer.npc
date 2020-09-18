@@ -1,0 +1,149 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \        www.danielart.net
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                    Healer                       ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+prontera,161,186,4	script	Healer	10184,4,4,{
+	if(healdelay < gettimetick(2) || healdelay == 0){
+		emotion ET_HPTIME;
+		percentheal 100,100;
+		if (vip_status(1)) {
+			if( (agitcheck() || agitcheck2() || agitcheck3()) && getcharid(2) )
+				.@a = 1;
+			else
+				.@a = 1200000;
+			sc_start SC_INCREASEAGI,.@a,.n+.ne;
+			sc_start SC_BLESSING,.@a,.n+.ne;
+			if(getgroupid() < 6) {
+				specialeffect2 320,1;
+				specialeffect2 363,1;
+			}
+		} else {
+			if(Zeny < .z)
+				end;
+			Zeny -= .z;
+			if( (agitcheck() || agitcheck2() || agitcheck3()) && getcharid(2) )
+				.@a = 1;
+			else
+				.@a = 900000;
+			sc_start SC_INCREASEAGI,.@a,.n;
+			sc_start SC_BLESSING,.@a,.n;
+			if(getgroupid() < 6) {
+				specialeffect2 312,1;
+				specialeffect2 364,1;
+			}
+		}
+		healdelay = gettimetick(2) + 5;
+	}
+	end;
+OnTouch:
+	if(P_HEALNT != 1 && htouch < gettimetick(2) || htouch == 0){
+		emotion ET_HPTIME;
+		percentheal 100,100;
+		if (vip_status(1)) {
+			if( (agitcheck() || agitcheck2() || agitcheck3()) && getcharid(2) )
+				.@a = 1;
+			else
+				.@a = 1200000;
+			sc_start SC_INCREASEAGI,.@a,.n+.ne;
+			sc_start SC_BLESSING,.@a,.n+.ne;
+			if(getgroupid() < 6) {
+				specialeffect2 320,1;
+				specialeffect2 363,1;
+			}
+		} else {
+			if(Zeny < .z)
+				end;
+			Zeny -= .z;
+			if( (agitcheck() || agitcheck2() || agitcheck3()) && getcharid(2) )
+				.@a = 1;
+			else
+				.@a = 900000;
+			sc_start SC_INCREASEAGI,.@a,.n;
+			sc_start SC_BLESSING,.@a,.n;
+			if(getgroupid() < 6) {
+				specialeffect2 312,1;
+				specialeffect2 364,1;
+			}
+		}
+		htouch = gettimetick(2) + 5;
+	}
+	end;
+
+OnCommand:
+	if(P_HEALNT < 1) {
+		P_HEALNT = 1;
+		dispbottom "Ya no te curarás al pasar cerca de la Healer.",0x000000;
+	} else if(P_HEALNT) {
+		P_HEALNT = 0;
+		dispbottom "Nuevamente te curarás al pasar cerca de la Healer.",0x000000;
+	}
+	end;
+OnInit:
+
+	// Comando para impedir heal al tocar @noheal
+	bindatcmd "noheal","Healer::OnCommand",0,99;
+	
+	// Configuraciones
+	
+	// Precio del Heal en Zeny.
+	.z = 100;
+	
+	// Nivel de buff.
+	.n = 5;
+	
+	// Nivel extra de buff para VIP.
+	.ne = 3;
+
+	end;
+}
+alberta,41,252,4	duplicate(Healer)	Healer#02	10184,4,4
+alberta,114,66,4	duplicate(Healer)	Healer#02b	10184,4,4
+aldebaran,146,115,4	duplicate(Healer)	Healer#03	10184,4,4
+amatsu,102,157,5	duplicate(Healer)	Healer#04	10184,4,4
+ayothaya,220,184,4	duplicate(Healer)	Healer#05	10184,4,4
+brasilis,204,226,4	duplicate(Healer)	Healer#06	10184,4,4
+comodo,183,158,5	duplicate(Healer)	Healer#07	10184,4,4
+einbech,183,140,5	duplicate(Healer)	Healer#08	10184,4,4
+einbroch,71,199,4	duplicate(Healer)	Healer#29	10184,4,4
+brasilis,80,203,4	duplicate(Healer)	Healer#09	10184,4,4
+geffen,128,68,4	duplicate(Healer)	Healer#10	10184,4,4
+gonryun,162,120,4	duplicate(Healer)	Healer#11	10184,4,4
+hugel,96,168,4	duplicate(Healer)	Healer#12	10184,4,4
+izlude,136,120,4	duplicate(Healer)	Healer#13	10184,4,4
+jawaii,254,129,4	duplicate(Healer)	Healer#14	10184,4,4
+lighthalzen,167,102,4	duplicate(Healer)	Healer#15	10184,4,4
+louyang,226,108,4	duplicate(Healer)	Healer#16	10184,4,4
+xmas,154,138,4	duplicate(Healer)	Healer#17	10184,4,4
+manuk,294,246,4	duplicate(Healer)	Healer#18	10184,4,4
+mid_camp,203,289,4	duplicate(Healer)	Healer#19	10184,4,4
+morocc,164,97,4	duplicate(Healer)	Healer#20	10184,4,4
+moscovia,220,191,4	duplicate(Healer)	Healer#21	10184,4,4
+payon,184,104,4	duplicate(Healer)	Healer#22	10184,4,4
+rachel,114,144,5	duplicate(Healer)	Healer#23	10184,4,4
+splendide,190,187,5	duplicate(Healer)	Healer#24	10184,4,4
+umbala,126,137,5	duplicate(Healer)	Healer#25	10184,4,4
+veins,210,133,5	duplicate(Healer)	Healer#26	10184,4,4
+yuno,157,200,4	duplicate(Healer)	Healer#27	10184,4,4
+bat_room,148,153,5	duplicate(Healer)	Healer#28	10184,4,4
+malaya,244,197,5	duplicate(Healer)	Healer#300	10184,4,4
+dicastes01,200,193,5	duplicate(Healer)	Healer#30	10184,4,4
+dewata,197,189,5	duplicate(Healer)	Healer#31	10184,4,4
+malangdo,193,135,5	duplicate(Healer)	Healer#32	10184,4,4
+mora,105,106,5	duplicate(Healer)	Healer#33	10184,4,4
+eclage,304,233,5	duplicate(Healer)	Healer#34	10184,4,4
+ayo_in01,184,133,3	duplicate(Healer)	Healer#301	10184,4,4
+verus04,129,214,5	duplicate(Healer)	Healer#302	10184,4,4
+lasagna,166,161,5	duplicate(Healer)	Healer#303	10184,4,4
+niflheim,199,183,4	duplicate(Healer)	Healer#304	10184,4,4
+einbech,80,106,4	duplicate(Healer)	Healer#305	10184,4,4
+prontera,246,62,5	duplicate(Healer)	Healer#306	10184,4,4
+harboro1,290,196,4	duplicate(Healer)	Healer#rock	10184,4,4

@@ -1,0 +1,109 @@
+premium,191,104,3	script	Fallen Enchanter	403,{
+cutin "wish_maiden11",2;
+mes "[^5533ffFallen Enchanter^000000]";
+mes "Si has venido conmigo es que buscar encantar las <ITEM>"+getitemname( .faw_itemid )+"<INFO>"+.faw_itemid+"</INFO></ITEM>.";
+mes " ";
+	if( getequipid( EQI_GARMENT ) == .faw_itemid )	{
+		.@refine = getequiprefinerycnt( EQI_GARMENT );
+		for( .@i = 0; .@i < 4; .@i++ )
+			.@card[.@i] = getequipcardid( EQI_GARMENT,.@i );
+		next;
+		switch( select( "Encantar [^00880090%^000000 éxito]","Reiniciar encantamientos","^777777Salir^000000" ) ){
+			case 1:
+				mes "[^5533ffFallen Enchanter^000000]";
+				mes "Selecciona una ranura a encantar.";
+				mes "Tendrás más ranuras para encantar mientras tu refinamiento sea mayor.";
+				mes "^777777( Mínimo +6 )^000000";
+				next;
+				.@slot = select(
+					( .@card[1] || .@refine < 6 )?"":"Ranura # 1",
+					( .@card[2] || .@refine < 7 )?"":"Ranura # 2",
+					( .@card[3] || .@refine < 9 )?"":"Ranura # 3",
+					"^777777Cancelar^000000"
+				);
+				if( .@slot < 4 ){
+					mes "[^5533ffFallen Enchanter^000000]";
+					mes "Por favor selecciona una ranura a encantar.";
+					.@type = select( .enchant_type_menu$ ) - 1;
+					.@size = .enchant_list_size[.@type];
+					if( .@size ){
+						copyarray .@enchant_list[0],getd( ".enchant_list_"+( .@type+1 )+"[0]" ),.@size;
+						if( .@refine >= 9 && .@slot == 3 ){
+							.@enchant_list[.@size] = .special_enchant[.@type];
+							.@size++;
+						}
+						if( rand( 100 ) < .success_rate ){
+							delequip EQI_GARMENT;
+							setd( ".@card["+.@slot+"]" ),.@enchant_list[ rand( .@size ) ];
+							mes "Tus <ITEM>"+getitemname(.faw_itemid)+"<INFO>"+.faw_itemid+"</INFO></ITEM>","se han encantado satisfactoriamente.";
+							getitem2 .faw_itemid,1,1,.@refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
+							equip .faw_itemid;
+							specialeffect2 154;
+						} else {
+							mes "Lo siento, pero el encantamiento ha fallado, pero tranquil"+(Sex?"o":"a")+", no se ha perdido el objeto.";
+							specialeffect2 155;
+						}
+					}
+				}
+				break;
+			case 2:
+				mes "Para proseguir necesitarás "+callfunc("F_InsertComma",.enchant_reset_Zeny)+" Zeny y 1x <ITEM>Gold Coin<INFO>8503</INFO></ITEM>.";
+				if( Zeny >= .enchant_reset_Zeny && countitem(8503) ){
+					if( select( "¿Segur"+(Sex?"o":"a")+" de reiniciar los encantamientos?","^777777Cancelar^000000" ) == 1 ){
+						if( !.@card[1] && !.@card[2] && !.@card[3] )
+							mes "No tienes ningún encantamiento colocado actualmente.";
+						else{
+							tax .enchant_reset_Zeny,10;
+							delitem 8503,1;
+							delequip EQI_GARMENT;
+							getitem2 .faw_itemid,1,1,.@refine,0,.@card[0],0,0,0;
+							equip .faw_itemid;
+							mes "Se han removido todos los encantamientos correctamente.";
+							specialeffect2 154;
+						}
+					}
+				}
+				break;
+			case 3:
+				mes "[^5533ffFallen Enchanter^000000]";
+				mes "Vuelve cuando estés listo para encantar.";
+				close2;
+				cutin "",255;
+				end;
+			default:
+				break;
+		}
+	} else
+		mes "Si no posees unas, no vuelvas conmigo hasta que las obtengas.";
+	close2;
+	cutin "",255;
+	end;
+OnInit:
+	.faw_itemid = 2589;
+	.success_rate = 90;
+	.enchant_reset_Zeny = 1000000;
+	setarray .enchant_type$,"Fighting (^5533ffFighting Spirit^000000)","Magic (^5533ffSpell^000000)","Archer (^5533ffExpert Archer^000000)","Critical (^5533ffFatal^000000)","Max HP","Max SP","ASPD","STR","AGI","DEX","VIT","INT","LUK";
+	setarray .enchant_list_1,4809,4808,4820;
+	setarray .enchant_list_2,4812,4827,4826;
+	setarray .enchant_list_3,4832,4833,4834;
+	setarray .enchant_list_4,4863,4864,4865;
+	setarray .enchant_list_5,4861,4862;
+	setarray .enchant_list_6,4870,4871;
+	setarray .enchant_list_7,4869,4872,4873;
+	setarray .enchant_list_8,4702,4703,4705;
+	setarray .enchant_list_9,4732,4733,4734;
+	setarray .enchant_list_10,4722,4723,4724;
+	setarray .enchant_list_11,4742,4743,4744;
+	setarray .enchant_list_12,4712,4713,4714;
+	setarray .enchant_list_13,4752,4753,4754;
+	setarray .special_enchant,4821,4828,4835,4866,4868,4801,4807,4853,4854,4857,4855,4856,4858;
+	for (.i = 0; .i < getarraysize( .enchant_type$ ); .i++ ) {
+		.enchant_list_size[.i] = getarraysize( getd( ".enchant_list_"+( .i+1 ) ) );
+		if( !.enchant_list_size[.i] ){
+			.enchant_type$[.i] = "";
+		} else
+			.enchant_type_menu$ = .enchant_type_menu$ + .enchant_type$[.i];
+		.enchant_type_menu$ = .enchant_type_menu$ + ":";
+	}
+	end;
+}

@@ -1,0 +1,77 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \    Uso exclusivo para Poring RO
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                Colector de Gemas                ---
+//========================================================
+// ---             by Sandbox & DanielArt              ---
+//========================================================
+premium,159,29,2	script	Colector de Gemas::Colector de Gemas	754,{
+	if((#TaskDelay + 86400) > gettimetick(2)) {
+		mes "[ ^000088Colector de Gemas^000000 ]";
+		mes "No necesito más gemas de tí por ahora, vuelve mañana.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	mes "[ ^000088Colector de Gemas^000000 ]";
+	mes "Buenas, ^008800"+strcharinfo(0)+"^000000. Yo soy el renovado coleccionador de gemas, ¡^880000el colector de gemas^000000!, he recolectado ¡todas las gemas existentes de Rune Midgard!";
+	next;
+	mes "[ ^000088Colector de Gemas^000000 ]";
+	mes "Pero necesito recolectar más de ellas, si quieres ayudarme, yo te daré algo en compensación de tu favor.";
+	next;
+	mes "[ ^000088Colector de Gemas^000000 ]";
+	mes "Actualmente llevas (^FF0000"+(#dtq+1)+"^000000/10) de tus tareas diarias, esta es la gema que necesitas adquirir: ^880000";
+	mes .c+"x <ITEM>"+getitemname(.gem[#dtq])+"<INFO>"+.gem[#dtq]+"</INFO></ITEM>.";
+	mes "^000000";
+	next;
+	mes "[ ^000088Colector de Gemas^000000 ]";
+	mes "Por cada tarea que termines, te recompensaré hasta con 300 ^0000FFMithril Ores^000000 obviamente ¡dependiendo de mi humor!";
+	next;
+	if(select("¡A las gemas!","¡Ya tengo las gemas!") == 1) {
+		mes "[ ^000088Colector de Gemas^000000 ]";
+		mes "De acuerdo, aquí te estaré esperando.";
+		close2;
+		emotion ET_BEST;
+		end;
+	}
+	if(countitem(.gem[#dtq]) < .c) {
+		mes "[ ^000088Colector de Gemas^000000 ]";	
+		mes "Este monóculo jamás me falla, y me está diciendo que todavía no tienes lo que te he pedido.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	if(!checkweight(7233,310)) {
+		mes "[ ^000088Colector de Gemas^000000 ]";
+		mes "Lo siento, pero al parecer estás cargando con demasiadas cosas, vuelve cuando tengas espacio.";
+		close2;
+		emotion ET_SORRY;
+		end;
+	}
+	mes "[ ^000088Colector de Gemas^000000 ]";
+	mes "¡Gracias, ahora mi almacén está lleno de gemas! Bahahahaha.";
+	next;
+	mes "[ ^000088Colector de Gemas^000000 ]";
+	mes "No creas que lo he olvidado, ten, esto es lo que te mereces.";
+	delitem .gem[#dtq],.c;
+	getitem 7233,rand(150,310);
+	specialeffect 154;
+	#dtq++;
+	if(#dtq == 10)  {
+		#dtq = 0;
+		#TaskDelay = gettimetick(2);
+	}
+	close2;
+	emotion ET_THANKS;
+	end;
+OnInit:
+	setarray .gem,732,719,720,725,722,729,723,726,718,728;
+	.c = 50;
+	end;
+}

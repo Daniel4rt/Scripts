@@ -1,0 +1,533 @@
+// ===============================
+// ===============================
+// ----- Ragnarok Soulcards ------
+//         por Tirfing 
+// http://organix.foro-activo.com
+// ===============================
+// ===============================
+
+prontera.gat,259,222,5	script	Informador de Soul Cards::RSCInformador	832,{
+
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "¡Bienvenido querido ciudadano de Prontera!";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Viajo por el mundo promocionando un nuevo juego de cartas llamado ^9A2EFERagnarok Soul Cards^000000.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "¿Deseas que te informe sobre este juego?";
+next;
+menu "¿De que se trata?",info,"No me interesa",cancelar;
+
+info:
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFERagnarok Soul Cards^000000 es un juego de cartas basado en algunos elementos de Ragnarok tales como: Monstruos, Armas, Objetos, Ciudades...";
+	next;
+info2:
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "¿Quieres saber cosas más específicas sobre el juego?";
+next;
+menu "Funcionamiento Básico",norbas,"Atributos",noratr,"Estados Alterados",norest,"Cancelar",cancelar;
+close;
+
+norbas:
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "El funcionamiento de este juego de cartas és muy sencillo.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Al iniciar el duelo robarás 4 cartas a tu mano que irán variando a medida que las uses, deberás derrotar a tu contrincante usando diferentes cartas dependiendo del momento.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Una vez consigas que el HP de tu rival se reduzca a 0 ganarás el duelo y recibirás puntos RSC que podrás cambiar por varios premios.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Dentro del duelo podrás ver los estados de tu rival clicando en su NPC de Ragnarok Soulcards.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Si deseas comprobar que carta están usando contra tí solo deberás moverte una casilla.";
+next;
+cutin "tutorsc",2;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Y como última ayuda te enseño un pequeño tutorial de como es una Ragnarok Soulcard.";
+next;
+cutin "",255;
+goto info2;
+
+
+noratr:
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "La parte de los atributos es muy importante y deberás elegir cual te interesa más para usarlos según te convenga.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Ahora te describire cada atributo y enseñaré para que sirven, los atributos són los siguientes:";
+	mes "Nivel RSC, HP, SP, STR, AGI, VIT, INT, DEX, LUK, Ataque, Defensa, Defensa Mágica, Precisión, Evasión, Golpes Críticos, Defensas Elementales.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEHP:^000000 Que decir de este atributo, igual que en todos los juegos, cuando tu HP llegue a 0 perderás la partida.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFESP:^000000 Este atributo tiene el mismo uso que en el juego normal, usar hechizos (Cartas de Hechizo/Habilidad).";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFESTR:^000000 Este atributo te será totalmente necesario para poder usar cartas del tipo Equipamiento.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEAGI:^000000 Este atributo te permitirá realizar daño extra con un porcentaje que dependerá de tu AGI, Cada punto de AGI aumentará su porcentaje en 1%.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEGolpe Extra:^000000 Si en una partida llegas a tener el atributo AGI bastante elevado es posible que veas el aviso de [Ataque Extra] esto añadira un daño de 1 a 3 a tu ataque actual.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEVIT:^000000 Este atributo és el atributo más defensivo, gracias a este atributo podrás evadir con más facilidad los [Estados Alterados], Cada punto de VIT aumentará el porcentaje de evadir un estado alterado en 1%.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEINT:^000000 Este atributo te será totalmente necesario para poder usar cartas del tipo Hechizo/Habilidad.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEDEX:^000000 Este atributo te será totalmente necesario para poder usar cartas que usen ataques de rango.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFELUK:^000000 Este atributo solo es utilizado cuando logres efectuar un [Golpe Crítico], cuando esto ocurra tu LUK será añadida a tu ataque actual.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEAtaque:^000000 Este atributo te permitirá realizar mayores daños, contra mayor sea el número mayor daño realizaras usando cualquier tipo de cartas (Exceptuando mágicas).";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEDefensa:^000000 Este atributo te permitirá recibir menores daños, contra mayor sea el número menor daño recibirás (Excepto de cartas mágicas).";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEDefensa Mágica:^000000 Este atributo te permitirá recibir menores daños de cartas magicas, contra mayor sea el número menor daño recibirás.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEPrecisión:^000000 Contra mayor sea este atributo menores posibilidades tendrás de que tu rival esquive el ataque.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEEvasión:^000000 Contra mayor sea este atributo mayores posibilidades tendrás de esquivar el ataque del rival.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEGolpes Críticos:^000000 Contra mayor sea este atributo mayores posibilidades tendrás de realizar un [Golpe Critico].";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEDefensas Elementales:^000000 Estas defensas solo serviran para algunos tipos de ataque, por ejemplo si tu Defensa al Fuego es 1, los ataques de fuego te harán 1 punto menos de daño.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "Y esto es todo lo que puedo explicarte sobre los atributos, todo lo demás lo iras aprendiendo mientras juegas.";
+next;
+goto info2;
+close;
+
+norest:
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "A medida que vayas jugando duelos con diferentes personas, iras viendo que existen algo llamado [Estados Alterados], los Estados Alterados són algo así como enfermedades, a continuación te diré los que hay y como funcionan.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEAturdido:^000000 Cuando estés aturdido no podrás realizar ninguna acción durante tu turno.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEHelado:^000000  Cuando estés helado no podrás realizar ninguna acción y serás más vulnerable al elemento Viento.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEVeneno:^000000 Cuando estés envenenado recibirás 1 Punto de Daño al principio de tu turno.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFESilencio:^000000 Cuanto estés enmudecido tu Máximo SP y SP se reducirán a 0 temporalmente.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEDormido:^000000 Cuando estés dormido no podrás realizar ninguna acción durante tu turno y serás más vulnerable a la magia.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEPetrificado:^000000 Cuando estés petrificado no podrás realizar ninguna acción durante tu turno y serás más vulnerable al elemento Fuego.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "^9A2EFEQuemado:^000000 Cuando estés quemado recibirás 1 Punto de Daño al principio de tu turno.";
+next;
+	mes "[^CC0000 Informador de Soul Cards ^000000]";
+	mes "También has de saber que la duración de los estados alterados depende de la VIT de quien lo sufre, si su VIT es muy alta tendra muchas posibilidades de salvarse o que el estado dure muy poco.";
+next;
+goto info2;
+close;
+
+cancelar:
+close;
+}
+
+prontera.gat,263,222,4	script	Organizadora de Duelos::RSCteleporter	803,{
+
+	mes "[^CC0000 Organizadora de Duelos ^000000]";
+	mes "Yo soy la Organizadora de Combates de cartas, habla conmigo si quieres realizar un duelo de Ragnarok Soul cards.";
+next;
+	mes "[^CC0000 Organizadora de Duelos ^000000]";
+	mes "Y bien...¿En que te puedo ayudar?";
+next;
+menu "Entrar en la sala de duelos",duelo,"Cancelar",cancelar;
+
+duelo:
+	mes "[^CC0000Organizadora de Duelos^000000]";
+	mes "Antes de entrar deberás elegir si quieres entrar en la sala como Jugador Amarillo o Jugador azul, esto es solamente para diferenciaros.";
+next;
+mes "[^CC0000Organizadora de Duelos^000000]";
+mes "Si el jugador está en uso significa que ya hay alguien dentro usando ese jugador";
+mes " ";
+if ($@RSCplayer1 == 0)mes "Jugador Amarillo: ^01DF01Libre^000000";
+if ($@RSCplayer1 == 1)mes "Jugador Amarillo: ^DF0101En Uso^000000";
+if ($@RSCplayer2 == 0)mes "Jugador Azul: ^01DF01Libre^000000";
+if ($@RSCplayer2 == 1)mes "Jugador Azul: ^DF0101En Uso^000000";
+if ( $@RSCplayer1 && $@RSCplayer2 == 1) {mes "Estado actual del duelo: ["+$@RSChp1+"HP-"+$@RSChp2+"HP]";}
+next;
+menu "Jugador Amarillo",jamarillo,"Jugador Azul",jazul,"Cancelar",cancelar;
+close;
+
+
+jamarillo:
+if ($@RSCplayer1 == 1)goto ocupado;
+set @RSCMano1,rand(1,68);
+set @RSCMano2,rand(1,68);
+set @RSCMano3,rand(1,68);
+set @RSCMano4,rand(1,68);
+set $@RSCnivel1,1;
+set $@RSChp1,20;
+set $@RSCmhp1,20;
+set $@RSCsp1,10;
+set $@RSCmsp1,10;
+set $@RSCstr1,0;
+set $@RSCagi1,0;
+set $@RSCvit1,0;
+set $@RSCint1,0;
+set $@RSCdex1,0;
+set $@RSCluk1,0;
+set $@RSCataque1,0;
+set $@RSCdefensa1,0;
+set $@RSCdefensamag1,0;
+set $@RSCdeffue1,0;
+set $@RSCdefagu1,0;
+set $@RSCdefvie1,0;
+set $@RSCdeftie1,0;
+set $@RSCdefsag1,0;
+set $@RSCdefosc1,0;
+set $@RSCdefven1,0;
+set $@RSCdeffan1,0;
+set $@RSCdefran1,0;
+set $@RSCprecision1,100;
+set $@RSCevasion1,0;
+set $@RSCcritical1,0;
+set $@RSCenfermedad1,0;
+set $@RSCplayer1,1;
+set @RSCplayer,1;
+set $@RSCentraam,1;
+set $@RSCtur1blo,1;
+	mes "[^CC0000Organizadora de Combates^000000]";
+	mes "Acompañame a la sala, espero que ofrezcas un gran duelo.";
+close2;
+mapannounce "prontera","[Ragnarok Soulcards] "+strcharinfo(0)+" entra a la sala de duelos de Ragnarok Soulcards.",bc_blue;
+warp "gon_test.gat",42,86;
+end;
+
+
+jazul:
+if ($@RSCplayer2 == 1)goto ocupado;
+set @RSCMano1,rand(1,68);
+set @RSCMano2,rand(1,68);
+set @RSCMano3,rand(1,68);
+set @RSCMano4,rand(1,68);
+set $@RSCnivel2,1;
+set $@RSChp2,20;
+set $@RSCmhp2,20;
+set $@RSCsp2,10;
+set $@RSCmsp2,10;
+set $@RSCstr2,0;
+set $@RSCagi2,0;
+set $@RSCvit2,0;
+set $@RSCint2,0;
+set $@RSCdex2,0;
+set $@RSCluk2,0;
+set $@RSCataque2,0;
+set $@RSCdefensa2,0;
+set $@RSCdefensamag2,0;
+set $@RSCdeffue2,0;
+set $@RSCdefagu2,0;
+set $@RSCdefvie2,0;
+set $@RSCdeftie2,0;
+set $@RSCdefsag2,0;
+set $@RSCdefosc2,0;
+set $@RSCdefven2,0;
+set $@RSCdeffan2,0;
+set $@RSCdefran2,0;
+set $@RSCprecision2,100;
+set $@RSCevasion2,0;
+set $@RSCcritical2,0;
+set $@RSCenfermedad2,0;
+set $@RSCplayer2,1;
+set @RSCplayer,2;
+set $@RSCentraaz,1;
+set $@RSCtur2blo,1;
+	mes "[^CC0000Organizadora de Duelos^000000]";
+	mes "Acompañame a la sala, espero que ofrezcas un gran duelo.";
+close2;
+mapannounce "prontera","[Ragnarok Soulcards] "+strcharinfo(0)+" entra a la sala de duelos de Ragnarok Soulcards.",bc_blue;
+warp "gon_test.gat",73,86;
+end;
+
+
+cancelar:
+close;
+
+ocupado:
+	mes "[^CC0000Organizadora de Combates^000000]";
+	mes "Este jugador de esta sala ya está en uso, elige otro o espera a que acaben si estan los dos ocupados.";
+close;}
+
+
+
+// ====================================================
+// -------------------- Arbitro -----------------------
+// ====================================================
+
+gon_test.gat,58,90,4	script	RSC Arbitro::RSCarbitro	803,{
+
+if ($@RSCPremio == 1) goto premios;
+if ($@RSCbloarb ==1) end;
+if ( $@RSCentraaz && $@RSCentraam == 1) {
+set $@RSCbloarb,1;
+npctalk "¡Bien, ya está todo listo para poder empezar el duelo!"; 
+sleep2 4000; 
+npctalk "Estoy preparandolo todo, en unos segundos empezará el duelo."; 
+sleep2 4000;
+npctalk "Antes de empezar vamos a sortear quien de los dos jugadores empezará.";  
+sleep2 4000;
+emotion e_dice,0;
+sleep2 4000;
+set .RSC1erturno,rand(1,2);
+if (.RSC1erturno == 1){ set $@RSCtur1blo,0; npctalk "¡Empieza el Jugador Amarillo!"; sleep2 3000;}
+if (.RSC1erturno == 2){ set $@RSCtur2blo,0; npctalk "¡Empieza el Jugador Azul!"; sleep2 3000;}
+npctalk "¡Empieza el duelo!";
+end;}
+	npctalk "No puedo empezar el duelo si no hay un rival.";
+	mes "[^CC0000Arbitro^000000]";
+	mes "No puedo empezar el duelo si no hay un rival.";
+next;
+menu "Continuar esperando",esperar,"Salir de la sala",salirsala;
+end;
+
+salirsala:
+if (@RSCplayer == 1){
+set $@RSCnivel1,0;
+set $@RSChp1,0;
+set $@RSCmhp1,0;
+set $@RSCsp1,0;
+set $@RSCmsp1,0;
+set $@RSCprecision1,0;
+set $@RSCplayer1,0;
+set @RSCplayer,0;
+set $@RSCentraam,0;
+set $@RSCtur1blo,0;
+}
+
+if (@RSCplayer == 2){
+set $@RSCnivel2,0;
+set $@RSChp2,0;
+set $@RSCmhp2,0;
+set $@RSCsp2,0;
+set $@RSCmsp2,0;
+set $@RSCprecision2,0;
+set $@RSCplayer2,0;
+set @RSCplayer,0;
+set $@RSCentraam,0;
+set $@RSCtur2blo,0;
+}
+close;
+
+OnPCLogoutEvent:
+goto desconecta;
+end;
+
+desconecta:
+if (@RSCplayer == 1) {
+set $@RSCPremio,0;
+set $@RSCplayer1,0;
+set $@RSCplayer2,0;
+set $@RSCbloarb,0;
+set RSCpuntos,RSCpuntos-rand(1,3);
+mapannounce "gon_test",""+strcharinfo(0)+" se ha retirado del duelo.",bc_yellow;
+mapannounce "prontera","[Ragnarok Soulcards] La sala de duelos vuelve a estar disponible.",bc_blue;
+areawarp "gon_test",42,89,73,84,"prontera",261,213;
+areawarp "gon_test",50,91,65,82,"prontera",261,213; }
+
+if (@RSCplayer == 2) {
+set $@RSCplayer1,0;
+set $@RSCplayer2,0;
+set $@RSCbloarb,0;
+set RSCpuntos,RSCpuntos-rand(1,3);
+mapannounce "gon_test",""+strcharinfo(0)+" se ha retirado del duelo.",bc_yellow;
+areawarp "gon_test",42,89,73,84,"prontera",261,213;
+areawarp "gon_test",50,91,65,82,"prontera",261,213; }
+end;
+
+premios:
+if (@RSCGanador && $@RSCPlayer1 > 0 ) {
+set @RSCplayer,0;
+set @RSCGanador,0;
+set RSCpuntosRK,RSCpuntosRK+1;
+set RSCpuntos,RSCpuntos+2;
+if ($@RSCEvAut == 1) {set RSCpuntos,RSCpuntos+2;}
+dispbottom "=========== Puntos RSC ============";
+dispbottom "Ganas 2 Puntos RSC por ganar el duelo";
+if ($@RSCEvAut == 1) {dispbottom "Ganas 2 Puntos RSC adicionales por evento";}
+dispbottom "Tus puntos totales: "+RSCpuntos+"";
+dispbottom "================================";
+if (getmapusers("gon_test.gat") == 1) goto apertura1;
+warp "prontera.gat",261,213;
+end;
+
+apertura1:
+mapannounce "prontera","[Ragnarok Soulcards] La sala de duelos vuelve a estar disponible.",bc_blue; 
+set $@RSCPremio,0;
+set $@RSCplayer1,0;
+set $@RSCplayer2,0;
+set $@RSCbloarb,0;
+warp "prontera.gat",261,213;
+end;
+}
+
+if (@RSCGanador && $@RSCPlayer2 > 0 ) {
+set @RSCplayer,0;
+set @RSCGanador,0;
+set RSCpuntosRK,RSCpuntosRK+1;
+set RSCpuntos,RSCpuntos+2;
+if ($@RSCEvAut == 1) {set RSCpuntos,RSCpuntos+2;}
+dispbottom "=========== Puntos RSC ============";
+dispbottom "Ganas 2 Puntos RSC por ganar el duelo";
+if ($@RSCEvAut == 1) {dispbottom "Ganas 2 Puntos RSC adicionales por evento";}
+dispbottom "Tus puntos totales: "+RSCpuntos+"";
+dispbottom "================================";
+if (getmapusers("gon_test.gat") == 1) goto apertura2;
+warp "prontera.gat",261,213;
+end;
+
+apertura2:
+mapannounce "prontera","[Ragnarok Soulcards] La sala de duelos vuelve a estar disponible.",bc_blue; 
+set $@RSCPremio,0;
+set $@RSCplayer1,0;
+set $@RSCplayer2,0;
+set $@RSCbloarb,0;
+warp "prontera.gat",261,213;
+end;
+}
+set @RSCplayer,0;
+set @RSCGanador,0;
+set RSCpuntos,RSCpuntos+1;
+if ($@RSCEvAut == 1) {set RSCpuntos,RSCpuntos+1;}
+dispbottom "=========== Puntos RSC ============";
+dispbottom "Ganas 1 Punto RSC por perder el duelo";
+if ($@RSCEvAut == 1) {dispbottom "Ganas 1 Punto RSC adicional por evento";}
+dispbottom "Tus puntos totales: "+RSCpuntos+"";
+dispbottom "================================";
+if (getmapusers("gon_test.gat") == 1) goto apertura3;
+warp "prontera.gat",261,213;
+end;
+
+apertura3:
+mapannounce "prontera","[Ragnarok Soulcards] La sala de duelos vuelve a estar disponible.",bc_blue; 
+set $@RSCPremio,0;
+set $@RSCplayer1,0;
+set $@RSCplayer2,0;
+set $@RSCbloarb,0;
+warp "prontera.gat",261,213;
+end;
+
+esperar:
+close;
+}
+
+// ====================================================
+// ----------------- Cambia Puntos --------------------
+// ====================================================
+
+prontera.gat,267,212,4	script	Puntos RSC	50,{
+
+	mes "[^CC0000Puntos RSC^000000]";
+	mes "Cada 2 Puntos RSC podrás jugar a la ruleta RSC, en ella podrás ganar varios premios dependiendo de tu suerte.";
+	next;
+	mes "[^CC0000Puntos RSC^000000]";
+	mes "¿Quieres jugar a la ruleta RSC?";
+	mes " ";
+	mes "Tienes ^CC0000"+RSCpuntos+"^000000 Puntos RSC.";
+	next;
+	menu "Pagar 2 Puntos RSC",ruleta,"No jugar",cancelar;
+
+ruleta:
+if (RSCpuntos < 2) {goto nopuntos;}
+set RSCpuntos,RSCpuntos-2;
+set @RSCRuleta,rand(1,1000);
+if (@RSCRuleta > 975) goto premios3;
+if (@RSCRuleta > 700) goto premios2;
+if (@RSCRuleta > 0) goto premios1;
+end;
+
+premios1:
+set @RSCRuleta,rand(1,13);
+if (@RSCRuleta == 1) getitem 662,15;
+if (@RSCRuleta == 2) getitem 12215,5;
+if (@RSCRuleta == 3) getitem 12110,5;
+if (@RSCRuleta == 4) getitem 12212,20;
+if (@RSCRuleta == 5) getitem 12414,5;
+if (@RSCRuleta == 6) getitem 14607,3;
+if (@RSCRuleta == 7) getitem 12216,5;
+if (@RSCRuleta == 8) getitem 533,20;
+if (@RSCRuleta == 9) getitem 526,20;
+if (@RSCRuleta == 10) getitem 11548,25;
+if (@RSCRuleta == 11) getitem 12321,5;
+if (@RSCRuleta == 12) {dispbottom "Premio especial: Bendición Completa."; sc_start SC_BLESSING,1800000,10; sc_start SC_INCREASEAGI,1800000,10; sc_start SC_ASSUMPTIO,1800000,5; sc_start SC_STRFOOD,1800000,5; sc_start SC_AGIFOOD,1800000,5; sc_start SC_VITFOOD,1800000,5; sc_start SC_INTFOOD,1800000,5; sc_start SC_DEXFOOD,1800000,5; sc_start SC_LUKFOOD,1800000,5;}
+if (@RSCRuleta == 13) getitem 14534,5;
+
+close;
+
+premios2:
+set @RSCRuleta,rand(1,15);
+if (@RSCRuleta == 1) getitem 12361,1;
+if (@RSCRuleta == 2) getitem 12225,1;
+if (@RSCRuleta == 3) {getitem 7773,5;}
+if (@RSCRuleta == 4) {getitem 7829,5;}
+if (@RSCRuleta == 5) {getitem 7828,5;}
+if (@RSCRuleta == 6) {getitem 12162,1;}
+if (@RSCRuleta == 7) {getitem 12172,1;}
+if (@RSCRuleta == 8) {getitem 12182,1;}
+if (@RSCRuleta == 9) {dispbottom "Premio especial: Aliado Temporal."; summon "Priest",2909,3000;}
+if (@RSCRuleta == 10) {dispbottom "Premio especial: Aliado Temporal."; summon "Knight",2907,3000;}
+if (@RSCRuleta == 11) {dispbottom "Premio especial: Aliado Temporal."; summon "Monk",2921,3000;}
+if (@RSCRuleta == 12) {dispbottom "Premio especial: Aliado Temporal."; summon "Wizard",2911,3000;}
+if (@RSCRuleta == 13) {dispbottom "Premio especial: Aliado Temporal."; summon "Assassin",2917,3000;}
+if (@RSCRuleta == 14) {dispbottom "Premio especial: Aliado Temporal."; summon "Hunter",2916,3000;}
+if (@RSCRuleta == 15) getitem 12107,5;
+close;
+
+premios3:
+set @RSCRuleta,rand(1,12);
+if (@RSCRuleta == 1) getitem 2866,1;
+if (@RSCRuleta == 2) getitem 18507,1;
+if (@RSCRuleta == 3) getitem 1238,1;
+if (@RSCRuleta == 4) getitem 13068,1;
+if (@RSCRuleta == 5) getitem 2569,1;
+if (@RSCRuleta == 6) getitem 5500,1;
+if (@RSCRuleta == 7) getitem 5153,1;
+if (@RSCRuleta == 8) getitem 5532,1;
+if (@RSCRuleta == 9) getitem 2715,1;
+if (@RSCRuleta == 10) getitem 13078,1;
+if (@RSCRuleta == 11) getitem 2573,1;
+if (@RSCRuleta == 12) goto shieldskag;
+close;
+
+shieldskag:
+set @RSCRuleta,rand(1,3);
+if (@RSCRuleta == 1) getitem 2171,1;
+if (@RSCRuleta == 2) getitem 2172,1;
+if (@RSCRuleta == 3) getitem 2173,1;
+end;
+
+nopuntos:
+	mes "[^CC0000Puntos RSC^000000]";
+	mes "No dispones de suficientes puntos.";
+close;
+
+cancelar:
+close;
+}

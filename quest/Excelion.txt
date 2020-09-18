@@ -1,0 +1,243 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---             Excellion Set & Enchants            ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+verus04,163,219,4	script	PLUTO_09	10147,{
+	disable_items;
+	if(!VERUS_FUEL1) {
+		mes "^777777Al parecer la máquina necesita combustible.^000000.";
+		if(countitem(6962) < 1) {
+			close2;
+			unittalk getcharid(3),strcharinfo(0)+": Debería de conseguir algo de Old Fuel Tank.",bc_self;
+			end;
+		}
+		mes " ","¿Deseas usar un ^5533ff"+getitemname(6962)+"^000000?";
+		if(select("Usar combustime:Volver luego") == 2)
+			close;
+		delitem 6962,1;
+		mes "^777777La máquina parece estar funcionando ahora.^000000.";
+		VERUS_FUEL1 = 1;
+		next;
+	}
+	mes "[^5533ffPLUTO_09^000000]";
+	mes "Soy PLUTO_09, ¿cómo te puedo ayudar?";
+	next;
+	switch(select("Estoy aquí por el equipo ^ff7070Excellion^000000:Estoy aquí por los ^cc6600Cianotipos^000000:Apagar")) {
+		case 1:
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "Equipo Excellion. El equipo Excellion está hecho de antigua tecnología, así que no puedo garantizar un tipo en particular.";
+			mes "Taerme 10 ^5533ffHuge Metal Scraps^000000 y 5 ^cc6600Old Fuel Tanks^000000.";
+			next;
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "A cambio, te daré uno de estos dos objetos:";
+			mes "<ITEM>Excellion Wing<INFO>20773</INFO></ITEM>";
+			mes "<ITEM>Excellion Suit<INFO>15128</INFO></ITEM>";
+			mes "El proceso es al azar.";
+			mes "¿Deseas continuar?";
+			next;
+			if(select("Detenerse:Continuar") == 1) {
+				mes "[^5533ffPLUTO_09^000000]";
+				mes "Apagando...";
+				close;
+			}
+			if(countitem(6961) < 10 || countitem(6962) < 5) {
+				mes "[^5533ffPLUTO_09^000000]";
+				mes "No cuentas con los materiales necesarios.";
+				next;
+				mes "[^5533ffPLUTO_09^000000]";
+				mes "Apagando...";
+				close;
+			}
+			.@i = rand(1,2);
+			delitem 6961,10;
+			delitem 6962,5;
+			getitem .item[.@i],1;
+			specialeffect 154;
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "Gracias. El poder de este equipo puede ser encantado por la unidad al lado de mi, MARS_01.";
+			close;
+		case 2:
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "Cianotipos. Los cianotipos te permitirán introducir reactores en tu equipo Excellion que incrementará su poder, pero por ser tecnología antigua no puedo garantizar un tipo en particular.";
+			next;
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "Taerme 5 ^cc6600Old Fuel Tanks^000000.";
+			mes "A cambio te produciré un ^000088Cianotipo^000000 para que uses con el robot a mi lado, MARS_01.";
+			mes "¿Deseas continuar?";
+			next;
+			if(select("Detenerse:Continuar") == 1) {
+				mes "[^5533ffPLUTO_09^000000]";
+				mes "Apagando...";
+				close;
+			}
+			if(countitem(6962) < 5) {
+				mes "[^5533ffPLUTO_09^000000]";
+				mes "No cuentas con los materiales necesarios.";
+				next;
+				mes "[^5533ffPLUTO_09^000000]";
+				mes "Apagando...";
+				close;
+			}
+			specialeffect 154;
+			delitem 6962,5;
+			getitem .cIA[rand(getarraysize(.cIA))],1;
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "Gracias. Recuerda que para convertir este ^000088Cianotipo^000000 en un reactor deberás que ir con el robot a mi lado, MARS_01.";
+			close;
+		case 3:
+			mes "[^5533ffPLUTO_09^000000]";
+			mes "Apagando...";
+			close;
+	}
+OnInit:
+	setarray .item[1],20773,15128;
+	setarray .cIA,6965,6966,6967,6968,6969,6970,6971,6972,6973,6974,6975,6976,6977,6978,6979,6980,6981,6982,6983,6984,6985,6986;
+	end;
+}
+
+verus04,165,217,4	script	MARS_01	10080,{
+	disable_items;
+	if(!VERUS_FUEL2) {
+		mes "^777777Al parecer la máquina necesita combustible.^000000.";
+		if(countitem(6962) < 1) {
+			close2;
+			unittalk getcharid(3),strcharinfo(0)+": Debería de conseguir algo de Old Fuel Tank.",bc_self;
+			end;
+		}
+		mes " ","¿Deseas usar un ^5533ff"+getitemname(6962)+"^000000?";
+		if(select("Usar combustime:Volver luego") == 2)
+			close;
+		delitem 6962,1;
+		mes "^777777La máquina parece estar funcionando ahora.^000000.";
+		VERUS_FUEL2 = 1;
+		next;
+	}
+	mes "[^5533ffMARS_01^000000]";
+	mes "Soy MARS_01, ¿cómo puedo ayudar?";
+	next;
+	if(select("Aplicar ^5533ffreactor^000000 a partir de los ^0000ffCianotipos^000000:Apagar") == 2) {
+		mes "[^5533ffMARS_01^000000]";
+		mes "Apagando.";
+		close;
+	}
+	mes "[^5533ffMARS_01^000000]";
+	mes "Por favor selecciona el equipo Excellion al que le desees aplicar los ^0000ffCianotipos^000000.";
+	next;
+	.@m$ = "";
+	for(.@i = 0; .@i < getarraysize(.equip$); .@i++)
+		.@m$ += ( (getequipid(.value[.@i]) == .id[.@i]) ? "^5533ff"+.equip$[.@i]+"^000000" : "^777777"+.equip$[.@i]+"^000000" )+":";
+	.@s = select(.@m$) - 1;
+	if(getequipid(.value[.@s]) != .id[.@s]) {
+		mes "[^5533ffMARS_01^000000]";
+		mes "Al parecer no tienes equipado un ^777777"+.equip$[.@s]+"^000000.";
+		next;
+		mes "[^5533ffMARS_01^000000]";
+		mes "Apagando...";
+		close;
+	}
+
+	// Revisa que no se trate de un objeto de renta.
+	getinventorylist;
+	for(.@i = 0; .@i < (@inventorylist_count); .@i++) {
+		if( @inventorylist_identify[.@i] == 1 && @inventory_listid[.@i] == .id[.@s]) {
+			mes "[^5533ffMARS_01^000000]";
+			mes "Lo siento pero al parecer tienes objetos de renta en tu inventario de esta parte, intenta con otro, gracias.";
+			close2;
+			emotion ET_SORRY;
+			end;
+		}
+	}
+
+	mes "[^5533ffMARS_01^000000]";
+	mes "Por favor procede a elegir el ^000088Cianotipo^000000 para tu ^777777"+.equip$[.@s]+"^000000.";
+	next;
+	.@m$ = "";
+	if(.@s)
+		copyarray .@rAC[0],.wEN[0],getarraysize(.wEN);
+	else
+		copyarray .@rAC[0],.sEN[0],getarraysize(.sEN);
+	for(.@i = 0; .@i < getarraysize(.@rAC); .@i++) {
+		for(.@k = 0; .@k < getarraysize(.cIA); .@k++) {
+			if(.@rAC[.@i] == .rEA[.@k])
+				break;
+		}
+		.@m$ += ( countitem(.cIA[.@k]) ? "^008800"+getitemname(.cIA[.@k])+"^000000" : "^777777"+getitemname(.cIA[.@k])+"^000000" )+":";
+	}
+	.@x = select(.@m$) - 1;
+	for(.@p = 0; .@p < getarraysize(.cIA); .@p++) {
+		if(.@rAC[.@x] == .rEA[.@p])
+			break;
+	}
+	if(countitem(.cIA[.@p]) < 1) {
+		mes "[^5533ffMARS_01^000000]";
+		mes "Error. No se puede ubicar el ^000088Cianotipo^000000:";
+		mes "^777777"+getitemname(.cIA[.@p])+"^000000.";
+		next;
+		mes "[^5533ffMARS_01^000000]";
+		mes "Apagando...";
+		close;
+	}
+	mes "[^5533ffMARS_01^000000]";
+	mes "¿Confirmas la aplicación de un ^008800"+getitemname(.cIA[.@p])+"^000000 a tu ^777777"+.equip$[.@s]+"^000000?";
+	next;
+	if(select("Aplicar:Apagar") == 2) {
+		mes "[^5533ffMARS_01^000000]";
+		mes "Apagando...";
+		close;
+	}
+	setarray .@g[0],getequipid(.value[.@s]),1,1,getequiprefinerycnt(.value[.@s]),0,getequipcardid(.value[.@s],0),getequipcardid(.value[.@s],1),getequipcardid(.value[.@s],2),getequipcardid(.value[.@s],3);
+	mes "[^5533ffMARS_01^000000]";
+	mes "Por favor elige la ranura donde deseas colocar tu reactor.";
+	next;
+	.@r = select(
+			(getiteminfo(.@g[6],2) == 6 ? getitemname(.@g[6]):"^777777[ranura libre]^000000" ),
+			(getiteminfo(.@g[7],2) == 6 ? getitemname(.@g[7]):"^777777[ranura libre]^000000" ),
+			(getiteminfo(.@g[8],2) == 6 ? getitemname(.@g[8]):"^777777[ranura libre]^000000" )
+			);
+	.@r += 5;
+	if(getiteminfo(.@g[.@r],2) == 6) {
+		mes "[^5533ffMARS_01^000000]";
+		mes "Actualmente hay un reactor ^ff0000"+getitemname(.@g[.@r])+"^000000 equipado en esta ranura.","¿Desea sustituirlo?";
+		next;
+		if(select("Conservarlo:Sustituirlo") == 1) {
+			mes "[^5533ffMARS_01^000000]";
+			mes "Apagando...";
+			close;
+		}
+	}
+	setarray .@g[.@r],.rEA[.@p];
+	delitem .cIA[.@p],1;
+	delequip .value[.@s];
+	getitem2 .@g[0],.@g[1],.@g[2],.@g[3],.@g[4],.@g[5],.@g[6],.@g[7],.@g[8];
+	specialeffect 154;
+	mes "[^5533ffMARS_01^000000]";
+	mes "El reactor se ha colocado correctamente.";
+	next;
+	mes "[^5533ffMARS_01^000000]";
+	mes "Apagando...";
+	close;
+OnInit:
+	// Template para el menú y reconocimiento de objetos.
+	setarray .id,15128,20773;
+	setarray .equip$,"Excellion Suit","Excellion Wings";
+	setarray .value,EQI_ARMOR,EQI_GARMENT;
+	
+	// Reactores permitidos en cada equipo.
+	setarray .sEN,4970,4971,4972,4973,4978,4979,4980,4981,4982,4983,4990,4980,4981,4984,4985,4986,4987,4988,4989,4991;
+	setarray .wEN,4974,4975,4976,4977,4978,4979,4980,4981,4984,4985,4986,4987,4988,4989,4991;
+	
+	// Correspondencia cianotipo-reactor.
+	setarray .cIA,6965,6966,6967,6968,6969,6970,6971,6972,6973,6974,6975,6976,6977,6978,6979,6980,6981,6982,6983,6984,6985,6986;
+	setarray .rEA,4970,4971,4972,4973,4974,4975,4976,4977,4978,4979,4980,4981,4982,4983,4984,4985,4986,4987,4988,4989,4990,4991;
+	
+	end;
+}

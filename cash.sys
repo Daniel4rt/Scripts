@@ -1,0 +1,25 @@
+-	script	CASHGET	-1,{
+OnPCLoginEvent:
+	if(G_CASH_RE)
+		end;
+	for(.@i = 0; .@i < getarraysize(.c); .@i++) {
+		if(strcharinfo(0) == .n$[.@i]) {
+			#CASHPOINTS += .c[.@i];
+			G_CASH_RE++;
+			dispbottom " * Has recibido "+.c[.@i]+" Cash Points debido a tu donación, gracias por colaborar con Poring RO.",0x000000;
+		}
+	}
+	end;
+OnInit:
+	callsub S_AddDonation,0,"Codicia",200;
+	callsub S_AddDonation,1,"Omega",200;
+	callsub S_AddDonation,2,"Naght",200;
+	callsub S_AddDonation,3,"HellStrauss",200;
+	callsub S_AddDonation,4,"Ichi",200;
+	callsub S_AddDonation,5,"LordGans",100;
+	end;
+S_AddDonation:
+	setarray .n$[getarg(0)],getarg(1);
+	setarray .c[getarg(0)],getarg(2);
+	return;
+}

@@ -1,0 +1,122 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                   Branch Room                   ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+prontera,145,157,5	script	Branch Room	10168,{
+	cutin "jp_dux_thia01",2;
+	mes "[^5533ffBranch Room^000000]";
+	mes "Es un gusto saludarte.";
+	mes "Mi labor aquí es proporcionarte una sala reservada para que uses tus ^ff8800Branch^000000, de tal forma no será necesario que las tires en otros mapas.";
+	next;
+	mes "[^5533ffBranch Room^000000]";
+	mes "Antes de reservar la sala es importante que sepas que ambos ^ff8800Branch^000000 pasaron a convertirse en objetos 'Etc.'.";
+	next;
+	mes "[^5533ffBranch Room^000000]";
+	mes "Dentro de la sala reservada ^ff0000habla con el árbol^000000 para hacer uso de estos objetos de manera normal, pero sólo dentro del mapa.";
+	next;
+	.@md_name$ = "Branch Room";
+	
+	.@party_id = getcharid(1);
+	.@p_name$ = getpartyname(.@party_id);
+	
+	if (!instance_check_party(.@party_id,1)) {
+		mes "[^5533ffBranch Room^000000]";
+		mes "Pero, para poder proseguir, requieres estar en una party con al menos ^ff0000un integrante^000000.";
+		close3;
+	}
+	mes "[^5533ffBranch Room^000000]";
+	mes "¿Deseas reservar la sala?"," ","Costo: ^ff7070100,000^000000z";
+	if (getcharid(0) == getpartyleader(.@party_id,2))
+		.@menu$ = "Inscribir Party.:"+.@md_name$+".:^777777Salir^000000";
+	else
+		.@menu$ = ":"+.@md_name$+".:^777777Salir^000000";
+	next;
+	switch(select(.@menu$)) {
+		case 1:
+			if(Zeny < 100000) {
+				mes "[^5533ffBranch Room^000000]";
+				mes "Lo siento pero no cubres con los gastos de Zeny para poder reservar una sala.";
+				close3;
+			}
+			if (instance_create(.@md_name$) < 0) {
+				mes "[^5533ffBranch Room^000000]";
+				mes "Nombre de Party: "+.@p_name$;
+				mes "Tú nombre: "+strcharinfo(0);
+				mes "^0000ff"+.@md_name$+" ^000000- no se puede crear!";
+				close3;
+			}
+			mes "[^5533ffBranch Room^000000]";
+			mes "La sala se ha reservado exitosamente, habla nuevamente conmigo para entrar.";
+			tax 100000,30;
+			close3;
+		case 2:
+			switch(instance_enter(.@md_name$)) {
+				case 0:
+					specialeffect2 EF_WARP;
+					end;
+				case 1:
+					mes "[^5533ffBranch Room^000000]";
+					mes "Solo los miembros registrados pueden accesar a "+.@md_name$+".";
+					close3;
+				case 2:
+					mes "[^5533ffBranch Room^000000]";
+					mes ""+.@md_name$+" no existe.";
+					mes "El líder de la party debe reservar una sala.";
+					close3;
+				case 3:
+					mes "[^5533ffBranch Room^000000]";
+					mes "Al parecer no se pueden reservar salas en este momento, inténtalo luego.";
+					close3;
+			}
+		case 3:
+			mes "[^5533ffBranch Room^000000]";
+			mes "Regresa cuando gustes.";
+			close3;	
+	}
+}
+pvp_n_5-3,100,98,4	script	Árbol Seco::dbroom3	111,{
+	setarray .@b,604,12103;
+	setarray .@v,MOBG_Branch_Of_Dead_Tree,MOBG_Bloody_Dead_Branch;
+	.@m$ = "";
+	for(.@i = 0; .@i < getarraysize(.@b); .@i++)
+		.@m$ += (countitem(.@b[.@i]) ? "^5533ff" : "^777777")+getitemname(.@b[.@i])+"^000000 [^ff0000"+countitem(.@b[.@i])+"^000000]:";
+	.@s = select(.@m$)-1;
+	if(countitem(.@b[.@s]) < 1) {
+		dispbottom "No dispones de este objeto.",0x000000;
+		end;
+	}
+	if(countitem(.@b[.@s]) > 1) {
+		message strcharinfo(0),"Por favor digita el número de Branchs a usar.";
+		input .@n;
+		if(countitem(.@b[.@s]) < .@n) {
+			dispbottom "No dispones de ese número de objetos.",0x000000;
+			end;
+		}
+		if(.@n < 1)
+			end;
+	} else
+		.@n = 1;
+	delitem .@b[.@s],.@n;
+	monster 'map$,0,0,"--ja--",-1-.@v[.@s],.@n,"";
+	end;
+OnInstanceInit:
+OnEnable:
+	'map$ = instance_mapname("pvp_n_5-3");
+	enablenpc instance_npcname("dbroom3");
+	end;
+OnDisable:
+	disablenpc instance_npcname("dbroom3");
+	end;
+OnInit:
+	disablenpc "dbroom3";
+	end;
+}

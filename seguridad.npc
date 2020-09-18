@@ -1,0 +1,124 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---            by Zephyrus & DanielArt              ---
+//========================================================
+// - Para eliminar la contraseña de un user o cambiar:
+// @set nickuser #SEC_CODE contraseñanueva
+// - Ejemplo:
+// * Cambiar: @set DanielArt #SEC_CODE 1111
+// * Borrar: @set DanielArt #SEC_CODE 0
+
+-	script	Seguridad	-1,{
+OnInit:
+	bindatcmd "seguridad","Seguridad::OnSet",0,99;
+	end;
+OnSet:
+	while( 1 ) {
+		mes "^0101DF[  Seguridad de Cuenta ]^000000";
+		mes "Actualmente se encuentra:";
+		mes "- Código de Seguridad:";
+		if( #SEC_CODE ) {
+			mes "^FFFFFF__________^2E8B57Activado^000000.";
+
+			mes "- Permitir libertad de mis Objetos:";
+			if( verseguridad() ) {
+				mes "^FFFFFF__________^2E8B57Bloqueado^000000.";
+				.@Menu2$ = "- Permitir libertad de mis Objetos";
+			} else {
+				mes "^FFFFFF__________^FF0000Permitido^000000.";
+				.@Menu2$ = "- Bloquear la libertad de mis Objetos";
+			}
+			next;
+			.@Option = select("- Cambiar mi Contraseña",.@Menu2$,"- Eliminar Contraseña de Seguridad","- Salir");
+		} else {
+			mes "^FFFFFF__________^FF0000Desactivado^000000.";
+			next;
+			.@Option = select("- Establecer una contraseña","- Salir") + 4;
+		}
+		switch(.@Option) {
+			case 1: // Cambiar Clave
+				mes "^0101DF[  Seguridad de Cuenta ]^000000";
+				mes "¡Muy bien!","Tu contraseña debe ser un ^0101DFnúmero de 4 dígitos^000000";
+				mes "y debe ser entre el ^0101DF1000 y el 9999.^000000";
+				mes "Escribe la contraseña actual....";
+				dispbottom "Escribe la contraseña actual...";
+				next;
+				input .@Pass;
+				if( .@Pass != #SEC_CODE ) {
+					mes "^0101DF[  Seguridad de Cuenta ]^000000";
+					mes "¡¡Contraseña incorrecta!!.","Intentalo nuevamente.";
+					close;
+				}
+			case 5:
+				mes "^0101DF[  Seguridad de Cuenta ]^000000";
+				mes "Escriba la nueva contraseña...";
+				mes "Contraseña debe ser un número entre ^0101DF1000 y 9999^000000.";
+				next;
+				input .@Pass;
+				if( .@Pass < 1000 || .@Pass > 9999 ) {
+					mes "^0101DF[  Seguridad de Cuenta ]^000000";
+					mes "Número invalido...";
+					mes "La Contraseña debe ser un número entre ^0101DF1000 y 9999^000000.","Intentalo nuevamente...";
+					close;
+				}
+				mes "^0101DF[  Seguridad de Cuenta ]^000000";
+				mes "Confirma la nueva contraseña.";
+				next;
+				input .@CPass;
+				if( .@CPass != .@Pass ) {
+					mes "^0101DF[  Seguridad de Cuenta ]^000000";
+					mes "La contraseña es diferente";
+					mes "^FF0000Operación cancelada^000000";
+					close;
+				}
+				#SEC_CODE = .@Pass;
+				break;
+			case 2: // Permitir Salidas - Bloquear Salidas
+				if( verseguridad() ) {
+					mes "^0101DF[  Seguridad de Cuenta ]^000000";
+					mes "Introduzca la contraseña para permitir transferencias de Objetos.";
+					next;
+					input .@Pass;
+					if( #SEC_CODE != .@Pass )
+					{
+						mes "^0101DF[  Seguridad de Cuenta ]^000000";
+						mes "^FF0000Esta no es la contraseña...^000000","Intentalo nuevamente.";
+						close;
+					}
+					seguridad 0;
+				}
+				else if( #SEC_CODE > 0 )
+					seguridad 1;
+				else
+					seguridad 0;
+				break;
+			case 3: // Quitar Clave
+				mes "^0101DF[  Seguridad de Cuenta ]^000000";
+				mes "Escriba la contraseña actual.";
+				next;
+				input .@Pass;
+				if( #SEC_CODE != .@Pass ) {
+					mes "^0101DF[  Seguridad de Cuenta ]^000000";
+					mes "^FF0000Esta no es la contraseña...^000000","Intentalo nuevamente.";
+					close;
+				}
+				#SEC_CODE = 0;
+				seguridad 0;
+				break;
+			case 4:
+			case 6:
+				mes "^0101DF[  Seguridad de Cuenta ]^000000";
+				mes "Puede Utilizar ^0101DF@seguridad^000000 si es necesario para configurar los servicios de nuevo.";
+				dispbottom "Siempre podrás usar '@seguridad' en el futuro.";
+				close;
+		}
+	}
+	end;
+}

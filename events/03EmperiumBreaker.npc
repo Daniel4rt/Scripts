@@ -1,0 +1,70 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                 Emperium Breaker                ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+-	script	EMP	-1,{
+OnEmpeBreak:
+OnWhisperGlobal:
+	announce "¡El Emperium ha aparecido en Prontera!",bc_all,0xFF8800;
+	enablenpc "EMPER";
+	movenpc "EMPER",156,179;
+	disablenpc "#warp_empe";
+	sleep2 3000;
+	announce "Habla con el NPC para ir a la sala y competir por ser el primero en romperlo y ganar un premio",bc_all,0xFF8800;
+	donpcevent "EMPER::OnSpawnEmp";
+	end;
+}
+prontera,191,177,4	script	Rompe el Emperium::EMPER	20088,{
+	mes "[^ff8800Emperium^000000]";
+	mes "Rompe el Emperium en esta sala donde el PvP esta activo antes que todo, y llevate un premio.";
+	next;
+	if(select("Entrar al Evento ^5533ff["+getmapusers("empbreak")+"]^000000","^777777Salir^000000") == 2) {
+		mes "[^ff8800Emperium^000000]";
+		mes "Habla conmigo cuando desees entrar al Evento.";
+		close;
+	}
+	warp "empbreak",0,0;
+	close;
+OnSpawnEmp:
+	monster "empbreak",50,49,"--ja--",20088,1,"EMPER::OnEmpeKill";
+	end;
+OnEmpeKill:
+	announce "[Evento]: [ "+strcharinfo(0)+" ] ha destruido el Emperium.",bc_all,0xFF8800;
+	disablenpc "EMPER";
+	movenpc "EMPER",191,177;
+	enablenpc "#warp_empe";
+	F_Event 1,rand(1,5);
+	end;
+OnInit:
+	disablenpc "EMPER";
+	end;
+}
+empbreak,50,49,0	script	#warp_empe	45,3,3,{
+	end;
+OnTouch:
+	warp "prontera",150,180;
+	end;
+OnInit:
+	disablenpc "#warp_empe";
+	end;
+}
+//empbreak	mapflag	allow_bg_items
+empbreak	mapflag	pvp	on
+empbreak	mapflag	noexppenalty
+empbreak	mapflag	gvg	off
+empbreak	mapflag	noreturn
+empbreak	mapflag	noteleport
+empbreak	mapflag	nowarp
+empbreak	mapflag	nobranch
+empbreak	mapflag	pvp_noguild
+empbreak	mapflag	pvp_noparty
+empbreak	mapflag	nosave	SavePoint

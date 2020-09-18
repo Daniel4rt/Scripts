@@ -1,0 +1,197 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                 Alternate MOTD                  ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	script	MOTD	-1,{
+OnPCLoginEvent:
+
+	// Definición de variables por primer login.
+	if(PJ_FIRSTLOGIN == 0)	{
+		PJ_FIRSTLOGIN = 1;
+		for(.@i = 1; .@i < getarraysize(.v$); .@i++)
+			setd(.v$[.@i]),1;
+	}
+	if(#CHAR_FIRSTLOGIN == 0) {
+		#CHAR_FIRSTLOGIN = 1;
+		atcommand "@langtype SPN";
+	}
+	if(login_noask)
+		atcommand "@noask";
+	if(login_noks)
+		atcommand "@noks";
+	if(login_loot)
+		atcommand "@autoloot";
+	if(login_verexp)
+		atcommand "@showexp";
+	if(login_verzeny)
+		atcommand "@showzeny";
+		
+	// Mensaje de Inicio
+	if(login_inicio) {
+		if (!vip_status(1)) {
+			.vipname$ = "Normal";
+			if (getgroupid() > 1 && getgroupid() <	99)
+				.vipname$ = "Miembro del Staff";
+			if (getgroupid() == 99)
+				.vipname$ = "Administrador";
+		} else
+			.vipname$ = "Premium";
+		sleep3 1000;
+		dispbottom "» ------------------------------------------------------------------------------------- «",0xFFFF00;
+		dispbottom "- Bienvenido nuevamente a:",0xFFFFFF;
+		dispbottom "-",0xFFFF00;
+		dispbottom "-                                            P    O    R    I    N    G",0xFFFF00;
+		dispbottom "-                                              Ragnarok Online",0xFFFF00;
+		dispbottom "-                             Servidor Privado de Ragnarök Online",0xFFFF00;
+		dispbottom "-                                      Web: www.poringro.net",0xFFFFFF;
+		dispbottom "-                                        Foro: foro.poringro.net",0xFFFFFF;
+		dispbottom "-                                      Renewal 125x/125x/20x",0xFF8000;
+		dispbottom "-                                                  ------------",0xFF8000;
+		dispbottom "- Esta conexión se estableció a las "+gettimestr("%H:%M",21)+"hrs el "+gettimestr("%d/%m/%Y",21)+".",0xFFFFFF;
+		dispbottom "- Tipo de Cuenta: "+.vipname$+"",0xFFFFFF;
+		dispbottom "» ------------------------------------------------------------------------------------- «",0xFFFF00;
+	}
+	
+	// Pequeño Delay para que no se revuelvan los mensajes.
+	sleep2 300;
+	
+	// Tips del día
+	if(login_tipsdia) {
+		dispbottom "-",0xFFFF00;
+		dispbottom "- Tip's del día:",0xFFFF00;
+		dispbottom "- " + .dailytip$[rand(1,getarraysize(.dailytip$))] + "",0xFFFF00;
+	}
+	
+	// Sistema de Tesorería
+	if (gettime(DT_DAYOFMONTH) >= 29) {
+		dispbottom "-",0xFFFF00;
+		dispbottom "[ Tesorería de Midgard ] Informa: ",0xFFFFFF;
+		dispbottom "¡Atención Ciudadanos la Devolución Personal de Impuestos esta DISPONIBLE en este momento! ",0xFFFFFF;
+		dispbottom "-",0xFFFF00;
+	}
+	if (gettime(DT_DAYOFMONTH) == 28)
+		dispbottom "- [ Tesorería de Midgard ] Informa: Mañana comienza la devolución de Impuestos ¡No lo olvides!",0xFF0000;
+	if (gettime(DT_DAYOFMONTH) == 27)
+		dispbottom "- [ Tesorería de Midgard ] Informa: Falta solo un par de días para la Devolución Personal de Impuestos ¡No lo olvides!",0xFF0000;
+	if (gettime(DT_DAYOFMONTH) == 26)
+		dispbottom "- [ Tesorería de Midgard ] Informa: Este 29, 30 y 31 comenzará la Devolución Personal de Impuestos. ¡Falta poco!",0xFF0000;
+	dispbottom "» ------------------------------------------------------------------------------------- «",0xFFFF00;
+	if (!vip_status(1))
+		.@tax = (PERSONAL_TAX / 2);
+	else
+		.@tax = PERSONAL_TAX;
+	if ( .@tax >= 4000000 && .@tax <= 5999999){
+		dispbottom "[ Tesorería de Midgard ] Informa:",0x01DFD7;
+		dispbottom "Tienes un impuesto acumulado superior a $4.000.000z debes retirarlo en la devolución de Impuestos o podrán ser donados al Hogar de huérfanos y Fundación de Mascotas.",0x01DFD7;
+		dispbottom "La Devolución Personal de Impuestos son los días 29, 30 y 31 con los Tesoreros de Prontera.",0x01DFD7;
+	}
+	if ( .@tax >= 6000000 && .@tax <= 8999999){
+		dispbottom "[ Tesorería de Midgard ] Informa:",0x01DFD7;
+		dispbottom "Tienes un impuesto acumulado superior a $6.000.000z debes retirarlo en la devolución de Impuestos o podrán ser donados al Hogar de huérfanos y Fundación de Mascotas",0x01DFD7;
+		dispbottom "La Devolución Personal de Impuestos son los días 29, 30 y 31 con los Tesoreros de Prontera.",0x01DFD7;
+	}
+	if ( .@tax >= 10000000){
+		dispbottom "[ Tesorería de Midgard ] Informa que:",0xFF0000;
+		dispbottom "Has sobre pasado el limite establecido por la tesorería de $10.000.000z sin cobrar",0xFF0000;
+		dispbottom "Debido a no haber realizado el cobro de su Impuesto personal que es tu responsabilidad,",0xFF0000;
+		dispbottom "El dinero no cobrado será donado al Hogar de huérfanos y Fundación de Mascotas",0xFF0000;
+		if (!vip_status(1))
+			dispbottom "La suma donada a la caridad haciende al monto en Zeny de: $"+callfunc("F_InsertComma",(PERSONAL_TAX / 2))+"z.",0xFF0000;
+		else
+			dispbottom "La suma donada a la caridad haciende al monto en Zeny de: $"+callfunc("F_InsertComma",PERSONAL_TAX)+"z.",0xFF0000;
+		$TOTAL_TAX -= PERSONAL_TAX;
+		$DONATION += PERSONAL_TAX;
+		PERSONAL_TAX = 0;
+	}
+	
+	// Muestras las bonificaciones de Battleground.
+	switch( gettime(DT_DAYOFWEEK) ) {
+		default:
+			break;
+		case SUNDAY:
+		case THURSDAY:
+		case TUESDAY:
+		case SATURDAY:
+			dispbottom "- Todo el día de hoy ganarás +40% medallas en Battleground.",0x000000;
+	}
+
+	// Muestra el monstruo y raza del día.
+	dispbottom "- Monstruo del día: '"+getmonsterinfo($MobType,MOB_NAME)+"' (EXP doble al cazarlo)",0x00FF8D;
+	dispbottom "- Raza del día: '"+getvariableofnpc(.rname$[$RaceType],"day_monster")+"' (EXP doble al cazarlos)",0x00FF2D;
+	
+	// Verifica eventos en curso
+	if($INVADE_EVENT)
+		announce "[Soldado de "+getvariableofnpc(.tm$,"MOB_INVADE")+"]: ¡Ayúdenos, nuestra ciudad está siendo invadida!",bc_blue|bc_self;
+	
+	// Te anuncia si hay alguna batalla gremial activa.
+	if(agitcheck() || agitcheck2() || agitcheck3() || warcheck()) {
+		if(agitcheck()) .@w$ = "War of Emperium: Fist Edition";
+		if(agitcheck2()) .@w$ = "War of Emperium: Second Edition";
+		if(agitcheck3()) .@w$ = "War of Emperium: Training Edition";
+		if(warcheck()) .@w$ = "Guerra de Territorios";
+		dispbottom "<[ Batalla gremial activa: "+.@w$+" ]>",0xFFFF00;
+	}
+
+	// Revisa si tus enriched son correctos.
+	F_CheckValidItem 6291,7619;
+	F_CheckValidItem 6292,7620;
+	
+	// Por último, mensaje de bienvenida ;)
+	message strcharinfo(0),"~ ¡Bienvenid"+(Sex ? "o":"a")+" "+strcharinfo(0)+"! ~";
+
+	sleep2 1000;
+
+	// Ver si el usuario tiene RODEX pendientes de entregar.
+	F_WaitRodex getcharid(0),0,0,0,0,0,0,0,2;
+	
+	// Revisa si tiene puntos cash pendientes por entregar de votación y/o donaciones.
+	F_GetCashPoints getcharid(3),2;
+	
+	// Revisa que el KVM Logistic Officer no le haya removido medallas.
+	if(kvm_point) {
+		.@i = kvm_point;
+		kvm_point = 0;
+		sleep2 100;
+		getitem 7773,.@i;
+		dispbottom "Has recuperado algunos objetos que el 'KVM Logistic Officer' te había removido, ya lo hemos despedido.",0x000000;
+	}
+
+	end;
+OnInit:
+	//setmapflag "prontera",mf_leaves;
+	setmapflag "prontera",mf_sakura;
+	setarray .v$[1],"login_mdia","login_inicio","login_bounty","login_citas","login_tipskafra","login_tipsdia","login_noks","login_loot","login_escucharbg","login_verexp","canal_principal","canal_soporte","canal_ventas","canal_mapa";
+	setarray .dailytip$[1],"¡Si eres respetuoso y amable con los demás, lo serán contigo! ¡Juega en buena onda!",
+						    "¡Vota por Poring RO en los Tops de RO y obtén los mejores premios como recompensa!.",
+						    "En Poring RO tendrás oportunidades iguales para todos sin preferencias y sin pagar dinero.",
+						    "El foro es una real herramienta para hacer consultas y encontrar información valiosa.",
+						    "¿Buscas una Party o Reclutar Personas? Utiliza siempre el comando /booking",
+						    "¿Sabias que? En Poring RO hay items llamado 'Costume' que solo son de apareciencia, desbalance ¡Jamás!",
+						    "¿Sabias que? Si juegas en equipo (Party) ganarás más experiencia y serán mas fáciles las aventuras.",
+						    "Las Terceras Clases en Renewal se encuentran bien balanceadas, ¡No todos los servidores son iguales!.",
+						    "¿Tienes sugerencias o Ideas? ¡Contactanos en nuestro foro o por Ticket de soporte!, te escucharemos.",
+						    "¿Sabias que? Los servicios principales calculan su costo en Zeny acorde tú nivel base.",
+						    "El trabajo en equipo es la mejor estrategia para conseguir objetivos en común ¡Unete a una Party!",
+						    "Los Jugadores Premium tienen beneficios principalmente en Servicios, Experiencia ¡Nada de desbalance!",
+						    "En Poring RO los mejores ítems son obtenidos por Quest, ¡nada de pagar/donar por ellos!",
+						    "En Poring RO tu tienes las mismas oportunidades de conseguir lo mejor como los demás, ¡No hay preferencias!",
+						    "¿Ya te aventuraste con tu 'Party' en una Instancia? Allá afuera hay muchas aventuras!",
+						    "En Poring RO hay siempre algo que hacer, ¿Ya terminaste de perfeccionar tu Equipamiento?",
+						    "Este Servidor tiene proyección para muchos años, siéntete tranquilo por invertir tu tiempo en Poring RO.",
+						    "Es muy importante que tengas claro que Poring RO durará por muchos años ¡Juega tranquilo!",
+						    "Trabajamos por mantener una economía solida y estable, ¿Tienes sugerencias? Avisanos en el foro.",
+						    "¡Tus felicitaciones y agradecimientos son importantes para nosotros!, Comentanos en nuestro foro.",
+						    "Poring RO ofrece un servicio gratuito y estable, agradecemos tu preferencia!.",
+						    "¡Animate a invitar a tus Amigos! podrían ser un excelente equipo.",
+						    "En Poring RO el único limite lo pones tú, todos tienen las mismas oportunidades de ser ¡El mejor!";
+	end;
+}

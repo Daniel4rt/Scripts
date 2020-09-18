@@ -1,0 +1,94 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                   MvP Ranker                    ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+// -- Comandos Especiales:
+// - @mvpreset: Reinicia el ranking inmediatamente.
+// - @mvpprize: Otorga el premio al puesto #1 actual.
+//
+// -- Los premios se entregan el día 30, y 28 en Febrero.
+//========================================================
+prontera,157,187,4	script	MvP Rank::MVPR	531,{
+	cutin "jpn_algol01",2;
+	query_sql( "DELETE FROM `ranker_mvp` WHERE `name` NOT IN ( SELECT `name` FROM `char` )" );
+	.@size = query_sql( "SELECT `name`,`points` FROM `ranker_mvp` WHERE `points` > '0' ORDER BY `points` DESC LIMIT "+ .top, .@name$, .@points );
+	mes "[^CC6600MvP Rank TOP "+ .top +"^000000]";
+	if(.@size) {
+		for (.@c = 0; .@c < .@size; .@c++)
+			mes "^777777[#" +(.@c + 1) +"] - ^0000FF" + .@name$[.@c] +"^000000 - ^FF0000" + .@points[.@c] +"^000000 MvP.";
+	} else
+		mes "Clasificación vacía.";
+	close2;
+	cutin "",255;
+	end;
+OnInit:
+	query_sql("CREATE TABLE IF NOT EXISTS `ranker_mvp` (`cid` int(11) NOT NULL,`name` varchar(26) NOT NULL,`points` int(5) NOT NULL,PRIMARY KEY (`cid`)) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+//========================================================\\
+// -----------------  Configuración ----------------------\\
+//========================================================\\
+	.a = 1; // Muestra un Broadcast al matar un MvP. [0 apagado - 1 encendido]
+	.top = 10; // Máximo TOP, recomendado 1 a 10.
+	.pt = 1; // Puntos por matar a un MvP
+	.del = 1; // Reiniciar el ranking cuando el top #1 reciba su premio mensual. NOTA: Requiere permisos 'DROP' en SQL.
+
+	// === Premios === \\
+	setarray .pmvp[0],7711,671; // ID del Item
+	setarray .cmvp[0],   5,  2; // Cantidad del Item
+//========================================================\\
+
+	bindatcmd "mvpreset","MVPR::OnDropRank",99,99;
+	bindatcmd "mvpprize","MVPR::OnPrize",99,99;
+	end;
+
+OnPCLoginEvent:
+	if(gettime(DT_MONTH) == FEBRUARY)
+		.day = 28;
+	else
+		.day = 30;
+	if(gettime(DT_DAYOFMONTH) == .day) {
+		query_sql( "SELECT `cid`,`points` FROM `ranker_mvp` WHERE `points` > '0' ORDER BY `points` DESC LIMIT 1", .@cid, .@p );
+		if(getcharid(0) == .@cid[0] || t_rank_mvp == 1) {
+OnPrize:
+			message strcharinfo(0),"¡Felicidades!, eres el Top #1 MvP, haz obtenido tus premios.";
+			for(.@t = 0; .@t < getarraysize(.pmvp); .@t++) {
+				getitem .pmvp[.@t],.cmvp[.@t];
+				sleep2 700;
+			}
+			if(.del)
+OnDropRank:
+				query_sql("DROP DATABASE `ranker_mvp`");
+		}
+	}
+	end;
+
+OnNPCKillEvent:
+	if ((getmonsterinfo( killedrid,MOB_MODE ) & 0x0020 == 0) || (getmonsterinfo( killedrid,MOB_MVPEXP ) < 1))
+		end;
+	if (.a)
+		announce "[MvP]: [" +strcharinfo(0) +"] ha derrotado a ["+ getmonsterinfo(killedrid,0) +"].",bc_blue|bc_all;
+	query_sql "INSERT INTO `ranker_mvp` VALUE ( "+ getcharid(0) +", '"+ escape_sql( strcharinfo(0) ) +"', 1 ) ON DUPLICATE KEY UPDATE `points` = `points` + "+ .pt;
+	.@s = query_sql( "SELECT `cid`,`points` FROM `ranker_mvp` WHERE `points` > '0' ORDER BY `points` DESC LIMIT 1000", .@cid, .@p );
+	for (.@c = 0; .@c < .@s; .@c++) {
+		if(.@cid[.@c] == getcharid(0))
+			.@tp = .@c;
+			.@tt = .@p;
+	}
+	message strcharinfo(0),"============ [Ranker MvP ~ Estadísticas] ============";
+	message strcharinfo(0),"Haz obtenido ["+.pt+"] punto en el Ranker MvP.";
+	if(t_rank_mvp) {
+		if( t_rank_mvp > (.@tp + 1) )
+			message strcharinfo(0),"¡Ahora eres el Top #"+(.@tp + 1)+"!";
+	}
+	t_rank_mvp = (.@tp + 1);
+	message strcharinfo(0),"Tienes un total de ["+.@tt+"] puntos MvP.";
+	end;
+}

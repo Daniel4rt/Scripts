@@ -1,0 +1,50 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \    Uso exclusivo para Poring RO
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                  Monster Invade                 ---
+//========================================================
+// ---                   by DanielArt                  ---
+//========================================================
+-	script	MOB_INVADE	-1,{
+
+OnInvadeNormal:
+	if(rand(100) < 5)
+		F_Event 2,1;
+	if(mobcount("this",strnpcinfo(1)+"::OnInvadeNormal") == 0) {
+		announce "[Soldado de "+.tm$+"]: ¡Muchas gracias por su ayuda, la ciudad está a salvo ahora!",bc_blue|bc_all;
+		$INVADE_EVENT = 0;
+	}
+	end;
+OnInit:
+	$INVADE_EVENT = 0;
+	bindatcmd "doinvade","MOB_INVADE::OnCommand",99,99;
+	setarray .t$,"prontera","verus04","lasagna","moscovia","harboro1","izlude","geffen","payon","alberta","aldebaran","yuno","lighthalzen","einbroch","einbech","comodo","umbala","amatsu","gonryun","ayothaya","louyang","hugel","rachel","veins";
+	setarray .tn$,"Prontera","Verus","Lasagna","Moscovia","Rock Ridge","Izlude","Geffen","Payon","Alberta","Aldebaran","Juno","Lighthalzen","Einbroch","Einbech","Comodo","Umbala","Amatsu","Gon Ryun","Ayothaya","Louyang","Hugel","Rachel","Veins";
+	end;
+OnInvade:
+	.r = rand(getarraysize(.t$)-1);
+	$INVADE_EVENT = 1;
+	.mob = rand(100,200);
+	.ti$ = .t$[.r];
+	.tm$ = .tn$[.r];
+	announce "[Soldado de "+.tm$+"]: ¡Ayúdenos, nuestra ciudad está siendo invadida!",bc_blue|bc_all;
+	for(.@i = 0; .@i < .mob; .@i++)
+		monster .ti$,-1,-1,"--ja--",-1,1,strnpcinfo(1)+"::OnInvadeNormal";
+	end;
+OnCommand:
+	$INVADE_EVENT = 1;
+	.mob = rand(100,200);
+	.ti$ = .@atcmd_parameters$[0];
+	.tm$ = .@atcmd_parameters$[1];
+	if(atoi(.@atcmd_parameters$[2]) == 1)
+		announce "[Soldado de "+.tm$+"]: ¡Ayúdenos, nuestra ciudad está siendo invadida!",bc_blue|bc_all;
+	for(.@i = 0; .@i < .mob; .@i++)
+		monster .ti$,0,0,"--ja--",-1,1,strnpcinfo(1)+"::OnInvadeNormal";
+	end;
+}

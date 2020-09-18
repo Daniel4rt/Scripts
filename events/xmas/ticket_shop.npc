@@ -1,0 +1,46 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---             Dynamic Shop: Xmas Ticket           ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	itemshop	xmas_shop_evt	-1,9000:0,20113:100,31441:130,20227:115,20299:120,20462:200,31046:235,31438:250,19760:300,31440:340,31432:370,31452:355,20441:380,6240:35,6241:35,7620:25,7619:25,6226:50,6225:50
+prontera,166,176,3	script	Máquina de Navidad::MDN	563,15,15,{
+	mes "[^5533ffMáquina de Navidad^000000]";
+	mes "En esta temporada de Navidad podrás canjear los Xmas Coins por estupendos premios aquí.";
+	next;
+	switch (select("^ff7070Tienda de Xmas Coin^000000:¿Xmas Coins?:^777777Salir^000000")) {
+		case 1:
+			mes "[^5533ffMáquina de Navidad^000000]";
+			mes "Bien, abriré la tienda.";
+			close2;
+			callshop "xmas_shop_evt",1;
+			npcshopattach "xmas_shop_evt";
+			end;
+		case 2:
+			mes "[^5533ffMáquina de Navidad^000000]";
+			mes "Los Xmas Coins los podrás conseguir de una sola forma:";
+			mes "- Cazando Santa Poring.";
+			next;
+			mes "[^5533ffMáquina de Navidad^000000]";
+			mes "Los Santa Poring los podrás encontrar en la mayoría de los mapas de Poring RO, se caracterizan por ser ellos mismos, unos hermosos poring con gorrito navideño.";
+			next;
+			mes "[^5533ffMáquina de Navidad^000000]";
+			mes "No siempre te darán Xmas Coins.";
+			close;
+		case 4:
+			mes "[^5533ffMáquina de Navidad^000000]";
+			mes "Vuelve cuando desees.";
+			close;
+	}
+OnTouch:
+	showevent QTYPE_EVENT2,0;
+	end;
+}

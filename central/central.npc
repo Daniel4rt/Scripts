@@ -1,0 +1,124 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \   Uso exclusivo para Poring RO 
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                  Premium Room                   ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+-	script	GUARD_MAIN	-1,{
+OnTouch:
+	/*if (getgroupid() > 3)
+		end;
+	if (!vip_status(1)) {
+OnTalkStop:
+		warp "premium",171,47;
+		npctalk "Guardia : ¡Alto ahí!";
+		mes "[^0101DF Guardia Premium ^000000]";
+		mes "Lo siento "+(Sex?"Señor":"Señorita")+",","Usted no pertenece al ^DF0101Club Premium^000000, infórmese de los beneficios y servicios de serlo en nuestro foro.","^DF7401Este sector es exclusivo^000000.";
+		dispbottom "[ Zona Premium ]: Lamentablemente no tienes suscripción Premium. ¡Suscríbete ahora!";
+		close;
+	} else {*/
+		if(gettimetick(2) < Tiempo_Guardia)
+			end;
+		npctalk "Guardia : ¡Bienvenid"+(Sex?"o":"a")+" "+strcharinfo(0)+"!","Guardia Premium#00",bc_self;
+		npctalk "Guardia : ¡Bienvenid"+(Sex?"o":"a")+" "+strcharinfo(0)+"!","Guardia Premium#01",bc_self;
+/*		sc_start 32,30000,5;
+		skilleffect 29,0;
+		sc_start 30,30000,1;
+		skilleffect 34,0;*/
+		Tiempo_Guardia = (gettimetick(2) + 30);
+		//dispbottom "[ Zona Premium ]: Bienvenid"+(Sex?"o":"a")+" miembro "+strcharinfo(0)+".";
+		end;
+	//}
+}
+premium,168,49,4	duplicate(GUARD_MAIN)	Guardia Premium#00	468,2,2
+premium,173,49,4	duplicate(GUARD_MAIN)	Guardia Premium#01	470,2,2
+
+-	script	Niños_Oficina#00::niños_oficina	-1,{
+	dispbottom "Te acercas y escuchas una conversación.",0x00FFFF;
+	emotion ET_SURPRISE,getnpcid(0,"KID01C");
+	mes "^B40431[ Niña ]^000000";
+	mes "¡Woow! mira hermanito","Que pecera tan grande y hermosa!";
+	next;
+	mes "^B40431[ Niño ]^000000";
+	mes "¡Sí! es muy grande","¿Y ya viste esos peces nadar?";
+	next;
+	mes "^B40431[ Niña ]^000000";
+	mes "Ah! cierto, son muy veloces nadando";
+	next;
+	emotion ET_SMILE,getnpcid(0,"KID02C");
+	mes "^B40431[ Niño ]^000000";
+	mes "Quizás nadan por que quieren llevarse todo ese tesoro";
+	next;
+	mes "^B40431[ Niña ]^000000";
+	emotion et_what,getnpcid(0,"KID01C");
+	mes "oh... ¿tú crees que eso quieran?","Son solo unos peces...";
+	next;
+	mes "^B40431[ Niño ]^000000";
+	mes "Claro boba, hasta el pez más pequeño tiene ambiciones grandes.","¿Por que ellos no?";
+	next;
+	emotion ET_SURPRISE,getnpcid(0,"KID01C");
+	mes "^B40431[ Niña ]^000000";
+	mes "Tienes razón hermanito...","¡Hey yo también soy pequeña!","¿Vamos a buscar un Tesoro perdido?";
+	next;
+	emotion ET_SMILE,getnpcid(0,"KID02C");
+	mes "^B40431[ Niño ]^000000";
+	mes "Jajaja, hermanita esos cuentos son solo historias de fantasías del señor ^DF0101Mercader Errante^000000";
+	next;
+	emotion ET_CRY,getnpcid(0,"KID01C");
+	mes "^B40431[ Niña ]^000000";
+	mes "P-pero hermano el me contó que...";
+	next;
+	emotion ET_SCRATCH,getnpcid(0,"KID01C");
+	mes "^B40431[ Niño ]^000000";
+	mes "Pero nada hermana, mejor sigamos viendo estos bellos peces.","No debes creer historias de un anciano fracasado además Mamá dijo que no debemos hablar con desconocidos.";
+	next;
+	mes "^B40431[ Niña ]^000000";
+	mes "Bueno... esta bien...";
+	close;
+}
+premium,181,31,6	duplicate(niños_oficina)	Niña Pequeña#01::KID01C	703
+premium,181,30,6	duplicate(niños_oficina)	Niño Pequeño#02::KID02C	706
+
+-	script	Personas_esperando#00::pj_oficina	-1,{
+	setarray .n$[0],"^98035D[ Jugador ]^000000",//Morado
+						      "^D50404[ Jugador ]^000000",//Rojo
+						      "^22710E[ Jugador ]^000000",//Verde
+						      "^0101DF[ Jugador ]^000000",//Azul
+							  "^DF7401[ Jugador ]^000000";//Cafe
+	.@j = rand(0,getarraysize(.n$) - 1);
+	setarray .m$[0],"Lo mejor que destaco de este lugar, es la buena atención. Hay que reconocer que se esfuerzan por atender bien.",
+						      "Estuve sacando cálculos y llegue a la conclusión que me conviene ^D50404Votar^000000 todos los días por el servidor, es gratis, fácil y ganamos todos.",
+						      "¿Sabes? en varias ocasiones sentí que alguien podía entrar en mi cuenta, pero use el comando ^D50404@seguridad^000000 y desde entonces me siento tranquilo con mis cosas.",
+						      "Mira te contaré un secreto, yo conozco a los GM's y te puedo garantizar que no hay persona más dedicada que ellos, con mucho esfuerzo trabajaron por esto.",
+							  "¡^D50404Votar^000000 por el servidor es muy fácil!, además yo gano, todos ganan ¡Estoy ahorrando por mis Sombreros!~ ",
+							  "Es bueno tener mascotas, mercenarios o monstruos acompañantes, se convierten en leales amigos que están en las aventuras.",
+							  "Mira, el secreto para subir de nivel más rápido es jugar con otras personas en Party/Grupo yo uso el comando ^D50404/booking^000000 para reclutar o unirme a los grupos.",
+	.@msg = rand(getarraysize(.m$)-1);
+	setarray .et$[0],"comeon","scratch","smile","question","ok";
+	emotion getd("et_"+.et$[rand(0,getarraysize(.et$))]),getnpcid(0,strnpcinfo(0));
+	mes .n$[.@j];
+	mes .m$[.@msg];
+	close;
+}
+premium,180,19,8	duplicate(pj_oficina)	Jugador#01	698
+premium,158,27,2	duplicate(pj_oficina)	Jugadora#02	696
+premium,103,41,8	duplicate(pj_oficina)	Jugadora#03	665
+premium,110,22,8	duplicate(pj_oficina)	Jugadora#04	693
+premium,122,33,2	duplicate(pj_oficina)	Jugadora#05	10148
+
+/* Mapflags */
+premium	mapflag	nobranch
+premium	mapflag	noexp
+premium	mapflag	noloot
+premium	mapflag	nomemo
+premium	mapflag	nopenalty
+premium	mapflag	nosave	SavePoint
+premium	mapflag	noteleport
+premium	mapflag	novending

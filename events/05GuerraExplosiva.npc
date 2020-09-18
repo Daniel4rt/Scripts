@@ -1,0 +1,180 @@
+//      ______  __    __                                 
+//     /\  _  \/\ \__/\ \                                
+//     \ \ \_\ \ \ ,_\ \ \___      __    ___      __     
+// _____\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\   
+///\  __\\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_ 
+//\ \_\_/ \ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\
+// \/_/    \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/
+//
+//========================================================
+// ---                Guerra Explosiva                 ---
+//========================================================
+// ---                  by DanielArt                   ---
+//========================================================
+explowar	mapflag	nomobloot
+explowar	mapflag	nomvploot
+explowar	mapflag	restricted	3
+explowar	mapflag	noskill
+-	script	EXPLOWAR	-1,{
+OnWhisperGlobal:
+OnExploWar:
+	enablenpc "explowar_npc";
+	donpcevent "explowar_npc::OnLetterDo";
+	announce "[Guerra Explosiva]: ¡El evento comenzará dentro de 5 minutos!",bc_all,0xFF8800;
+	setcell "explowar",70,101,79,98,cell_walkable,0;
+	setcell "explowar",80,119,86,112,cell_walkable,0;
+	setcell "explowar",98,131,101,120,cell_walkable,0;
+	setcell "explowar",131,101,120,98,cell_walkable,0;
+	setcell "explowar",101,67,98,71,cell_walkable,0;
+	setcell "explowar",80,80,87,87,cell_walkable,0;
+	setcell "explowar",119,80,112,86,cell_walkable,0;
+	setcell "explowar",119,119,113,112,cell_walkable,0;
+	removemapflag "explowar",mf_pvp;
+	removemapflag "explowar",mf_pvp_noparty;
+	removemapflag "explowar",mf_pvp_noguild;
+	$@evt_guerra = 1;
+	sleep2 5000;
+	announce "[Guerra Explosiva]: ¡Todos los interesados en participar hablen conmigo en la Ciudad de Prontera!",bc_all,0xFF8800;
+	sleep2 60000;
+	announce "[Guerra Explosiva]: ¡El evento comenzará dentro de 4 minutos!",bc_all,0xFF8800;
+	sleep2 60000;
+	announce "[Guerra Explosiva]: ¡El evento comenzará dentro de 3 minutos!",bc_all,0xFF8800;
+	sleep2 60000;
+	announce "[Guerra Explosiva]: ¡El evento comenzará dentro de 2 minutos!",bc_all,0xFF8800;
+	sleep2 5000;
+	announce "[Guerra Explosiva]: ¡Todos los interesados en participar hablen conmigo en la Ciudad de Prontera!",bc_all,0xFF8800;
+	sleep2 60000;
+	announce "[Guerra Explosiva]: ¡El evento comenzará dentro de 1 minuto!",bc_all,0xFF8800;
+	sleep2 5000;
+	announce "[Guerra Explosiva]: ¡Todos los interesados en participar hablen conmigo en la Ciudad de Prontera!",bc_all,0xFF8800;
+	sleep2 60000;
+	donpcevent "explowar_npc::OnLetterOff";
+	sleep2 50;
+	disablenpc "explowar_npc";
+	announce "[Guerra Explosiva]: ¡Las inscripciones al evento se han cerrado!",bc_all,0xFF8800;
+	$@evt_guerra = 0;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: Antes de empezar la Guerra Explosiva les explicaré como funciona.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: Al empezar aparecerán varios cofres que tendrán que abrir si lo que quieren es ganar.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: Al abrir ese cofre obtendrás una bomba que ayudará al que lo haya abierto y se lanzará contra sus rivales, pero ten cuidado la explosión podria afectarte a ti también.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: Los cofres irán apareciendo a medida que se vayan abriendo, el ganador será el último que quede en pie.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: El uso de las escaleras y las columnas como escondite han sido deshabilitados.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: Toda persona que participe en este evento con equipamiento equipado será expulsado automáticamente.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: Y por último...el uso de habilidades en esta sala ha sido deshabilitado.",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: ¿Están todos preparados?",bc_yellow;
+	sleep2 10000;
+	mapannounce "explowar","[Guerra Explosiva]: ¡¡La guerra explosiva empieza YA!!",bc_yellow;
+	if(getmapusers("explowar") < 2) {
+		mapannounce "explowar","[Guerra Explosiva]: No hay suficientes participantes.",bc_map,0xFF8800;
+		sleep2 3000;
+		mapwarp "explowar","prontera",150,180;
+		end;
+	}
+	areamonster "explowar",87,111,112,87,"Cofre con Bombas",1346,4,"EXPLOWAR::OnChestBreak";
+	setmapflag "explowar",mf_pvp;
+	setmapflag "explowar",mf_pvp_noparty;
+	setmapflag "explowar",mf_pvp_noguild;
+	end;
+OnChestBreak:
+	sleep2 100;
+	callfunc("F_DispellEnter");
+	for(.@i = 1; .@i <= 21; .@i++) {
+		if(getequipisequiped(.@i)) {
+			sleep2 500;
+			@evt_diewar = 0;
+			mapannounce "explowar","[Guerra Explosiva] El jugador "+strcharinfo(0)+" ha hecho ¡¡PUM!!",bc_blue;
+			warp "SavePoint",0,0;
+		}
+	}
+	if(getmapusers("explowar") == 1 && @explofix < 1) {
+		@explofix = 1;
+		killmonsterall "explowar";
+		announce "[ "+strcharinfo(0)+" ] ha ganado el evento de Guerra Explosiva, ¡felicidades!",bc_all,0xFF8800;
+		mapannounce "explowar","[Guerra Explosiva] Haz ganado el evento, ve al centro a recoger tu premio.",bc_map,0xFF8800;
+		announce "[Guerra Explosiva] "+strcharinfo(0)+" ha aniquilado a todos y ganado el evento.",bc_map,0xFF8800;
+		sleep2 500;
+		monster "explowar",99,100,"Cofre con Premio",1346,1,"EXPLOWAR::OnPriceGet";
+		end;
+	}
+	summon "Bomba",1738,15000;
+	areamonster "explowar",87,111,112,87,"Cofre con Bombas",1346,1,"EXPLOWAR::OnChestBreak";
+	end;
+OnPriceGet:
+	F_Event 1,rand(1,5);
+	sleep2 5000;
+	warp "Save",0,0;
+	end;
+OnPCDieEvent:
+	if(@evt_diewar == 1) {
+		sleep2 500;
+		@evt_diewar = 0;
+		mapannounce "explowar","[Guerra Explosiva] El jugador "+strcharinfo(0)+" ha hecho ¡¡PUM!!",bc_blue;
+		warp "Save",0,0;
+	}
+	end;
+OnPCLogoutEvent:
+	if(@evt_diewar == 1) {
+		sleep2 500;
+		@evt_diewar = 0;
+		mapannounce "explowar","[Guerra Explosiva] El jugador "+strcharinfo(0)+" ha hecho ¡¡PUM!!",bc_blue;
+		warp "Save",0,0;
+	}
+	end;
+}
+prontera,194,177,4	script	Guerra Explosiva::explowar_npc	55,{
+	mes "[^cc0000Guerra Explosiva^000000]";
+	mes "Hola "+strcharinfo(0)+", aquí podrás ingresar al evento de guerra explosiva.";
+	next;
+	mes "[^cc0000Guerra Explosiva^000000]";
+	mes "Antes de iniciar el evento se te explicará cómo se juega, así que presta atención.";
+	next;
+	mes "[^cc0000Guerra Explosiva^000000]";
+	mes "Se te desequipará todo antes de entrar, debido a que serás expulsado si juegas con equipo colocado, también se te removerán todos tus efectos de estado";
+	next;
+	switch(select("Ingresar al Evento ^0000ff~ ^cc6600[ ^5533ff"+getmapusers("explowar")+" ^cc6600]:^777777Salir^000000")) {
+		case 1:
+			if (checkweight(502,100) == 0) {
+				mes "[^cc0000Guerra Explosiva^000000]";
+				mes "Tienes demaciado peso, por favor guarda algunas cosas en el almacén.";
+				close;
+			}
+			@explofix = 0;
+			if(!checkweight(7233,50)) {
+				dispbottom "Dispones de poco peso disponible, por favor libera un poco tu inventario.";
+				close;
+			}
+			if(F_CheckEvent(1)) {
+				mes "[^cc0000Guerra Explosiva^000000]";
+				mes "Lo siento, pero no puedes ingresar si estás montado, con warg, carrito u homúnculus.";
+				close;
+			}
+			nude;
+			callfunc("F_DispellEnter");
+			sleep2 1000;
+			@evt_diewar = 1;
+			warp "explowar",100,100;
+			close;
+		case 2:
+			mes "[^cc0000Guerra Explosiva^000000]";
+			mes "Vuelve cuando desees ingresar al evento, si no ingresas a tiempo no podrás accesar actualmente.";
+			close;
+	}
+OnLetterDo:
+	movenpc "explowar_npc",156,179;
+	waitingroom "Guerra Explosiva",0;
+	end;
+OnLetterOff:
+	movenpc "explowar_npc",194,177;
+	delwaitingroom;
+	end;
+OnInit:
+	disablenpc "explowar_npc";
+	end;
+}
